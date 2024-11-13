@@ -1,0 +1,9 @@
+body { 
+ background-image: url('imgs/deep-blue.jpg');
+ font-family: Arial, sans-serif;
+ color: white;
+}
+
+table {
+  border-spacing: 10px;
+}

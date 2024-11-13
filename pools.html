@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pivot Protocol Pools</title>
+    <link rel="stylesheet" href="styles.css"></link>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chartjs-adapter-date-fns"></script>
+</head>
+<body>
+  <center>
+   <h1>Pivot Protocol Pivot Pools</h1>
+  <table border="0" width="75%">
+   <tr>
+    <td align="center"><h3>BTC/ETH Pivot Pool</h3><br/>
+     <canvas id="radarChart" width="300" height="300"></canvas>
+    </td>
+    <td align="center"><h3>BTC/ETH Ratio</h3><br/>
+     <canvas id="btcEthChart" width="400" height="200"></canvas><br/>
+     <h3>Deltas</h3><br/>
+     <canvas id="deltasChart" width="400" height="200"></canvas>
+    </td>
+   </tr>
+   <tr>
+    <td align="center" colspan="2">
+     <h3>[STAKE] $UNDEAD into BTC+ETH pivot pool<br/>
+     0x323f7D245830Ae6230BEfAF6F6313F3395774765 
+     <input type="image" id="clipboard"
+            onClick="copy_addy('0x323f7D245830Ae6230BEfAF6F6313F3395774765')"
+            src="imgs/clipboard.png" height="32" width="32"/>
+     </h3>
+     <canvas id="barChart" width="400" height="400"></canvas>
+    </td>
+   </tr>
+  </table>
+  </center>
+    <script src="btcEthScript.js"></script>
+    <script src="deltas.js"></script>
+    <script src="btcEthRadarScript.js"></script>
+    <script src="copy_addy.js"></script>
+</body>
+</html>
