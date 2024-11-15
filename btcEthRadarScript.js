@@ -42,17 +42,6 @@ document.addEventListener('DOMContentLoaded', function () {
     parsedData[2] = colorify(parsedData[2], '0', '255', '0');
 
     const data = { labels: labels, datasets: parsedData };
-    const plugin = {
-       id: 'customCanvasBackgroundColor',
-       beforeDraw: (chart, args, options) => {
-         const {ctx} = chart;
-         ctx.save();
-         ctx.globalCompositeOperation = 'destination-over';
-         ctx.fillStyle = options.color || '#99ffff';
-         ctx.fillRect(0, 0, chart.width, chart.height);
-         ctx.restore();
-       }
-    };
 
     const ctx = document.getElementById('radarChart').getContext('2d');
 

@@ -1,6 +1,3 @@
-const today = new Date();
-const day100 = priorDate = new Date(new Date().setDate(today.getDate() - 100));
-
 document.addEventListener('DOMContentLoaded', function () {
     fetch('data/btc-eth.tsv')
         .then(response => response.text())
@@ -24,59 +21,36 @@ document.addEventListener('DOMContentLoaded', function () {
 
             const ctx = document.getElementById('btcEthChart')
                                 .getContext('2d');
-            const plugin = {
-  id: 'customCanvasBackgroundColor',
-  beforeDraw: (chart, args, options) => {
-    const {ctx} = chart;
-    ctx.save();
-    ctx.globalCompositeOperation = 'destination-over';
-    ctx.fillStyle = options.color || '#99ffff';
-    ctx.fillRect(0, 0, chart.width, chart.height);
-    ctx.restore();
-  }
-};
+
+            const rgba = (r, g, b, a) =>
+               'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
+
+            const datum = (label, d, r, g, b) => {
+               label,
+               data: d,
+               borderColor: rgba(r, g, b, 1),
+               backgroundColor: rgba(r, g, b, 0.2),
+               fill: false
+            };
+
             new Chart(ctx, {
                 type: 'line',
                 data: {
                     labels: labels,
                     datasets: [
-                        {
-                            label: 'BTC/ETH',
-                            data: btcEthData,
-                            borderColor: 'rgba(255, 99, 132, 1)',
-                            backgroundColor: 'rgba(255, 99, 132, 0.2)',
-                            fill: false,
-                        },
-                        {
-                            label: 'SMA-100',
-                            data: sma100Data,
-                            borderColor: 'rgba(54, 162, 235, 1)',
-                            backgroundColor: 'rgba(54, 162, 235, 0.2)',
-                            fill: false,
-                        },
-                        {
-                            label: 'EMA-20',
-                            data: ema20Data,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            fill: false,
-                        }
+                        datum('BTC/ETH', btcEthData, '255', '99', '132'),
+                        datum('SMA-100', sma100Data, '54', '162', '235'),
+			datum('EMA-20', ema20Data, '75', '192', '192')
                     ]
                 },
                 options: {
                     responsive: true,
-plugins: {
-      customCanvasBackgroundColor: {
-        color: 'black',
-      }
-    },
-                    scales: {
-                        y: {
-                            beginAtZero: false
-                        }
-                    }
+                    plugins: {
+                       customCanvasBackgroundColor: { color: 'black' }
+                    },
+                    scales: { y: { beginAtZero: false } }
                 },
-plugins: [plugin]
+                plugins: [plugin]
             });
         });
 });

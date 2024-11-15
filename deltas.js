@@ -21,19 +21,16 @@ document.addEventListener('DOMContentLoaded', function () {
             }
 
             const ctx = document.getElementById('deltasChart').getContext('2d');
-
-            const plugin = {
-  id: 'customCanvasBackgroundColor',
-  beforeDraw: (chart, args, options) => {
-    const {ctx} = chart;
-    ctx.save();
-    ctx.globalCompositeOperation = 'destination-over';
-    ctx.fillStyle = options.color || '#99ffff';
-    ctx.fillRect(0, 0, chart.width, chart.height);
-    ctx.restore();
-  }
-};
-
+            const rgba = (r, g, b, a) =>
+               'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
+            const line = (label, d, r, g, b) => {
+               label: label + ' δ',
+               data: d,
+               borderColor: rgba(r, g, b, '1'),
+               backgroundColor: rgba(r, g, b, '0.2'),
+               fill: false,
+               type: 'line'
+            };
 
             new Chart(ctx, {
                 type: 'bar',
@@ -46,37 +43,16 @@ document.addEventListener('DOMContentLoaded', function () {
                             backgroundColor: 'rgba(255, 159, 64, 0.6)',
                             type: 'bar'
                         },
-                        {
-                            label: 'Max δ',
-                            data: maxDeltaData,
-                            borderColor: 'rgba(75, 192, 192, 1)',
-                            backgroundColor: 'rgba(75, 192, 192, 0.2)',
-                            fill: false,
-                            type: 'line'
-                        },
-                        {
-                            label: 'Min δ',
-                            data: minDeltaData,
-                            borderColor: 'rgba(153, 102, 255, 1)',
-                            backgroundColor: 'rgba(153, 102, 255, 0.2)',
-                            fill: false,
-                            type: 'line'
-                        }
+                        line('Max', maxDeltaData, '75', '192', '192'),
+                        line('Min', minDeltaData, '153', '102', '255')
                     ]
                 },
                 options: {
                     responsive: true,
-plugins: {
-      customCanvasBackgroundColor: {
-        color: 'black',
-      }
-    },
-
-                    scales: {
-                        y: {
-                            beginAtZero: false
-                        }
-                    }
+                    plugins: {
+                       customCanvasBackgroundColor: { color: 'black' }
+                    },
+                    scales: { y: { beginAtZero: false } }
                 },
                 plugins: [plugin]
             });
