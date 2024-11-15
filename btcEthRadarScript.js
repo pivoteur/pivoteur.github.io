@@ -23,36 +23,36 @@ document.addEventListener('DOMContentLoaded', function () {
         };
     });
 
-    parsedData[0] = { ...parsedData[0],
-       backgroundColor: 'rgba(255, 99, 132, 0.2)',
-       borderColor: 'rgb(255, 99, 132)',
-       pointBackgroundColor: 'rgb(255, 99, 132)',
-       pointHoverBorderColor: 'rgb(255, 99, 132)' };
+    colorify = (pd, r, g, b) => { 
+       color = (post, r, g, b) => {
+          return 'rgb' + post + '(' + r + ', ' + g + ', ' + b;
+       };
+       const fade = color('a', r, g, b) + ', 0.2)';
+       const rgb = color('', r, g, b) + ')';
 
-    parsedData[1] = { ...parsedData[1],
-       backgroundColor: 'rgba(54, 162, 235, 0.2)',
-       borderColor: 'rgb(54, 162, 235)',
-       pointBackgroundColor: 'rgb(54, 162, 235)',
-       pointHoverBorderColor: 'rgb(54, 162, 235)' };
-
-    parsedData[2] = { ...parsedData[2],
-       backgroundColor: 'lightGreen',
-       borderColor: 'green',
-       pointBackgroundColor: 'green',
-       pointHoverBorderColor: 'green' };
+       return { ...pd,
+          backgroundColor: fade,
+          borderColor: rgb,
+          pointBackgroundColor: rgb,
+          pointHoverBorderColor: rgb
+       };
+    };
+    parsedData[0] = colorify(parsedData[0], '255', '99', '132');
+    parsedData[1] = colorify(parsedData[1], '54', '162', '235');
+    parsedData[2] = colorify(parsedData[2], '0', '255', '0');
 
     const data = { labels: labels, datasets: parsedData };
-            const plugin = {
-  id: 'customCanvasBackgroundColor',
-  beforeDraw: (chart, args, options) => {
-    const {ctx} = chart;
-    ctx.save();
-    ctx.globalCompositeOperation = 'destination-over';
-    ctx.fillStyle = options.color || '#99ffff';
-    ctx.fillRect(0, 0, chart.width, chart.height);
-    ctx.restore();
-  }
-};
+    const plugin = {
+       id: 'customCanvasBackgroundColor',
+       beforeDraw: (chart, args, options) => {
+         const {ctx} = chart;
+         ctx.save();
+         ctx.globalCompositeOperation = 'destination-over';
+         ctx.fillStyle = options.color || '#99ffff';
+         ctx.fillRect(0, 0, chart.width, chart.height);
+         ctx.restore();
+       }
+    };
 
     const ctx = document.getElementById('radarChart').getContext('2d');
 
@@ -61,12 +61,11 @@ document.addEventListener('DOMContentLoaded', function () {
         data: data,
         options: { 
          elements: { line: { borderWidth: 3 } },
-plugins: {
-      customCanvasBackgroundColor: {
-        color: 'black',
-      }
-    },
-        scales: { r: { angleLines: { display: true }, backgroundColor: "DimGray" }},
+         plugins: {
+           customCanvasBackgroundColor: { color: 'black' }
+         },
+         scales: { r: { angleLines: { display: true },
+                        backgroundColor: "DimGray" }},
         },
         plugins: [plugin] });
   });
