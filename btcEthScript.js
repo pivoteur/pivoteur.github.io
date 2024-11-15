@@ -26,11 +26,12 @@ document.addEventListener('DOMContentLoaded', function () {
                'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
 
             const datum = (label, d, r, g, b) => {
-               label,
+               return { label,
                data: d,
                borderColor: rgba(r, g, b, 1),
                backgroundColor: rgba(r, g, b, 0.2),
                fill: false
+               };
             };
 
             new Chart(ctx, {

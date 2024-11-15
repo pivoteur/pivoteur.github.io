@@ -24,12 +24,13 @@ document.addEventListener('DOMContentLoaded', function () {
             const rgba = (r, g, b, a) =>
                'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
             const line = (label, d, r, g, b) => {
+             return {
                label: label + ' δ',
                data: d,
                borderColor: rgba(r, g, b, '1'),
                backgroundColor: rgba(r, g, b, '0.2'),
                fill: false,
-               type: 'line'
+               type: 'line' };
             };
 
             new Chart(ctx, {
