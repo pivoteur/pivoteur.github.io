@@ -46,13 +46,20 @@
             return ema;
         }
 
+        const formatDate = date => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+        }
+
         Papa.parse('../data/pivots.csv', {
             download: true,
             header: true,
             dynamicTyping: true,
             complete: function(results) {
                 const data = results.data;
-                const labels = data.map(row => new Date(row['']).format('YYYY/MM/DD'));
+                const labels = data.map(row => formatDate(new Date(row[''])));
                 const btcEthRatio = data.map(row => row['bitcoin'] / row['ethereum']);
                 const sma100 = calculateSMA(btcEthRatio, 100);
                 const ema20 = calculateEMA(btcEthRatio, 20);
