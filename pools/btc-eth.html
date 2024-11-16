@@ -54,10 +54,11 @@
             return `${year}-${month}-${day}`;
         }
 
-        Papa.parse('../data/pivots.csv', {
+        Papa.parse('https://raw.githubusercontent.com/logicalgraphs/crypto-n-rust/refs/heads/main/data-files/csv/pivots.csv', {
             download: true,
             header: true,
             dynamicTyping: true,
+            skipEmptyLines: true,
             complete: function(results) {
                 const data = results.data;
                 const labels = data.map(row => formatDate(new Date(row['']))).slice(-100);
