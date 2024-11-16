@@ -60,6 +60,10 @@
             dynamicTyping: true,
             skipEmptyLines: true,
             complete: function(results) {
+                console.log("Errors: ");
+                console.log(results.errors);
+                console.log("Meta:");
+                console.log(results.meta);
                 const data = results.data;
                 const labels = data.map(row => formatDate(new Date(row['']))).slice(-100);
                 const btcEthRatio1 = data.map(row => row['bitcoin'] / row['ethereum']);
