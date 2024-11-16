@@ -52,7 +52,7 @@
             dynamicTyping: true,
             complete: function(results) {
                 const data = results.data;
-                const labels = data.map(row => row['']);
+                const labels = data.map(row => row[''].toDateString());
                 const btcEthRatio = data.map(row => row['bitcoin'] / row['ethereum']);
                 const sma100 = calculateSMA(btcEthRatio, 100);
                 const ema20 = calculateEMA(btcEthRatio, 20);
