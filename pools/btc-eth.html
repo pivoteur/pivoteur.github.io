@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BTC/ETH Ratio Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/papaparse/5.3.0/papaparse.min.js"></script>
+</head>
+<body>
+    <h1>BTC/ETH Ratio with SMA-100 and EMA-20</h1>
+    <canvas id="btcEthChart" width="800" height="400"></canvas>
+    <script>
+        function calculateSMA(data, window) {
+            let sma = [];
+            for (let i = 0; i < data.length; i++) {
+                if (i < window - 1) {
+                    sma.push(null);
+                } else {
+                    let sum = 0;
+                    for (let j = 0; j < window; j++) {
+                        sum += data[i - j];
+                    }
+                    sma.push(sum / window);
+                }
+            }
+            return sma;
+        }
+
+        function calculateEMA(data, window) {
+            let ema = [];
+            let multiplier = 2 / (window + 1);
+            for (let i = 0; i < data.length; i++) {
+                if (i < window - 1) {
+                    ema.push(null);
+                } else if (i === window - 1) {
+                    let sum = 0;
+                    for (let j = 0; j < window; j++) {
+                        sum += data[i - j];
+                    }
+                    ema.push(sum / window);
+                } else {
+                    ema.push((data[i] - ema[i - 1]) * multiplier + ema[i - 1]);
+                }
+            }
+            return ema;
+        }
+
+        Papa.parse('../data/pivots.csv', {
+            download: true,
+            header: true,
+            dynamicTyping: true,
+            complete: function(results) {
+                const data = results.data;
+                const labels = data.map(row => new Date(row['']));
+                const btcEthRatio = data.map(row => row['bitcoin'] / row['ethereum']);
+                const sma100 = calculateSMA(btcEthRatio, 100);
+                const ema20 = calculateEMA(btcEthRatio, 20);
+
+                const ctx = document.getElementById('btcEthChart').getContext('2d');
+                const btcEthChart = new Chart(ctx, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            {
+                                label: 'BTC/ETH Ratio',
+                                data: btcEthRatio,
+                                borderColor: 'blue',
+                                fill: false
+                            },
+                            {
+                                label: 'SMA-100',
+                                data: sma100,
+                                borderColor: 'green',
+                                fill: false
+                            },
+                            {
+                                label: 'EMA-20',
+                                data: ema20,
+                                borderColor: 'red',
+                                fill: false
+                            }
+                        ]
+                    },
+                    options: {
+                        scales: {
+                            x: {
+                                type: 'time',
+                                time: {
+                                    unit: 'day'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html>
