@@ -62,8 +62,10 @@
                 const data = results.data;
                 const labels = data.map(row => formatDate(new Date(row['']))).slice(-100);
                 const btcEthRatio = data.map(row => row['bitcoin'] / row['ethereum']).slice(-100);
-                const sma100 = calculateSMA(btcEthRatio, 100).slice(-100);
-                const ema20 = calculateEMA(btcEthRatio, 20).slice(-100);
+                const sma100a = calculateSMA(btcEthRatio, 100);
+                const sma100 = sma100a.slice(-100);
+                const ema20a = calculateEMA(btcEthRatio, 20);
+                const ema20 = ema20a.slice(-100);
 
                 const ctx = document.getElementById('btcEthChart').getContext('2d');
                 const btcEthChart = new Chart(ctx, {
