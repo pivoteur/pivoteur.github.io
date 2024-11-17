@@ -1,4 +1,4 @@
-const copy_addy = addy => {
+const copyAddy = addy => {
 
    // Copy the text inside the text field
   navigator.clipboard.writeText(addy);

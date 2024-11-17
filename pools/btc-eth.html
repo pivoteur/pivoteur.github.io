@@ -5,101 +5,35 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>BTC/ETH Ratio Chart</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="../libs/papaparse.min.js"></script>
+    <link rel="stylesheet" href="../styles.css"></link>
 </head>
 <body>
+    <center>
     <h1>BTC/ETH Ratio with SMA-100 and EMA-20</h1>
-    <canvas id="btcEthChart" width="800" height="400"></canvas>
+     <h3>[STAKE] $UNDEAD into BTC+ETH pivot pool<br/>
+     0x323f7D245830Ae6230BEfAF6F6313F3395774765
+     <input type="image" id="clipboard"
+            onClick="copyAddy('0x323f7D245830Ae6230BEfAF6F6313F3395774765')"
+            src="../imgs/clipboard.png" height="32" width="32"/>
+     </h3>  
+
+   <table border='1'>
+    <tr>
+     <td><canvas id="poolChart" width="800" height="400"></canvas></td>
+    </tr>
+    <tr>
+     <td><canvas id="deltaChart" width="800" height="400"></canvas></td>
+    </tr>
+   </table>
+    <script src="../libs/indicators.js"></script>
+    <script src="../libs/pivots.js"></script>
+    <script src="../libs/copy-addy.js"></script>
+    <script src="../libs/black-bg.js"></script>
+    <script src="../libs/pool-charts.js"></script>
     <script>
-        function calculateSMA(data, window) {
-            let sma = [];
-            for (let i = 0; i < data.length; i++) {
-                if (i < window - 1) {
-                    sma.push(null);
-                } else {
-                    let sum = 0;
-                    for (let j = 0; j < window; j++) {
-                        sum += data[i - j];
-                    }
-                    sma.push(sum / window);
-                }
-            }
-            return sma;
-        }
-
-        function calculateEMA(data, window) {
-            let ema = [];
-            let multiplier = 2 / (window + 1);
-            for (let i = 0; i < data.length; i++) {
-                if (i < window - 1) {
-                    ema.push(null);
-                } else if (i === window - 1) {
-                    let sum = 0;
-                    for (let j = 0; j < window; j++) {
-                        sum += data[i - j];
-                    }
-                    ema.push(sum / window);
-                } else {
-                    // ema.push((data[i] - ema[i - 1]) * multiplier + ema[i - 1]);
-                    ema.push(data[i] * multiplier + ema[i-1] * (1 - multiplier));
-                }
-            }
-            return ema;
-        }
-
-        const formatDate = date => {
-            const year = date.getFullYear();
-            const month = String(date.getMonth() + 1).padStart(2, '0');
-            const day = String(date.getDate()).padStart(2, '0');
-            return `${year}-${month}-${day}`;
-        }
-
-        Papa.parse('https://raw.githubusercontent.com/logicalgraphs/crypto-n-rust/refs/heads/main/data-files/csv/pivots.csv', {
-            download: true,
-            header: true,
-            dynamicTyping: true,
-            skipEmptyLines: true,
-            complete: function(results) {
-                console.log("Errors: ");
-                console.log(results.errors);
-                console.log("Meta:");
-                console.log(results.meta);
-                const data = results.data;
-                const labels = data.map(row => formatDate(new Date(row['']))).slice(-100);
-                const btcEthRatio1 = data.map(row => row['bitcoin'] / row['ethereum']);
-                const sma100 = calculateSMA(btcEthRatio1, 100).slice(-100);
-                const ema20 = calculateEMA(btcEthRatio1, 20).slice(-100);
-                const btcEthRatio = btcEthRatio1.slice(-100);
-
-                const ctx = document.getElementById('btcEthChart').getContext('2d');
-                const btcEthChart = new Chart(ctx, {
-                    type: 'line',
-                    data: {
-                        labels: labels,
-                        datasets: [
-                            {
-                                label: 'BTC/ETH Ratio',
-                                data: btcEthRatio,
-                                borderColor: 'blue',
-                                fill: false
-                            },
-                            {
-                                label: 'SMA-100',
-                                data: sma100,
-                                borderColor: 'green',
-                                fill: false
-                            },
-                            {
-                                label: 'EMA-20',
-                                data: ema20,
-                                borderColor: 'red',
-                                fill: false
-                            }
-                        ]
-                    },
-                });
-            }
-        });
+        fetch(pivotsUrl).then(response => response.text())
+                        .then(data => poolCharts('BTC', 'ETH', data));
     </script>
 </body>
+</center>
 </html>
