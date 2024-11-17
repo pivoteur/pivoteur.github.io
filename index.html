@@ -1,38 +1,55 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Crypto Assets Stacked Bar Chart</title>
-    <link rel="stylesheet" href="styles.css"></link>
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-</head>
-<body>
+<html>
+ <head>
+  <title>Pivot Protocol</title>
+  <link rel='stylesheet' href='styles.css'></link>
+ <script>
+  const switchFrame = frame => {
+     document.getElementById("iframe_dash").style.display = 'none';
+     document.getElementById("iframe_pools").style.display = 'none';
+     document.getElementById("iframe_port").style.display = 'none';
+     document.getElementById(frame).style.display = 'block';
+  };
+ </script>
+ </head>
+ <body>
   <center>
-   <h1>Pivot Protocol Dashboard</h1>
-   <h2>[Donate] assets for $UNDEAD<br/>
-       0x70D0dF26F6A61fC33ef28EB490b9A645bCb3753A
-       <input type="image" id="clipboard"
-            onClick="copy_addy('0x70D0dF26F6A61fC33ef28EB490b9A645bCb3753A')"
-            src="imgs/clipboard.png" height="32" width="32"/>
-   </h2>
-  <table border="0" width="75%">
-   <tr>
-    <td align="center"><h3>Tokens</h3><br/>
-     <canvas id="tokensChart" width="400" height="200"></canvas>
-    </td>
-    <td align="center"><h3>dapps</h3><br/>
-     <canvas id="dappsChart" width="400" height="200"></canvas></td>
-   </tr>
-   <tr>
-    <td colspan="2" align="center"><h3>TVL</h3><br/>
-     <canvas id="cryptoChart" width="400" height="200"></canvas></td>
-   </tr>
-  </table>
+   <h1>Pivot Protocol</h1>
+   <table border="1" width="85%">
+    <tr>
+     <td style='vertical-align:top'>
+      <table border='0'>
+       <tr><td><a href="#" onclick="switchFrame('iframe_dash')">Dashboard</a></td></tr>
+       <tr><td><a href="#" onclick="switchFrame('iframe_pools')">Pools</a></td></tr>
+       <tr><td>Echo Pool</td></tr>
+       <tr><td>Treasury</td></tr>
+       <tr><td><a href="#" onclick="switchFrame('iframe_port')">My Portfolio</a></td></tr>
+      </table>
+     </td>
+     <td>
+      <iframe src="dashboard.html" 
+              name="iframe_dash" 
+              id="iframe_dash" 
+              title="Dashboard"
+              height="750"
+              width="100%"
+              style="display:block"></iframe>
+      <iframe src="pools.html"
+              name="iframe_pools"
+              id="iframe_pools"
+              title="Pools"
+              height="750"
+              width="100%"
+              style="display:none"></iframe>
+      <iframe src="portfolio.html"
+              name="iframe_port"
+              id="iframe_port"
+              title="Pools"
+              height="750"
+              width="100%"
+              style="display:none"></iframe>
+     </td>
+    </tr>
+   </table>
   </center>
-    <script src="script.js"></script>
-    <script src="tokensScript.js"></script>
-    <script src="dappsScript.js"></script>
-    <script src="copy_addy.js"></script>
-</body>
+ </body>
 </html>

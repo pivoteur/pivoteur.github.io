@@ -9,11 +9,11 @@
 </head>
 <body>
     <center>
-    <h1>BTC/ETH Ratio with SMA-100 and EMA-20</h1>
-     <h3>[STAKE] $UNDEAD into BTC+ETH pivot pool<br/>
-     0x323f7D245830Ae6230BEfAF6F6313F3395774765
+    <h1>BTC/BNB Ratio with SMA-100 and EMA-20</h1>
+     <h3>[STAKE] $UNDEAD into BTC+BNB pivot pool<br/>
+     0x557bEf910E0F90aA88E03e0247FDE93B88d01953
      <input type="image" id="clipboard"
-            onClick="copyAddy('0x323f7D245830Ae6230BEfAF6F6313F3395774765')"
+            onClick="copyAddy('0x557bEf910E0F90aA88E03e0247FDE93B88d01953')"
             src="../imgs/clipboard.png" height="32" width="32"/>
      </h3>  
 
@@ -29,7 +29,7 @@
      </td>
     </tr>
     <tr><td><a href="../pools.html">Back to Pools</a></td>
-        <td>BTC+ETH Pivot Pool Stats</td>
+        <td>BTC+BNB Pivot Pool Stats</td>
     </tr>
    </table>
     <script src="../libs/indicators.js"></script>
@@ -39,7 +39,7 @@
     <script src="../libs/pool-charts.js"></script>
     <script>
         fetch(pivotsUrl).then(response => response.text())
-                        .then(data => poolCharts('BTC', 'ETH', data));
+                        .then(data => poolCharts('BTC', 'BNB', data));
     </script>
 </body>
 </center>

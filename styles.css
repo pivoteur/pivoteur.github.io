@@ -7,3 +7,11 @@ body {
 table {
   border-spacing: 10px;
 }
+
+th {
+  text-align: left;
+}
+
+a {
+  color: cyan;
+}
