@@ -3,12 +3,13 @@
   <title>Pivot Protocol</title>
   <link rel='stylesheet' href='styles.css'></link>
  <script>
+  let frames = ['dash', 'pools', 'port', 'echo', 'diy'];
   const switchFrame = frame => {
-     document.getElementById("iframe_dash").style.display = 'none';
-     document.getElementById("iframe_pools").style.display = 'none';
-     document.getElementById("iframe_port").style.display = 'none';
-     document.getElementById("iframe_echo").style.display = 'none';
-     document.getElementById(frame).style.display = 'block';
+     const i = f => 'iframe_' + f;
+     frames.forEach(fram =>  {
+        document.getElementById(i(fram)).style.display = 'none';
+     });
+     document.getElementById(i(frame)).style.display = 'block';
   };
  </script>
  </head>
@@ -20,18 +21,34 @@
      <td style='vertical-align:top'>
       <table border='0'>
        <tr>
-        <td><a href="#" onclick="switchFrame('iframe_dash')">Dashboard</a></td>
+        <td><a href="#" onclick="switchFrame('dash')">Dashboard</a></td>
        </tr>
        <tr>
-        <td><a href="#" onclick="switchFrame('iframe_pools')">Pools</a></td>
+        <td><a href="#" onclick="switchFrame('pools')">Pools</a></td>
        </tr>
        <tr>
-        <td><a href="#" onclick="switchFrame('iframe_echo')">Echo Pool</a></td>
+        <td><a href="#" onclick="switchFrame('echo')">Echo Pool</a></td>
        </tr>
        <tr><td>Treasury</td></tr>
        <tr>
-        <td><a href="#" onclick="switchFrame('iframe_port')">My Portfolio</a></td>
+        <td><a href="#" onclick="switchFrame('port')">My Portfolio</a></td>
        </tr>
+       <tr><td><hr/></td></tr>
+       <tr><td><a href="#" onclick="switchFrame('diy')">Charts++ / DIY</a></td></tr>
+       <tr><td><hr/></td></tr>
+       <tr><td>Docs</td></tr>
+       <tr>
+        <td>
+         <ul>
+          <li><a href='https://github.com/pivoteur/biz/blob/main/README.md'>Whitepaper</a></li>
+          <li><a href='https://github.com/pivoteur/biz/blob/main/articles/README.md'>Articles</a></li>
+          <li><a href='https://github.com/pivoteur/biz/blob/main/blog/README.md'>BLOG</a></li>
+         </ul>
+        </td>
+       </tr>
+       <tr><td><hr/></td></tr>
+       <tr><td><a href="https://x.com/pivocateur">Contact us</a></td></tr>
+       <tr><td><hr/></td></tr>
       </table>
      </td>
      <td>
@@ -60,6 +77,13 @@
               name="iframe_echo"
               id="iframe_echo"
               title="Echo Pool"
+              height="750"
+              width="100%"
+              style="display:none"></iframe>
+      <iframe src="diy.html?t1=BTC&t2=ETH"
+              name="iframe_diy"
+              id="iframe_diy"
+              title="Do It Yourself"
               height="750"
               width="100%"
               style="display:none"></iframe>

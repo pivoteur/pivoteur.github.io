@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ETH/UNDEAD Ratio Chart</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css"></link>
+</head>
+<body>
+    <center>
+    <h1>Pivot Playground!</h1>
+     <h3>Select two assets to see if they are a good pivot pair!<br/>
+       If so, DM the protocol at 
+       <a href="https://x.com/pivocateur">@pivocateur</a>
+     </h3>  
+
+   <table border='1' width='85%'>
+    <tr>
+     <td><select id='token1' onchange="selected(this)"></select></td>
+     <td><select id='token2'></select></td>
+     <td><input type='button' onclick="go()" value='DIY'></input></td>
+    </tr>
+    <tr>
+     <td colspan='3'>
+      <canvas id="poolChart" width="800" height="400"></canvas>
+     </td>
+    </tr>
+    <tr>
+     <td colspan='3'>
+      <canvas id="deltaChart" width="800" height="400"></canvas>
+     </td>
+    </tr>
+    </tr>
+   </table>
+</center>
+
+  <p style="vertical-align:bottom">
+   <a href='https://github.com/pivoteur/biz/blob/main/README.md#pivot-arbitrage'>
+Learn more</a> about pivot arbitrage.
+</p>
+
+    <script src="libs/indicators.js"></script>
+    <script src="libs/table.js"></script>
+    <script src="libs/pivots.js"></script>
+    <script src="libs/copy-addy.js"></script>
+    <script src="libs/canvas-bg.js"></script>
+    <script src="libs/charts/pool.js"></script>
+    <script>
+const params = () =>
+{
+    var url = window.location.search.substring(1);
+    var query = url.split('&');
+    return query.map(pair => {
+       let [_a, b] = pair.split('=');
+       return b;
+    });
+};
+
+const removeOptions = selectElement => {
+   var i, L = selectElement.options.length - 1;
+   for(i = L; i >= 0; i--) {
+      selectElement.remove(i);
+   }
+};
+
+const refreshOptions = tok1 => {
+   let t2 = document.getElementById('token2');
+   removeOptions(t2);
+   let top = prices[tok1];
+   for (tok in prices) {
+      if (prices[tok] < top || tok === 'USDC') {
+         t2.options.add(new Option(tok, tok));
+      }
+   }
+};
+
+const selected = selectElement => {
+   refreshOptions(selectElement.value);
+};
+
+const go = () => {
+   let val1 = document.getElementById('token1').value;
+   let val2 = document.getElementById('token2').value;
+   location.href = "diy.html?t1=" + val1 + "&t2=" + val2;
+};
+
+let prices = {};
+let [t1, t2] = params();
+
+        fetch(pivotsUrl).then(response => response.text())
+                        .then(data => {
+   let [table, idx] = pivotTable(data);
+   let currentPrices = table[table.length - 1];
+   let tag1 = document.getElementById('token1');
+   let tag2 = document.getElementById('token2');
+   for (tok in idx) {
+      tag1.options.add(new Option(tok, tok));
+      prices[tok] = currentPrices[idx[tok]];
+   }
+   tag1.value = t1;
+   refreshOptions(t1);
+   tag2.value = t2;
+   poolCharts(t1, t2, data);
+});
+    </script>
+</body>
+</html>
