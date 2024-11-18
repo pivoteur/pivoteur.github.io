@@ -23,3 +23,8 @@ const table = (data, separator='\t', offset=0, f=id) => {
 };
 
 const row = (table, idx, key) => table.map(r => r[idx[key]]);
+
+const sampleRow = table => {
+   let idx = (Math.random() * table.length) | 0;
+   return [table[idx], idx];
+};
