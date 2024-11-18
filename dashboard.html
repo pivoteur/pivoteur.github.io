@@ -13,7 +13,7 @@
    <h2>[Donate] assets for $UNDEAD<br/>
        0x70D0dF26F6A61fC33ef28EB490b9A645bCb3753A
        <input type="image" id="clipboard"
-            onClick="copy_addy('0x70D0dF26F6A61fC33ef28EB490b9A645bCb3753A')"
+            onClick="copyAddy('0x70D0dF26F6A61fC33ef28EB490b9A645bCb3753A')"
             src="imgs/clipboard.png" height="32" width="32"/>
    </h2>
   <table border="0" width="75%">
@@ -26,13 +26,19 @@
    </tr>
    <tr>
     <td colspan="2" align="center"><h3>TVL</h3><br/>
-     <canvas id="cryptoChart" width="400" height="200"></canvas></td>
+     <canvas id="barChart" width="400" height="200"></canvas></td>
    </tr>
   </table>
   </center>
-    <script src="script.js"></script>
     <script src="tokensScript.js"></script>
     <script src="dappsScript.js"></script>
-    <script src="copy_addy.js"></script>
+    <script src="libs/copy-addy.js"></script>
+    <script src="libs/table.js"></script>
+    <script src="libs/chart/bar.js"></script>
+    <script>
+       fetch('data/assets.tsv')
+            .then(result => result.text())
+            .then(data => barChart(data));
+    </script>
 </body>
 </html>

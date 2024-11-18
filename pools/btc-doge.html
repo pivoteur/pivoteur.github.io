@@ -30,9 +30,10 @@
     </tr>
    </table>
     <script src="../libs/indicators.js"></script>
+    <script src="../libs/table.js"></script>
     <script src="../libs/pivots.js"></script>
     <script src="../libs/black-bg.js"></script>
-    <script src="../libs/pool-charts.js"></script>
+    <script src="../libs/charts/pool.js"></script>
     <script>
         fetch(pivotsUrl).then(response => response.text())
                         .then(data => poolCharts('BTC', 'DOGE', data));
