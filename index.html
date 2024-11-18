@@ -7,6 +7,7 @@
      document.getElementById("iframe_dash").style.display = 'none';
      document.getElementById("iframe_pools").style.display = 'none';
      document.getElementById("iframe_port").style.display = 'none';
+     document.getElementById("iframe_echo").style.display = 'none';
      document.getElementById(frame).style.display = 'block';
   };
  </script>
@@ -18,11 +19,19 @@
     <tr>
      <td style='vertical-align:top'>
       <table border='0'>
-       <tr><td><a href="#" onclick="switchFrame('iframe_dash')">Dashboard</a></td></tr>
-       <tr><td><a href="#" onclick="switchFrame('iframe_pools')">Pools</a></td></tr>
-       <tr><td>Echo Pool</td></tr>
+       <tr>
+        <td><a href="#" onclick="switchFrame('iframe_dash')">Dashboard</a></td>
+       </tr>
+       <tr>
+        <td><a href="#" onclick="switchFrame('iframe_pools')">Pools</a></td>
+       </tr>
+       <tr>
+        <td><a href="#" onclick="switchFrame('iframe_echo')">Echo Pool</a></td>
+       </tr>
        <tr><td>Treasury</td></tr>
-       <tr><td><a href="#" onclick="switchFrame('iframe_port')">My Portfolio</a></td></tr>
+       <tr>
+        <td><a href="#" onclick="switchFrame('iframe_port')">My Portfolio</a></td>
+       </tr>
       </table>
      </td>
      <td>
@@ -44,6 +53,13 @@
               name="iframe_port"
               id="iframe_port"
               title="Pools"
+              height="750"
+              width="100%"
+              style="display:none"></iframe>
+      <iframe src="echo.html"
+              name="iframe_echo"
+              id="iframe_echo"
+              title="Echo Pool"
               height="750"
               width="100%"
               style="display:none"></iframe>
