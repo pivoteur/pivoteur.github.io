@@ -9,7 +9,7 @@
 </head>
 <body>
     <center>
-    <h1>Pivot Playground!</h1>
+    <h1>Pivot Playground</h1>
      <h3>Select two assets to see if they are a good pivot pair!<br/>
        If so, DM the protocol at 
        <a href="https://x.com/pivocateur">@pivocateur</a>
@@ -17,9 +17,11 @@
 
    <table border='1' width='85%'>
     <tr>
-     <td><select id='token1' onchange="selected(this)"></select></td>
-     <td><select id='token2'></select></td>
-     <td><input type='button' onclick="go()" value='DIY'></input></td>
+     <td colspan='3'>
+      <select id='token1' onchange="selected(this)"></select>
+      <select id='token2'></select>
+      <input type='button' onclick="go()" value='DIY' style='background-color: lightgreen'></input>
+     </td>
     </tr>
     <tr>
      <td colspan='3'>
@@ -36,8 +38,11 @@
 </center>
 
   <p style="vertical-align:bottom">
-   <a href='https://github.com/pivoteur/biz/blob/main/README.md#pivot-arbitrage'>
-Learn more</a> about pivot arbitrage.
+   <a href='#'
+      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#pivot-arbitrage";'>
+Learn more <img src='imgs/leave-site.png' width='16'/></a>
+
+about pivot arbitrage.
 </p>
 
     <script src="libs/indicators.js"></script>
