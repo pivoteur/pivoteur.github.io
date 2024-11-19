@@ -1,22 +1,21 @@
-document.addEventListener('DOMContentLoaded', function () {
-    fetch('data/pools/eth-btc.tsv')
-        .then(response => response.text())
-        .then(file => {
-    const lines = file.trim().split('\n');
-    const labels = ['BTC $','ETH $', 'BNB $', 'AVAX $', 'QI $', 'UNDEAD $'];
-    const ethData = [];
-    const undeadData = [];
-    const btcData = [];
+const radarChart = (data, kind, offset=0) => {
+    let [wallets, idx] = table(data);
 
-    const parseNum =
-       column => parseFloat(column.replace('$', '').replace(',', ''));
-    const parseNums = (columns, ix) => ix.map(i => columns[i]).map(parseNum);
+    let dapp = wallets.filter(row => row[1 + offset] === kind);
 
-    const parsedData = lines.slice(1).map(line => {
-        const columns = line.split('\t');
+    let labels = [];
+    let ix = [];
+    usdLabels(idx).forEach(([k, i]) => {
+       labels.push(k);
+       ix.push(i);
+    });
+
+    const parseNums = (columns, ix) => ix.map(i => columns[i]).map(parseUSD);
+
+    const addys = dapp.map(wallet => {
         return {
-            label: columns[0],
-            data: parseNums(columns, [6,9,12,15,18,21]),
+            label: wallet[0],
+            data: parseNums(wallet, ix),
             fill: true,
             pointBorderColor: '#fff',
             pointHoverBackgroundColor: '#fff',
@@ -37,25 +36,25 @@ document.addEventListener('DOMContentLoaded', function () {
           pointHoverBorderColor: rgb
        };
     };
-    parsedData[0] = colorify(parsedData[0], '255', '99', '132');
-    parsedData[1] = colorify(parsedData[1], '54', '162', '235');
-    parsedData[2] = colorify(parsedData[2], '0', '255', '0');
-
-    const data = { labels: labels, datasets: parsedData };
+    addys[0] = colorify(addys[0], '255', '99', '132');
+    addys[1] = colorify(addys[1], '54', '162', '235');
+    if (addys.length > 2) {
+       addys[2] = colorify(addys[2], '0', '255', '0');
+    }
 
     const ctx = document.getElementById('radarChart').getContext('2d');
 
     new Chart(ctx, {
         type: 'radar',
-        data: data,
+        data: { labels: labels, datasets: addys },
         options: { 
          elements: { line: { borderWidth: 3 } },
          plugins: {
            customCanvasBackgroundColor: { color: 'black' }
          },
          scales: { r: { angleLines: { display: true },
+                        pointLabels: { color: "white" },
                         backgroundColor: "DimGray" }},
         },
         plugins: [plugin] });
-  });
-});
+};

@@ -3,7 +3,7 @@
   <title>Pivot Protocol</title>
   <link rel='stylesheet' href='styles.css'></link>
  <script>
-  let frames = ['dash', 'pools', 'port', 'echo', 'diy'];
+  let frames = ['dash', 'pools', 'port', 'echo', 'diy', 'treas'];
   const switchFrame = frame => {
      const i = f => 'iframe_' + f;
      frames.forEach(fram =>  {
@@ -29,7 +29,9 @@
        <tr>
         <td><a href="#" onclick="switchFrame('echo')">Echo Pool</a></td>
        </tr>
-       <tr><td>Treasury</td></tr>
+       <tr>
+        <td><a href="#" onclick="switchFrame('treas')">Treasury</a></td>
+       </tr>
        <tr>
         <td><a href="#" onclick="switchFrame('port')">My Portfolio</a></td>
        </tr>
@@ -86,6 +88,13 @@
               name="iframe_diy"
               id="iframe_diy"
               title="Do It Yourself"
+              height="750"
+              width="100%"
+              style="display:none"></iframe>
+      <iframe src="treasury.html"
+              name="iframe_treas"
+              id="iframe_treas"
+              title="Treasury"
               height="750"
               width="100%"
               style="display:none"></iframe>

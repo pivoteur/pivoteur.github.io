@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pivot Protocol Treasury</title>
+    <link rel="stylesheet" href="styles.css"></link>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+  <center>
+   <h1>Pivot Protocol Dashboard</h1>
+   <h2>[Stake] $UNDEAD into the Treasury<br/>
+       0xAc436d1Ba51c9cf206818b331c9dAA1ca368Ab66
+       <input type="image" id="clipboard"
+            onClick="copyAddy('0xAc436d1Ba51c9cf206818b331c9dAA1ca368Ab66')"
+            src="imgs/clipboard.png" height="32" width="32"/>
+   </h2>
+  <table border="0" width="75%">
+   <tr>
+    <td><h3>Treasury</h3><br/>
+     <canvas id="radarChart" width="400" height="200"></canvas>
+    </td>
+   </tr>
+   <tr>
+    <td><h3>TVL</h3><br/>
+     <canvas id="barChart" width="400" height="200"></canvas></td>
+   </tr>
+  </table>
+  </center>
+
+  <p style="vertical-align:bottom">
+   <a href='#'
+      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#3-the-treasury-norge";'>
+Learn more <img src='imgs/leave-site.png' width='16'/></a>
+   about the Treasury.
+  </p>
+
+    <script src="libs/copy-addy.js"></script>
+    <script src="libs/table.js"></script>
+    <script src='libs/canvas-bg.js'></script>
+    <script src='libs/colors.js'></script>
+    <script src='libs/usd.js'></script>
+    <script src="libs/charts/radar.js"></script>
+    <script src='libs/charts/bar.js'></script>
+    <script>
+       fetch('data/wallets.tsv')
+            .then(result => result.text())
+            .then(data => radarChart(data, 'treasury'));
+       fetch('data/treasury.tsv')
+            .then(result => result.text())
+            .then(data => barChart(data));
+    </script>
+</body>
+</html>

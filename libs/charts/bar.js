@@ -1,9 +1,8 @@
 const barChart = data => {
     let [assets, idx] = table(data);
 
-    const myColors = hues();
-    const labels = [];
-    for (let k in idx) { if (k.endsWith('$')) { labels.push([k, idx[k]]); } }
+    const myColors = colors();
+    const labels = usdLabels(idx);
 
     const parsedData = assets.map(columns => {
         const daters = {};
