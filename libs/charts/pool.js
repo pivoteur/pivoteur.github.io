@@ -3,14 +3,21 @@
 
 const poolCharts = (primary, secondary, data) => {
    let [table, idx] = pivotTable(data);
+   poolChartsTbl(primary, secondary, table, idx);
+}
+
+const poolChartsTbl = (primary, secondary, table, idx) => {
    let prims = row(table, idx, primary);
    let secs = row(table, idx, secondary);
    let dates = row(table, idx, 'date').slice(-100);
    let ratio0 = ratios(prims, secs);
    let ema20s0 = emas(ratio0, 20);
 
-   drawDeltas(dates, ratio0, ema20s0);
+   let [ds, mins, maxs] = deltas(ratio0, ema20s0, 100);
+
+   drawDeltas(dates, ds, mins, maxs);
    drawPoolChart(primary + '/' + secondary, dates, ratio0, ema20s0);
+   drawRec(dates, ds, mins, maxs, primary, secondary);
 };
 
 // helper functions to draw each chart
@@ -34,10 +41,8 @@ const drawPoolChart = (title, dates, ratio0, ema20s0) => {
    });
 };
 
-const drawDeltas = (dates, ratio0, ema20s0) => {
+const drawDeltas = (dates, ds, mins, maxs) => {
    const ctx1 = document.getElementById('deltaChart').getContext('2d');
-
-   let [ds, mins, maxs] = deltas(ratio0, ema20s0, 100);
 
    const rgba = (r, g, b, a) =>
       'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
@@ -75,3 +80,24 @@ const drawDeltas = (dates, ratio0, ema20s0) => {
    });
 };
 
+const drawRec = (dates, ds, mins, maxs, prim, sec) => {
+
+   const ultimate = arr => arr[arr.length - 1];
+   const penultimate = arr => arr[arr.length - 2];
+   const arr = (a, b) => a + " -> " + b;
+   let d = ultimate(ds);
+
+   let call = "For " + ultimate(dates) + ", SWAP ";
+   let swap = (d < 0) ? arr(sec, prim) : arr(prim, sec);
+   let dem = penultimate((d < 0) ? mins : maxs);
+
+   let conf0 = d / dem;
+   let conf = (conf0 * 100) | 0;
+
+   const field = document.getElementById('recommendation');
+
+   if (field) {
+      let msg = call + swap + ", δ-confidence: " + conf + "%";
+      field.innerText = msg;
+   }
+};

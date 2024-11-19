@@ -7,8 +7,6 @@ const barChart = data => {
        return color;
     };
 
-    const parseUSD = col => parseFloat(col.replace('$', '').replace(',', ''));
-
     const labels = [];
     for (let k in idx) { if (k.endsWith('$')) { labels.push([k, idx[k]]); } }
 

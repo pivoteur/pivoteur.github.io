@@ -4,14 +4,7 @@ body {
  color: white;
 }
 
-table {
-  border-spacing: 10px;
-}
-
-th {
-  text-align: left;
-}
-
-a {
-  color: cyan;
-}
+a { color: cyan; }
+th { text-align: left; }
+table { border-spacing: 10px; }
+canvas { background-color: black; }
