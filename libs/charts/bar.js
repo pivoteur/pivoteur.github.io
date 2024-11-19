@@ -1,12 +1,7 @@
 const barChart = data => {
     let [assets, idx] = table(data);
 
-    const randomColor = colors => {
-       let [color, idx] = sampleRow(colors);
-       delete colors[idx];
-       return color;
-    };
-
+    const myColors = hues();
     const labels = [];
     for (let k in idx) { if (k.endsWith('$')) { labels.push([k, idx[k]]); } }
 
@@ -40,7 +35,7 @@ const barChart = data => {
        return {
           label: asset,
           data: amounts[asset],
-          backgroundColor: randomColor(hueColors)
+          backgroundColor: randomColor(myColors)
        };
     };
     for (let amount in amounts) { datasets.push(mkSet(amount)); };

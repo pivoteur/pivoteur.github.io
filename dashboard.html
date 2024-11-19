@@ -38,18 +38,33 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
    about the Pivot Protocol.
   </p>
 
-    <script src="tokensScript.js"></script>
-    <script src="dappsScript.js"></script>
     <script src="libs/copy-addy.js"></script>
     <script src="libs/table.js"></script>
     <script src='libs/canvas-bg.js'></script>
     <script src='libs/colors.js'></script>
     <script src='libs/usd.js'></script>
     <script src="libs/charts/bar.js"></script>
+    <script src='libs/charts/pie.js'></script>
     <script>
        fetch('data/assets.tsv')
             .then(result => result.text())
             .then(data => barChart(data));
+       fetch('data/wallets.tsv')
+            .then(result => result.text())
+            .then(data => {
+   let [wallets, idx] = table(data);
+   pieChart(wallets, idx, 'dappsChart', 'dapp');
+   let labels = [];
+   let amounts = [];
+   const sum = nums => nums.reduce((acc, x) => acc + x, 0);
+   for (label in idx) {
+      if(label.endsWith('$')) {
+         labels.push(label);
+         amounts.push(sum(row(wallets, idx, label).map(parseUSD)));
+      }
+   }
+   doughnutChartTbl(labels, amounts, 'tokensChart');
+});
     </script>
 </body>
 </html>
