@@ -31,7 +31,7 @@
     </tr>
     <tr>
      <td colspan='3'>
-      <canvas id="poolChart" width="800" height="400"></canvas>
+      <canvas id="pivotChart" width="800" height="400"></canvas>
      </td>
     </tr>
     <tr>
@@ -56,7 +56,8 @@ about pivot arbitrage.
     <script src="libs/pivots.js"></script>
     <script src="libs/copy-addy.js"></script>
     <script src="libs/canvas-bg.js"></script>
-    <script src="libs/charts/pool.js"></script>
+    <script src='libs/charts/line.js'></script>
+    <script src="libs/charts/pivot.js"></script>
     <script>
 const params = () => {
     var url = window.location.search.substring(1);
@@ -111,7 +112,7 @@ let [t1, t2] = params();
    tag1.value = t1;
    refreshOptions(t1);
    tag2.value = t2;
-   poolChartsTbl(t1, t2, table, idx);
+   pivotChartsTbl(t1, t2, table, idx);
 });
     </script>
 </body>

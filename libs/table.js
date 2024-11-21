@@ -28,3 +28,13 @@ const sampleRow = table => {
    let idx = (Math.random() * table.length) | 0;
    return [table[idx], idx];
 };
+
+// we assume the date is in column 0 for our tables, because duh!
+
+const sortByDate = t => t.sort((a, b) => new Date(a[0]) - new Date(b[0]));
+
+const sortedTable = (data, separator='\t', offset=0, f=id) => {
+   let [t, idx] = table(data, separator, offset, f);
+   sortByDate(t);
+   return [t, idx];
+};

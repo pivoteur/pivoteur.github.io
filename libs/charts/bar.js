@@ -1,20 +1,22 @@
 const barChart = data => {
-    let [assets, idx] = table(data);
-
-    const myColors = colors();
+    let [assets, idx] = sortedTable(data);
     const labels = usdLabels(idx);
+    barChartTbl(labels, parseData(assets, labels));
+};
 
-    const parsedData = assets.map(columns => {
-        const daters = {};
-        labels.forEach(([k, i]) => { daters[k] = parseUSD(columns[i]); });
-        return {
-            date: columns[0],
-            data: daters
-        };
-    });
+const parseData = (assets, labels) => {
+   let data = assets.map(columns => {
+      const daters = {};
+      labels.forEach(([k, i]) => { daters[k] = parseUSD(columns[i]); });
+      return {
+         date: columns[0],
+         data: daters
+      };
+   });
+   return data;
+};
 
-    parsedData.sort((a, b) => new Date(a.date) - new Date(b.date));
-
+const barChartTbl = (labels, parsedData) => {
     let amounts = {};
     const dates = [];
     parsedData.forEach(row => {
@@ -30,6 +32,7 @@ const barChart = data => {
     });
 
     let datasets = [];
+    const myColors = colors();
     const mkSet = asset => {
        return {
           label: asset,

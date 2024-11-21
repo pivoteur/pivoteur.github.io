@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pivot Protocol Echo Pool</title>
+    <title>Pivot Protocol Echo Pool Details</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css"></link>
 </head>
 <body>
     <center>
-    <h1>Pivot Protocol Echo Pool</h1>
+    <h1>Echo Pool Details</h1>
      <h3>[STAKE] $UNDEAD into Echo pool<br/>
      0x0BA882a9E2695fCcAD7F52803CB6AE685a71AE44
      <input type="image" id="clipboard"
@@ -19,28 +19,27 @@
 
    <table border='1' width='85%'>
     <tr>
-     <td colspan='2'>
-      <canvas id="radarChart" width="800" height="400"></canvas>
+     <th colspan='2'>ETH+UNDEAD γ-Apportionment<br/>
+      <canvas id="barChart" width="800" height="400"></canvas>
      </td>
     </tr>
     <tr>
-     <td colspan='2'>
-      <canvas id="barChart" width="800" height="400"></canvas>
+     <th colspan='2'>Pivot Arbitrage Efficacy<br/>
+      <canvas id="lineChart" width="800" height="400"></canvas>
      </td>
     </tr>
     <tr><td colspan='2'><hr/></td></tr>
     <tr>
-     <td>See <a href="diy.html?t1=ETH&t2=UNDEAD">Echo Pool screens</a></td>
-     <td>See <a href='echo2.html'>Echo Pool Details</a></td>
+     <td colspan='2'>See <a href="diy.html?t1=ETH&t2=UNDEAD">Echo Pool screens</a></td>
     </tr>
    </table>
 </center>
 
   <p style="vertical-align:bottom">
    <a href='#'
-      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#2-the-echo-pools";'>
+      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#4-asset-apportionment--measuring-performance-of-pivot-arbitrage";'>
 Learn more <img src='imgs/leave-site.png' width='16'/></a>
-   about the Echo pool.
+   about γ-apportionment in pivot pools.
   </p>
 
     <script src="libs/indicators.js"></script>
@@ -51,12 +50,11 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
     <script src='libs/usd.js'></script>
     <script src='libs/colors.js'></script>
     <script src="libs/charts/bar.js"></script>
-    <script src="libs/charts/radar.js"></script>
+    <script src="libs/charts/line.js"></script>
+    <script src="libs/charts/pool.js"></script>
     <script>
-        fetch('data/wallets.tsv').then(response => response.text())
-             .then(data => radarChart(data, 'echo', 1));
         fetch('data/pools/echo.tsv').then(response => response.text())
-             .then(data => barChart(data));
+             .then(data => poolCharts(data));
     </script>
 </body>
 </html>
