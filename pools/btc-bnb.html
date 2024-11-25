@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BTC/ETH Ratio Chart</title>
+    <title>BTC+BNB Pivot Pool</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="../styles.css"></link>
 </head>
 <body>
     <center>
-    <h1>BTC/BNB Ratio with SMA-100 and EMA-20</h1>
+     <h1>BTC+BNB Pivot Pool</h1>
      <h3>[STAKE] $UNDEAD into BTC+BNB pivot pool<br/>
      0x557bEf910E0F90aA88E03e0247FDE93B88d01953
      <input type="image" id="clipboard"
@@ -17,31 +17,41 @@
             src="../imgs/clipboard.png" height="32" width="32"/>
      </h3>  
 
-   <table border='1'>
+ <table border='1' width='85%'>
     <tr>
      <td colspan='2'>
-      <canvas id="poolChart" width="800" height="400"></canvas>
+      <canvas id="radarChart" width="800" height="400"></canvas>
      </td>
     </tr>
     <tr>
      <td colspan='2'>
-      <canvas id="deltaChart" width="800" height="400"></canvas>
+      <canvas id="barChart" width="800" height="400"></canvas>
      </td>
+    </tr> 
+    <tr><td colspan='2'><hr/></td></tr>
+    <tr>
+     <td>See <a href="../diy.html?t1=BTC&t2=BNB">BTC+BNB Pivot Pool screens</a></td>
+     <td>See <a href='../deets.html?t1=BTC&t2=BNB'>Pool Details</a></td>
     </tr>
-    <tr><td><a href="../pools.html">Back to Pools</a></td>
-        <td>BTC+BNB Pivot Pool Stats</td>
-    </tr>
-   </table>
+   </table> 
+</center>
+    
     <script src="../libs/indicators.js"></script>
     <script src="../libs/table.js"></script>
     <script src="../libs/pivots.js"></script>
     <script src="../libs/copy-addy.js"></script>
     <script src="../libs/canvas-bg.js"></script>
-    <script src="../libs/charts/pool.js"></script>
+    <script src='../libs/usd.js'></script>
+    <script src='../libs/colors.js'></script>
+    <script src="../libs/charts/bar.js"></script>
+    <script src="../libs/charts/radar.js"></script>
     <script>
-        fetch(pivotsUrl).then(response => response.text())
-                        .then(data => poolCharts('BTC', 'BNB', data));
+        fetch('../data/wallets.tsv').then(response => response.text())
+             .then(data => radarChart(data, 'BTC+BNB', 1));
+    //    fetch('data/pools/echo.tsv').then(response => response.text())
+    //       .then(data => barChart(data));
     </script>
+
 </body>
 </center>
 </html>

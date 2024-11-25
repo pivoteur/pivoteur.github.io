@@ -3,26 +3,28 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pivot Protocol Echo Pool Details</title>
+    <title>Pivot Protocol <span class='title'>Echo</span> Pool Details</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css"></link>
 </head>
 <body>
+
     <center>
-    <h1>Echo Pool Details</h1>
-     <h3>[STAKE] $UNDEAD into Echo pool<br/>
-     0x0BA882a9E2695fCcAD7F52803CB6AE685a71AE44
+    <h1><span class='title'>Echo</span> Pool Details</h1>
+     <h3>[STAKE] $UNDEAD into <span class='title'>Echo<span> pool<br/>
+     <span class='addy'>0x0BA882a9E2695fCcAD7F52803CB6AE685a71AE44</span>
      <input type="image" id="clipboard"
-            onClick="copyAddy('0x0BA882a9E2695fCcAD7F52803CB6AE685a71AE44')"
+            onClick="copyAddy1()"
             src="imgs/clipboard.png" height="32" width="32"/>
      </h3>  
 
    <table border='1' width='85%'>
     <tr>
-     <th colspan='2'>ETH+UNDEAD γ-Apportionment<br/>
-      <canvas id="barChart" width="800" height="400"></canvas>
-     </td>
+     <th colspan='2'>
+      <span class='pair'>ETH+UNDEAD</span> γ-Apportionment
+     </th>
     </tr>
+    <tr><td><canvas id="barChart" width="800" height="400"></canvas></td></tr>
     <tr>
      <th colspan='2'>Pivot Arbitrage Efficacy<br/>
       <canvas id="lineChart" width="800" height="400"></canvas>
@@ -30,7 +32,10 @@
     </tr>
     <tr><td colspan='2'><hr/></td></tr>
     <tr>
-     <td colspan='2'>See <a href="diy.html?t1=ETH&t2=UNDEAD">Echo Pool screens</a></td>
+     <td colspan='2'>
+      See 
+       <a href="diy.html?t1=ETH&t2=UNDEAD" id='screens'>
+        <span class='title'>Echo</span> Pool screens</a></td>
     </tr>
    </table>
 </center>
@@ -52,9 +57,28 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
     <script src="libs/charts/bar.js"></script>
     <script src="libs/charts/line.js"></script>
     <script src="libs/charts/pool.js"></script>
+   <script src='libs/utils.js'></script>
     <script>
-        fetch('data/pools/echo.tsv').then(response => response.text())
+let vars = params();
+
+let t = document.getElementsByClassName('title');
+Array.prototype.forEach.call(t, elt => elt.innerText = vars['title']);
+
+let p = document.getElementsByClassName('pair');
+Array.prototype.forEach.call(p, elt => elt.innerText = vars['p1'] + '+' + vars['p2']);
+
+document.getElementById('screens').href = 
+   "diy.html?t1=" + vars['p1'] + '&t2=' + vars['p2'];
+
+let a = document.getElementsByClassName('addy')
+Array.prototype.forEach.call(a, elt => elt.innerText = vars['addy']);
+
+        fetch('data/pools/' + vars['file'] + '.tsv')
+             .then(response => response.text())
              .then(data => poolCharts(data));
+
+const copyAddy1 = () => coppyAddy(vars['addy']);
     </script>
+
 </body>
 </html>

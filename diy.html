@@ -58,16 +58,8 @@ about pivot arbitrage.
     <script src="libs/canvas-bg.js"></script>
     <script src='libs/charts/line.js'></script>
     <script src="libs/charts/pivot.js"></script>
+    <script src='libs/utils.js'></script>
     <script>
-const params = () => {
-    var url = window.location.search.substring(1);
-    var query = url.split('&');
-    return query.map(pair => {
-       let [_a, b] = pair.split('=');
-       return b;
-    });
-};
-
 const removeOptions = selectElement => {
    var i, L = selectElement.options.length - 1;
    for(i = L; i >= 0; i--) {
@@ -97,7 +89,7 @@ const go = () => {
 };
 
 let prices = {};
-let [t1, t2] = params();
+let [t1, t2] = Object.values(params());
 
         fetch(pivotsUrl).then(response => response.text())
                         .then(data => {

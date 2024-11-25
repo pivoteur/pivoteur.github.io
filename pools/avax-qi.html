@@ -3,41 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BTC/ETH Ratio Chart</title>
+    <title>Pivot Protocol AVAX+QI Pivot Pool</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="../styles.css"></link>
+    <link rel="stylesheet" href="styles.css"></link>
 </head>
 <body>
     <center>
-    <h1>AVAX/QI Ratio with SMA-100 and EMA-20</h1>
-     <h3>[STAKE] $UNDEAD into AVAX+QI pivot pool<br/>
-     <em>pending...</em>
-     </h3>  
+    <h1>Pivot Protocol AVAX+QI Pivot Pool</h1>
+     <h3>[STAKE] $UNDEAD into AVAX+QI Pivot pool<br/>
+     <em>to be established...</em></h3>
 
-   <table border='1'>
+   <table border='1' width='85%'>
     <tr>
      <td colspan='2'>
-      <canvas id="poolChart" width="800" height="400"></canvas>
+      <canvas id="radarChart" width="800" height="400"></canvas>
      </td>
     </tr>
     <tr>
      <td colspan='2'>
-      <canvas id="deltaChart" width="800" height="400"></canvas>
+      <canvas id="barChart" width="800" height="400"></canvas>
      </td>
     </tr>
-    <tr><td><a href="../pools.html">Back to Pools</a></td>
-        <td>AVAX+QI Pivot Pool Stats</td>
+    <tr><td colspan='2'><hr/></td></tr>
+    <tr>
+     <td>See <a href="diy.html?t1=AVAX&t2=QI">AVAX+QI Pool screens</a></td>
+     <!-- <td>See <a href='echo2.html'>Echo Pool Details</a></td> -->
     </tr>
    </table>
-    <script src="../libs/indicators.js"></script>
-    <script src="../libs/table.js"></script>
-    <script src="../libs/pivots.js"></script>
-    <script src="../libs/canvas-bg.js"></script>
-    <script src="../libs/charts/pool.js"></script>
+</center>
+
+  <p style="vertical-align:bottom">
+   <a href='#'
+      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#2-the-echo-pools";'>
+Learn more <img src='imgs/leave-site.png' width='16'/></a>
+   about the Echo pool.
+  </p>
+
+    <script src="libs/indicators.js"></script>
+    <script src="libs/table.js"></script>
+    <script src="libs/pivots.js"></script>
+    <script src="libs/copy-addy.js"></script>
+    <script src="libs/canvas-bg.js"></script>
+    <script src='libs/usd.js'></script>
+    <script src='libs/colors.js'></script>
+    <script src="libs/charts/bar.js"></script>
+    <script src="libs/charts/radar.js"></script>
     <script>
-        fetch(pivotsUrl).then(response => response.text())
-                        .then(data => poolCharts('AVAX', 'QI', data));
+        fetch('data/wallets.tsv').then(response => response.text())
+             .then(data => radarChart(data, 'echo', 1));
+        fetch('data/pools/echo.tsv').then(response => response.text())
+             .then(data => barChart(data));
     </script>
 </body>
-</center>
 </html>
