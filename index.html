@@ -9,7 +9,13 @@
      frames.forEach(fram =>  {
         document.getElementById(i(fram)).style.display = 'none';
      });
-     document.getElementById(i(frame)).style.display = 'block';
+     let elframe = document.getElementById(i(frame));
+     elframe.frameBorder = "0";
+     elframe.allowTransparency="true";
+     elframe.height = "750";
+     elframe.width = "100%";
+     elframe.style.backgroundColor="transparent"
+     elframe.style.display = 'block';
   };
  </script>
  </head>
@@ -67,36 +73,26 @@
               name="iframe_pools"
               id="iframe_pools"
               title="Pools"
-              height="750"
-              width="100%"
               style="display:none"></iframe>
       <iframe src="portfolio.html"
               name="iframe_port"
               id="iframe_port"
               title="Pools"
-              height="750"
-              width="100%"
               style="display:none"></iframe>
       <iframe src="echo.html"
               name="iframe_echo"
               id="iframe_echo"
               title="Echo Pool"
-              height="750"
-              width="100%"
               style="display:none"></iframe>
       <iframe src="diy.html?t1=BTC&t2=ETH"
               name="iframe_diy"
               id="iframe_diy"
               title="Do It Yourself"
-              height="750"
-              width="100%"
               style="display:none"></iframe>
       <iframe src="treasury.html"
               name="iframe_treas"
               id="iframe_treas"
               title="Treasury"
-              height="750"
-              width="100%"
               style="display:none"></iframe>
      </td>
     </tr>
