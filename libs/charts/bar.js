@@ -32,12 +32,12 @@ const barChartTbl = (labels, parsedData) => {
     });
 
     let datasets = [];
-    const myColors = colors();
+    // const myColors = colors();
     const mkSet = asset => {
        return {
           label: asset,
           data: amounts[asset],
-          backgroundColor: randomColor(myColors)
+          backgroundColor: colorOf(asset)  // randomColor(myColors)
        };
     };
     for (let amount in amounts) { datasets.push(mkSet(amount)); };

@@ -1,4 +1,4 @@
-const pieChart = (wallets, idx, canvasName, labelRow, 
+const pieChart = (wallets, idx, canvasName, labelRow, randomizeColors = false,
                   position='right', chartType='pie') => {
    let tvls = row(wallets, idx, 'TVL').map(parseUSD);
    let dappsTvl = {};
@@ -16,15 +16,16 @@ const pieChart = (wallets, idx, canvasName, labelRow,
       labels.push(dapp);
       amounts.push(dappsTvl[dapp]);
    }
-   doughnutChartTbl(labels, amounts, canvasName, chartType, position);
+   doughnutChartTbl(labels, amounts, canvasName, 
+                    randomizeColors, chartType, position);
 };
 
-const doughnutChartTbl = (labels, amounts, canvasName, 
-                          chartType='doughnut', position='left') => { 
+const doughnutChartTbl = (labels, amounts, canvasName, randomizeColors = false,
+                          chartType='doughnut', position='left') => {
    const ctx = document.getElementById(canvasName).getContext('2d');
 
-   let myColors = colors();
-   let slices = labels.forEach(_l => randomColor(myColors));
+   let slices =
+      randomizeColors ? undefined : labels.map(token => colorOf(token));
 
    new Chart(ctx, {
       type: chartType,

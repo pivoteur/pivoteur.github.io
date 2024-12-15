@@ -5,7 +5,10 @@ const drawLineChart = (dates, lines, canvas='lineChart') => {
    new Chart(ctx, {
       type: 'line',
       data: { labels: dates, datasets: lines },
-      options: { plugins: { customCanvasBackgroundColor: { color: 'black' } } },
+      options: { 
+         plugins: { 
+            legend: { labels: { color: 'white' } },
+            customCanvasBackgroundColor: { color: 'black' } } },
       plugins: [plugin]
    });
 };

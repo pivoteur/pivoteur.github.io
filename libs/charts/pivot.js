@@ -57,7 +57,9 @@ const drawDeltas = (dates, ds, mins, maxs) => {
       },
       options: {
          responsive: true,
-         plugins: { customCanvasBackgroundColor: { color: 'black' } },
+         plugins: {
+            legend: { labels: { color: 'white' } },
+            customCanvasBackgroundColor: { color: 'black' } },
          scales: { y: { beginAtZero: false } }
       },
       plugins: [plugin]

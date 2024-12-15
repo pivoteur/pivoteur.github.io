@@ -53,7 +53,7 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
             .then(result => result.text())
             .then(data => {
    let [wallets, idx] = table(data);
-   pieChart(wallets, idx, 'dappsChart', 'dapp');
+   pieChart(wallets, idx, 'dappsChart', 'dapp', true);
    let labels = [];
    let amounts = [];
    for (label in idx) {
