@@ -50,6 +50,7 @@ const radarChart = (data, kind, offset=0) => {
         options: { 
          elements: { line: { borderWidth: 3 } },
          plugins: {
+           legend: { labels: { color: 'white' } },
            customCanvasBackgroundColor: { color: 'black' }
          },
          scales: { r: { angleLines: { display: true },

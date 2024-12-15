@@ -16,9 +16,9 @@ const pivotChartsTbl = (primary, secondary, table, idx) => {
    let [ds, mins, maxs] = deltas(ratio0, ema20s0, 100);
 
    let title = primary + '/' + secondary;
-   const ratios1 = line(title, ratio0.slice(-100), 'blue');
-   const sma100s = line('SMA-100', smas(ratio0, 100).slice(-100), 'green');
-   const ema20s = line('EMA-20', ema20s0.slice(-100), 'red');
+   const ratios1 = line(title, ratio0.slice(-100), 'dodgerblue');
+   const sma100s = line('SMA-100', smas(ratio0, 100).slice(-100), 'lime');
+   const ema20s = line('EMA-20', ema20s0.slice(-100), 'tomato');
 
    drawDeltas(dates, ds, mins, maxs);
    drawLineChart(dates, [ratios1, sma100s, ema20s], 'pivotChart');

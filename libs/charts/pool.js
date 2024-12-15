@@ -13,8 +13,8 @@ const drawPivotEfficacy = (pool, idx) => {
    let dates = row(pool, idx, 'date');
    let totals = labels.map(label => row(pool, idx, label).map(parseUSD));
 
-   drawLineChart(dates, [line(labels[0], totals[0], 'blue'),
-                         line(labels[1], totals[1], 'red')]);
+   drawLineChart(dates, [line(labels[0], totals[0], 'dodgerblue'),
+                         line(labels[1], totals[1], 'orange')]);
 };
 
 const drawPoolApportionment = (pool, idx) => {
