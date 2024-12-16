@@ -55,11 +55,5 @@ const crypto = new Map([
    ["UNI",  "rgb(255, 0, 122)"]
 ]);
 
-const baseName = token => token.replace(/γ/,'').replace(/\s\$'/,'');
-const colorOf = key => {
-   let color = crypto.get(key)
-             || crypto.get(key.slice(0, -2))
-             || crypto.get(key.slice(1))
-             || "rgb(255, 255, 255)";
-   return color;
-};
+const baseName = token => token.replace(/[γ\s\$]/g,'');
+const colorOf = token => crypto.get(baseName(token)) || "rgb(255, 255, 255)";
