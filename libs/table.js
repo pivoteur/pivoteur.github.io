@@ -1,7 +1,8 @@
 const id = x => x;
 
 const table = (data, separator='\t', offset=0, f=id) => {
-   const lines = data.trim().split('\n');
+   const lines = data.split('\n').map(s => s.trim());
+
    const labels0 = [];
 
    const indices = {};
