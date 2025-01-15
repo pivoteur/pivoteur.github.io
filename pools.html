@@ -55,6 +55,29 @@ about the Pivot pools.<br/>
 Learn more <img src='imgs/leave-site.png' width='16'/></a>
 about amplified staking.
   </p>
+    <script src="libs/table.js"></script>
+    <script>
+       fetch('data/wallets.tsv')
+            .then(result => result.text())
+            .then(data => {
+          let [wallets, idx] = table(data);
+          let ix = idx['security'];
+          console.log('idx of securities is ' + ix);
+          let poolRows = wallets.filter(row => row[ix] === 'TRUE');
+          let pools = new Set();
+          let nonPools = new Set();
+          poolRows.forEach(row => {
+             let pool = row[idx['pool']];
+             if(pool === 'n/a') {
+                nonPools.add(row[idx['dapp']]);
+             } else { pools.add(pool); }
+          });
+          console.log('Pivot pools are ');
+          pools.forEach(pool => console.log(pool));
+          console.log('Non-pool stakes are');
+          nonPools.forEach(pool => console.log(pool));
+       });
+    </script>
 
 </body>
 </html>
