@@ -54,7 +54,7 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
     <script src="libs/charts/radar.js"></script>
     <script>
         fetch('data/wallets.tsv').then(response => response.text())
-             .then(data => radarChart(data, 'echo', 1));
+             .then(data => radarChart(data, 'echo'));
         fetch('data/pools/echo.tsv').then(response => response.text())
              .then(data => barChart(data));
     </script>
