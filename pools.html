@@ -5,16 +5,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol Pools</title>
     <link rel="stylesheet" href="styles.css"></link>
-</head>
-<body>
-   <h1>Pivot Pool Management</h1>
-   <h2>Pivot Pools</h2>
 
 <script src="libs/table.js"></script>
 <script>
-
-const pools = [];
-const nonPools = [];
 
 const poolRow = (pool, row, idx, hrefIx) => {
    return {
@@ -27,18 +20,26 @@ const poolRow = (pool, row, idx, hrefIx) => {
    };
 };
 
+async function getPools() {
+
+const pools = [];
+const nonPools = [];
+
 fetch('data/wallets.tsv').then(result => result.text()).then(data => {
    let [wallets, idx] = table(data);
    let hrefIx = idx['href'];
    let poolRows = wallets.filter(row => row[hrefIx] !== 'n/a');
    poolRows.forEach(row => {
+      console.log("I am looking at row " + row);
       let pool = row[idx['pool']];
       if(pool === 'n/a') {
          nonPools.push(poolRow(row[idx['dapp']], row, idx, hrefIx));
       } else { pools.push(poolRow(pool, row, idx, hrefIx)); }
    });
-   console.log('pools is ' + pools);
-});
+}).wait;
+console.log("pools are " + pools);
+return pools;
+}
 
 const datum = (row, ix, txt) => {
    let cell = row.insertCell(ix);
@@ -59,17 +60,16 @@ const pivotTR = (tableId, rowIx, row) => {
 };
 
 </script>
+</head>
+
+<body>
+   <h1>Pivot Pool Management</h1>
+   <h2>Pivot Pools</h2>
 
   <table border="1" width="100%" id="poolTable">
    <tr>
     <th>Pool Name</th><th>incept</th><th>TVL</th><th>ROI</th><th>APR</th>
    </tr>
-
-<script>
-   let rowIx = 1;
-   console.log(pools);
-   pools.forEach(row => pivotTR("poolTable", rowIx++, row));
-</script>
 
 <!--
    <tr>
@@ -117,5 +117,12 @@ about the Pivot pools.<br/>
 Learn more <img src='imgs/leave-site.png' width='16'/></a>
 about amplified staking.
   </p>
-</body>
+
+<script>
+   let rowIx = 1;
+   getPools().then(pools => {
+      console.log("pools are " + pools);
+   pools.forEach(row => pivotTR("poolTable", rowIx++, row)) });
+</script>
+
 </html>
