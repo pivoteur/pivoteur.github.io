@@ -9,11 +9,69 @@
 <body>
    <h1>Pivot Pool Management</h1>
    <h2>Pivot Pools</h2>
-  <table border="1" width="100%">
+
+<script src="libs/table.js"></script>
+<script>
+
+const pools = [];
+const nonPools = [];
+
+const poolRow = (pool, row, idx, hrefIx) => {
+   return {
+      pool: pool,
+      href: row[hrefIx],
+      incept: row[idx['incept']],
+      roi: row[idx['ROI']],
+      apr: row[idx['APR']],
+      tvl: row[idx['TVL']]
+   };
+};
+
+fetch('data/wallets.tsv').then(result => result.text()).then(data => {
+   let [wallets, idx] = table(data);
+   let hrefIx = idx['href'];
+   let poolRows = wallets.filter(row => row[hrefIx] !== 'n/a');
+   poolRows.forEach(row => {
+      let pool = row[idx['pool']];
+      if(pool === 'n/a') {
+         nonPools.push(poolRow(row[idx['dapp']], row, idx, hrefIx));
+      } else { pools.push(poolRow(pool, row, idx, hrefIx)); }
+   });
+   console.log('pools is ' + pools);
+});
+
+const datum = (row, ix, txt) => {
+   let cell = row.insertCell(ix);
+   cell.innerHTML = txt;
+};
+
+const pivotTR = (tableId, rowIx, row) => {
+  // ooh! DOM-manipulation henceforth!
+  let table = document.getElementById(tableId);
+  let tr = table.insertRow(rowIx); // remember: we already have a header row
+  let { pool, href, incept, roi, apr, tvl } = info;
+  let cellPool = row.insertCell(0);
+  datum(tr, 0, "<a href='" + href + "'>" + pool + "</a>");
+  datum(tr, 1, incept);
+  datum(tr, 2, tvl);
+  datum(tr, 3, roi);
+  datum(tr, 4, apr);
+};
+
+</script>
+
+  <table border="1" width="100%" id="poolTable">
    <tr>
-    <th>Pool Name</th><th>TVL</th><th>Pool Limit &amp; Size</th>
-    <th>My stake</th><th>My AMP</th><th>Status</th>
+    <th>Pool Name</th><th>incept</th><th>TVL</th><th>ROI</th><th>APR</th>
    </tr>
+
+<script>
+   let rowIx = 1;
+   console.log(pools);
+   pools.forEach(row => pivotTR("poolTable", rowIx++, row));
+</script>
+
+<!--
    <tr>
     <td><a href='pools/btc-eth.html'>BTC+ETH</a></td>
     <td>204,326</td><td>1,000,000 / 20.4%</td><td>204,326</td><td>38,919</td>
@@ -35,6 +93,10 @@
     <td>active<td>
    </tr>
 
+-->
+  </table>
+
+  <table border="1" width="100%" id="stakeTable">
    <tr><td colspan='6'><hr/></td></tr>
    <tr><th colspan='6'>Non-pool stakes</th></tr>
    <tr><td><a href='echo.html'>Echo Pool</a></td><td>328,506</td>
@@ -55,29 +117,5 @@ about the Pivot pools.<br/>
 Learn more <img src='imgs/leave-site.png' width='16'/></a>
 about amplified staking.
   </p>
-    <script src="libs/table.js"></script>
-    <script>
-       fetch('data/wallets.tsv')
-            .then(result => result.text())
-            .then(data => {
-          let [wallets, idx] = table(data);
-          let ix = idx['security'];
-          console.log('idx of securities is ' + ix);
-          let poolRows = wallets.filter(row => row[ix] === 'TRUE');
-          let pools = new Set();
-          let nonPools = new Set();
-          poolRows.forEach(row => {
-             let pool = row[idx['pool']];
-             if(pool === 'n/a') {
-                nonPools.add(row[idx['dapp']]);
-             } else { pools.add(pool); }
-          });
-          console.log('Pivot pools are ');
-          pools.forEach(pool => console.log(pool));
-          console.log('Non-pool stakes are');
-          nonPools.forEach(pool => console.log(pool));
-       });
-    </script>
-
 </body>
 </html>
