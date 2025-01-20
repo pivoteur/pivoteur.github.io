@@ -5,61 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol Pools</title>
     <link rel="stylesheet" href="styles.css"></link>
-
-<script src="libs/table.js"></script>
-<script>
-
-const poolRow = (pool, row, idx, hrefIx) => {
-   return {
-      pool: pool,
-      href: row[hrefIx],
-      incept: row[idx['incept']],
-      roi: row[idx['ROI']],
-      apr: row[idx['APR']],
-      tvl: row[idx['TVL']]
-   };
-};
-
-async function getPools() {
-
-const pools = [];
-const nonPools = [];
-
-fetch('data/wallets.tsv').then(result => result.text()).then(data => {
-   let [wallets, idx] = table(data);
-   let hrefIx = idx['href'];
-   let poolRows = wallets.filter(row => row[hrefIx] !== 'n/a');
-   poolRows.forEach(row => {
-      console.log("I am looking at row " + row);
-      let pool = row[idx['pool']];
-      if(pool === 'n/a') {
-         nonPools.push(poolRow(row[idx['dapp']], row, idx, hrefIx));
-      } else { pools.push(poolRow(pool, row, idx, hrefIx)); }
-   });
-}).wait;
-console.log("pools are " + pools);
-return pools;
-}
-
-const datum = (row, ix, txt) => {
-   let cell = row.insertCell(ix);
-   cell.innerHTML = txt;
-};
-
-const pivotTR = (tableId, rowIx, row) => {
-  // ooh! DOM-manipulation henceforth!
-  let table = document.getElementById(tableId);
-  let tr = table.insertRow(rowIx); // remember: we already have a header row
-  let { pool, href, incept, roi, apr, tvl } = info;
-  let cellPool = row.insertCell(0);
-  datum(tr, 0, "<a href='" + href + "'>" + pool + "</a>");
-  datum(tr, 1, incept);
-  datum(tr, 2, tvl);
-  datum(tr, 3, roi);
-  datum(tr, 4, apr);
-};
-
-</script>
 </head>
 
 <body>
@@ -118,11 +63,54 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
 about amplified staking.
   </p>
 
+<script src="libs/table.js"></script>
 <script>
-   let rowIx = 1;
-   getPools().then(pools => {
-      console.log("pools are " + pools);
-   pools.forEach(row => pivotTR("poolTable", rowIx++, row)) });
-</script>
 
+const poolRow = (pool, row, idx, hrefIx) => {
+   return {
+      pool: pool,
+      href: row[hrefIx],
+      incept: row[idx['incept']],
+      roi: row[idx['ROI']],
+      apr: row[idx['APR']],
+      tvl: row[idx['TVL']]
+   };
+};
+
+const pools = [];
+const nonPools = [];
+
+const datum = (row, ix, txt) => {
+   let cell = row.insertCell(ix);
+   cell.innerHTML = txt;
+};
+
+const pivotTR = (tableId, rowIx, row) => {
+  // ooh! DOM-manipulation henceforth!
+  let table = document.getElementById(tableId);
+  let tr = table.insertRow(rowIx); // remember: we already have a header row
+  let { pool, href, incept, roi, apr, tvl } = row;
+  datum(tr, 0, "<a href='" + href + "'>" + pool + "</a>");
+  datum(tr, 1, incept);
+  datum(tr, 2, tvl);
+  datum(tr, 3, roi);
+  datum(tr, 4, apr);
+};
+
+fetch('data/wallets.tsv').then(result => result.text()).then(data => {
+   let [wallets, idx] = table(data);
+   let hrefIx = idx['href'];
+   let poolRows = wallets.filter(row => row[hrefIx] !== 'n/a');
+   poolRows.forEach(row => {
+      console.log("I am looking at row " + row);
+      let pool = row[idx['pool']];
+      if(pool === 'n/a') {
+         nonPools.push(poolRow(row[idx['dapp']], row, idx, hrefIx));
+      } else { pools.push(poolRow(pool, row, idx, hrefIx)); }
+   });
+   let rowIx = 1;
+   pools.forEach(row => pivotTR("poolTable", rowIx++, row));
+});
+</script>
+</body>
 </html>
