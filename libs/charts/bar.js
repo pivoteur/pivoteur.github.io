@@ -1,7 +1,13 @@
 const barChart = data => {
-    let [assets, idx] = sortedTable(data);
-    const labels = usdLabels(idx);
-    barChartTbl(labels, parseData(assets, labels));
+   let [assets, idx] = sortedTable(data);
+   const labels = usdLabels(idx);
+   barChartTbl(labels, parseData(assets, labels));
+};
+
+const tvlChart = data => {
+   let [assets, idx] = sortedTable(data);
+   let labels = orderedIndices(idx).slice(1);
+   barChartTbl(labels, parseData(assets, labels));
 };
 
 const parseData = (assets, labels) => {

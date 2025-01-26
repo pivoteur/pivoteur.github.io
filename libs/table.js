@@ -23,6 +23,16 @@ const table = (data, separator='\t', offset=0, f=id) => {
    return [table, indices];
 };
 
+const orderedIndices = idx => {
+   let labels = [];
+   for (let k in idx) {
+      labels.push([idx[k], k]);
+   }
+   labels.sort();
+   let orderedLabels = labels.map(([v, k]) => [k, v]);
+   return orderedLabels;
+};
+
 const row = (table, idx, key) => table.map(r => r[idx[key]]);
 
 const sampleRow = table => {
