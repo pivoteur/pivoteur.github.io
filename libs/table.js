@@ -25,8 +25,8 @@ const table = (data, separator='\t', offset=0, f=id) => {
 
 const orderedIndices = idx => {
    let labels = [];
-   for (let k in idx) {
-      labels.push([idx[k], k]);
+   for (let [k, v] of Object.entries(idx)) {
+      labels.push([v, k]);
    }
    labels.sort();
    let orderedLabels = labels.map(([v, k]) => [k, v]);
