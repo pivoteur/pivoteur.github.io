@@ -1,16 +1,17 @@
 const barChart = data => {
    let [assets, idx] = sortedTable(data);
    const labels = usdLabels(idx);
-   barChartTbl(labels, parseData(assets, labels));
+   barChartTbl(labels, assets);
 };
 
 const tvlChart = data => {
    let [assets, idx] = sortedTable(data);
    let labels = orderedIndices(idx).slice(1);
-   barChartTbl(labels, parseData(assets, labels));
+   barChartTbl(labels, assets);
 };
 
-const barChartTbl = (labels, parsedData) => {
+const barChartTbl = (labels, assets) => {
+   let parsedData = parseData(assets, labels);
     let amounts = {};
     const dates = [];
     parsedData.forEach(row => {

@@ -22,6 +22,5 @@ const drawPoolApportionment = (pool, idx) => {
    for (let i in idx) {
       if (i.startsWith('γ')) { labels.push([i, idx[i]]); }
    }
-   let parsedData = parseData(pool, labels);
-   barChartTbl(labels, parsedData);
+   barChartTbl(labels, pool);
 };

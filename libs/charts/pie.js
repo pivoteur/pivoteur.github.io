@@ -25,7 +25,7 @@ const doughnutChartTbl = (labels, amounts, canvasName, randomizeColors = false,
    const ctx = document.getElementById(canvasName).getContext('2d');
 
    let slices =
-      randomizeColors ? undefined : labels.map(token => colorOf(token));
+      randomizeColors ? undefined : labels.map(colorOf);
 
    new Chart(ctx, {
       type: chartType,
