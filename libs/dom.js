@@ -4,7 +4,13 @@ const params = () => {
     let ans = {};
     query.forEach(pair => {
        let [a, b] = pair.split('=');
-       ans[a] = b;
+       ans[a] = decodeURIComponent(b);
     });
     return ans;
 };
+
+const replaceText = (clzz, str) => {
+   let elt = document.getElementsByClassName(clzz);
+   t.forEach(elt => { elt.innerText = str; });
+};
+
