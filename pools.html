@@ -64,10 +64,13 @@ about amplified staking.
 
 <script>
 
-const poolRow = (pool, row, idx, hrefIx) => {
+const mkUrl = (row, idx) =>
+   "pool.html?p1=" + row[idx['p1']] + "&p2=" + row[idx['p2']];
+
+const poolRow = (pool, row, idx, hrefIx, nonpool=false) => {
    return {
       pool: pool,
-      href: row[hrefIx],
+      href: nonpool? row[hrefIx] : mkUrl(row, idx),
       incept: row[idx['incept']],
       roi: row[idx['ROI']],
       apr: row[idx['APR']],
@@ -102,7 +105,7 @@ fetch('data/wallets.tsv').then(result => result.text()).then(data => {
    poolRows.forEach(row => {
       let pool = row[idx['pool']];
       if(pool === 'n/a') {
-         nonPools.push(poolRow(row[idx['dapp']], row, idx, hrefIx));
+         nonPools.push(poolRow(row[idx['dapp']], row, idx, hrefIx, true));
       } else { pools.push(poolRow(pool, row, idx, hrefIx)); }
    });
    let rowIx = 3;

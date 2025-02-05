@@ -3,48 +3,46 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pivot Protocol <span class='title'>Echo</span> Pool Details</title>
+    <title>Pivot Protocol <span class='title'>BTC+BNB Pivot</span> Pool</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <link rel="stylesheet" href="styles.css"></link>
 </head>
 <body>
-
     <center>
-    <h1><span class='title'>Echo</span> Pool Details</h1>
-     <h3>[STAKE] $UNDEAD into <span class='title'>Echo</span> pool<br/>
-     <span id='z' class='addy'>0x0BA882a9E2695fCcAD7F52803CB6AE685a71AE44</span>
-     <input type="image" id="clipboard"
-            onClick="copyAddy1()"
+    <h1>Pivot Protocol <span class='title'>BTC+BNB Pivot</span> Pool</h1>
+     <h3>[STAKE] $UNDEAD into <span class='title'>BTC+BNB Pivot</span> pool<br/>
+     <span class='addy'>0x557bEf910E0F90aA88E03e0247FDE93B88d01953</span>
+     <input type="image" id="clipboard" onClick="copyAddy1()"
             src="imgs/clipboard.png" height="32" width="32"/>
-     </h3>
+     </h3>  
 
    <table border='1' width='85%'>
     <tr>
-     <th colspan='2'>
-      <span class='pair'>ETH+UNDEAD</span> γ-Apportionment
-     </th>
+     <td colspan='2'>
+      <canvas id="radarChart" width="800" height="400"></canvas>
+     </td>
     </tr>
-    <tr><td><canvas id="barChart" width="800" height="400"></canvas></td></tr>
     <tr>
-     <th colspan='2'>Pivot Arbitrage Efficacy<br/>
-      <canvas id="lineChart" width="800" height="400"></canvas>
+     <td colspan='2'>
+      <canvas id="barChart" width="800" height="400"></canvas>
      </td>
     </tr>
     <tr><td colspan='2'><hr/></td></tr>
     <tr>
-     <td colspan='2'>
-      See 
-       <a href="diy.html?t1=ETH&t2=UNDEAD" id='screens'>
-        <span class='title'>Echo</span> Pool screens</a></td>
+     <td>See 
+       <a href="detail.html?p1=ETH&p2=UNDEAD" id='detail'>
+        <span class='title'>Echo</span> Pool details</a></td>
+     <td>See <a href="diy.html?t1=BTC&t2=BNB" id='screens'>
+        <span class='title'>BTC+BNB</span> Pool screens</a></td>
     </tr>
    </table>
 </center>
 
   <p style="vertical-align:bottom">
    <a href='#'
-      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#4-asset-apportionment--measuring-performance-of-pivot-arbitrage";'>
+      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#1-the-pivot-pools";'>
 Learn more <img src='imgs/leave-site.png' width='16'/></a>
-   about γ-apportionment in pivot pools.
+   about the pivot pools.
   </p>
 
     <script src="libs/indicators.js"></script>
@@ -56,10 +54,10 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
     <script src='libs/colors.js'></script>
     <script src='libs/tokens.js'></script>
     <script src="libs/charts/bar.js"></script>
-    <script src="libs/charts/line.js"></script>
+    <script src="libs/charts/radar.js"></script>
     <script src="libs/charts/pool.js"></script>
     <script src='libs/dom.js'></script>
-    <script>replaceText(poolCharts, false);</script>
+    <script>replaceText(barChart, true);</script>
 
 </body>
 </html>

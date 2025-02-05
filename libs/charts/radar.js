@@ -1,6 +1,9 @@
 const radarChart = (data, kind, offset=0) => {
     let [wallets, idx] = table(data);
+    radarChartTbl(wallets, idx, kind, offset);
+}
 
+const radarChartTbl = (wallets, idx, kind, offset=0) => {
     let dapp = wallets.filter(row => row[1 + offset] === kind);
 
     let labels = [];
