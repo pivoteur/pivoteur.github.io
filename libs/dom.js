@@ -54,3 +54,62 @@ const copyAddy1 = () => {
    let addy = document.getElementById("z").innerText;
    copyAddy(addy);
 };
+
+// ----- Pool-indexing --------------------------------------------------
+
+const mkUrl = (row, idx) =>
+   "pool.html?p1=" + row[idx['p1']] + "&p2=" + row[idx['p2']];
+
+const poolRow = (pool, row, idx, hrefIx, nonpool=false) => {
+   return {
+      pool: pool,
+      href: nonpool? row[hrefIx] : mkUrl(row, idx),
+      incept: row[idx['incept']],
+      roi: row[idx['ROI']],
+      apr: row[idx['APR']],
+      tvl: row[idx['TVL']]
+   };
+};
+
+const datum = (row, ix, txt) => {
+   let cell = row.insertCell(ix);
+   cell.innerHTML = txt;
+};
+
+const pivotTR = (tableId, rowIx, row) => {
+  // ooh! DOM-manipulation henceforth!
+  let table = document.getElementById(tableId);
+  let tr = table.insertRow(rowIx); // remember: we already have a header row
+  let { pool, href, incept, roi, apr, tvl } = row;
+  datum(tr, 0, "<a href='" + href + "'>" + pool + "</a>");
+  datum(tr, 1, incept);
+  datum(tr, 2, tvl);
+  datum(tr, 3, roi);
+  datum(tr, 4, apr);
+};
+
+async function indexPools() {
+   fetch('data/wallets.tsv').then(result => result.text()).then(data => {
+      const pools = [];
+      const nonPools = [];
+
+      let [wallets, idx] = table(data);
+      let hrefIx = idx['href'];
+      let poolRows = wallets.filter(row => row[hrefIx] !== 'n/a');
+      poolRows.forEach(row => {
+         let pool = row[idx['pool']];
+         if(pool === 'n/a') {
+            nonPools.push(poolRow(row[idx['dapp']], row, idx, hrefIx, true));
+         } else { pools.push(poolRow(pool, row, idx, hrefIx)); }
+      });
+      let rowIx = 3;
+      pools.forEach(row => pivotTR("poolTable", rowIx++, row));
+      let stakeIx = rowIx + 2; // to hop over the horizontal rule
+      nonPools.forEach(row => pivotTR("poolTable", stakeIx++, row));
+
+      let dappIx = idx['dapp'];
+      let pivots = wallets.filter(row => row[dappIx] === 'pools'
+                               || row[dappIx] === 'echo');
+      vennTbl(pivots, idx, 'vennChart');
+   });
+}
