@@ -9,7 +9,7 @@
 </head>
 <body>
   <center>
-   <h1>Pivot Protocol Dashboard</h1>
+   <h1>Pivot Protocol Dashboard, TVL: <span class='tvl'>$0.00</span></h1>
    <h2>[Donate] assets for $UNDEAD<br/>
        0x70D0dF26F6A61fC33ef28EB490b9A645bCb3753A
        <input type="image" id="clipboard"
@@ -47,6 +47,8 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
     <script src='libs/tokens.js'></script>
     <script src="libs/charts/bar.js"></script>
     <script src='libs/charts/pie.js'></script>
+    <script src='libs/indicators.js'></script>
+    <script src='libs/dom.js'></script>
     <script>
        fetch('data/assets.tsv')
             .then(result => result.text())
@@ -65,6 +67,8 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
       }
    }
    doughnutChartTbl(labels, amounts, 'tokensChart');
+   let tot = sum(amounts);
+   replaceText('tvl', showUsd(tot));
 });
     </script>
 </body>

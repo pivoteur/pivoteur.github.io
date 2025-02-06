@@ -11,18 +11,20 @@ const params = () => {
 
 const poolName = (vars, sep) => vars['p1'] + sep + vars['p2'];
 
-async function replaceText(graphf, radarp) {
+const replaceText = (eltClass, txt) => {
+   let elts = document.getElementsByClassName(eltClass);
+   Array.prototype.forEach.call(elts, elt => elt.textContent = txt);
+};
+
+async function populatePivotPoolUX(graphf, radarp) {
    let vars = params();
 
    let pp = poolName(vars, '+');
    if(!vars['title']) { vars['title'] = pp + ' Pivot'; }
    if(!vars['file']) { vars['file'] = poolName(vars, '-').toLowerCase(); }
 
-   let t = document.getElementsByClassName('title');
-   Array.prototype.forEach.call(t, elt => elt.textContent = vars['title']);
-
-   let p = document.getElementsByClassName('pair');
-   Array.prototype.forEach.call(p, elt => elt.textContent = pp);
+   replaceText('title', vars['title']);
+   replaceText('pair', pp);
 
    document.getElementById('screens').href =
       "diy.html?t1=" + poolName(vars, '&t2=');
@@ -44,9 +46,7 @@ async function replaceText(graphf, radarp) {
             let addy = invRows[0][idx['addy']];
             vars['addy'] = addy;
          }
-
-         let a = document.getElementsByClassName('addy')
-         Array.prototype.forEach.call(a, elt => elt.textContent = vars['addy']);
+         replaceText('addy', vars['addy']);
    });
 }
 
@@ -92,16 +92,21 @@ async function indexPools() {
    fetch('data/wallets.tsv').then(result => result.text()).then(data => {
       const pools = [];
       const nonPools = [];
+      let tot = 0;
 
       let [wallets, idx] = table(data);
       let hrefIx = idx['href'];
       let poolRows = wallets.filter(row => row[hrefIx] !== 'n/a');
       poolRows.forEach(row => {
          let pool = row[idx['pool']];
+         tot += parseUSD(row[idx['TVL']]);
          if(pool === 'n/a') {
             nonPools.push(poolRow(row[idx['dapp']], row, idx, hrefIx, true));
          } else { pools.push(poolRow(pool, row, idx, hrefIx)); }
       });
+
+      replaceText('tvl', showUsd(tot));
+
       let rowIx = 3;
       pools.forEach(row => pivotTR("poolTable", rowIx++, row));
       let stakeIx = rowIx + 2; // to hop over the horizontal rule
