@@ -58,17 +58,7 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
             .then(data => {
    let [wallets, idx] = table(data);
    pieChart(wallets, idx, 'dappsChart', 'dapp', true);
-   let labels = [];
-   let amounts = [];
-   for (label in idx) {
-      if(label.endsWith('$')) {
-         labels.push(label.slice(0,-2));
-         amounts.push(total(row(wallets, idx, label)));
-      }
-   }
-   doughnutChartTbl(labels, amounts, 'tokensChart');
-   let tot = sum(amounts);
-   replaceText('tvl', showUsd(tot));
+   replaceText('tvl', tokenChart(wallets, idx, 'tokensChart'));
 });
     </script>
 </body>

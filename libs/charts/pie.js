@@ -20,6 +20,18 @@ const pieChart = (wallets, idx, canvasName, labelRow, randomizeColors = false,
                     randomizeColors, chartType, position);
 };
 
+const tokenChart = (wallets, idx, canvasName, randomizedColors = false,
+                    position = 'left', chartType='doughnut') => {
+   let amounts = [];
+   let labels = usdLabels(idx).map(([lab, ix]) => {
+      amounts.push(total(wallets.map(row => row[ix])));
+      return lab;
+   });
+   doughnutChartTbl(labels, amounts, canvasName, randomizedColors,
+                    chartType, position);
+   return showUsd(sum(amounts));
+};
+
 const doughnutChartTbl = (labels, amounts, canvasName, randomizeColors = false,
                           chartType='doughnut', position='left') => {
    const ctx = document.getElementById(canvasName).getContext('2d');
