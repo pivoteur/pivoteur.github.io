@@ -49,6 +49,10 @@ async function populatePivotPoolUX(graphf, radarp) {
             vars['addy'] = addy;
          }
          replaceText('addy', vars['addy']);
+
+         let tot = total(wallets.filter(row => row[idx['pool']] === pp)
+                                .map(row => row[idx['TVL']]));
+         replaceText('tvl', showUsd(tot));
    });
 }
 
