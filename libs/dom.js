@@ -13,7 +13,9 @@ const poolName = (vars, sep) => vars['p1'] + sep + vars['p2'];
 
 const replaceText = (eltClass, txt) => {
    let elts = document.getElementsByClassName(eltClass);
-   Array.prototype.forEach.call(elts, elt => elt.textContent = txt);
+   if(elts) {
+      Array.prototype.forEach.call(elts, elt => elt.textContent = txt);
+   }
 };
 
 async function populatePivotPoolUX(graphf, radarp) {
