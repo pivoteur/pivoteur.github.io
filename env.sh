@@ -3,5 +3,9 @@ export PIVOT_DATA_DIR=$PIVOT_DIR/data
 export WALLETS=$PIVOT_DATA_DIR/wallets.tsv
 
 function update {
-   cd $PIVOT_DATA_DIR; rm $1; vi $1; git add $1; cd -
+   FILE=$1; DIR=data; TSV=$DIR/$FILE.tsv; rm $TSV; vi $TSV; git add $TSV
+}
+
+function pool {
+   FILE=$1; DIR=data/pools; TSV=$DIR/$FILE.tsv; rm $TSV; vi $TSV; git add $TSV
 }
