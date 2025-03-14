@@ -8,4 +8,4 @@ function update { update1 data/$1 }
 
 function pool { update1 data/pools/$1 }
 
-function gains { echo "actual ROI: $1 APR projected" | despace }
+function gains { echo "actual ROI: $1 / $2 APR projected" | despace }
