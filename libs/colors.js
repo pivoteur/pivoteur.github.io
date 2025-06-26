@@ -29,6 +29,18 @@ const randomColor = colors => {
    return color;
 };
 
+const randomCyan = () => {
+  let jrnd = () => 75 + Math.floor(Math.random() * 156);
+  // Generate random values for red, green, and blue (0-255)
+  let r = 0; // Blue/Green are the only components with a non-zero values
+  let g = jrnd();
+  let b = jrnd();
+
+  // Construct the RGB string
+  let color = "rgb(" + r + ", " + g + ", " + b + ")";
+  return color;
+};
+
 const crypto = new Map([
    ["AAVE", "rgb(165, 55, 140)"],
    ["ALGO", "rgb(0, 0, 0)"],
@@ -56,4 +68,8 @@ const crypto = new Map([
 ]);
 
 const baseName = token => token.replace(/[γ\s\$]/g,'');
-const colorOf = token => crypto.get(baseName(token)) || "rgb(255, 255, 255)";
+const colorOf = token => {
+   let ans = crypto.get(baseName(token)) || "rgb(255, 255, 255)";
+   if(token.startsWith("LP ")) { ans = randomCyan(); }
+   return ans;
+};
