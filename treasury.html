@@ -22,10 +22,6 @@
      <canvas id="radarChart" width="400" height="200"></canvas>
     </td>
    </tr>
-   <tr>
-    <td><h3>TVL</h3><br/>
-     <canvas id="barChart" width="400" height="200"></canvas></td>
-   </tr>
   </table>
   </center>
 
@@ -48,9 +44,6 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
        fetch('data/wallets.tsv')
             .then(result => result.text())
             .then(data => radarChart(data, 'treasury'));
-       fetch('data/treasury.tsv')
-            .then(result => result.text())
-            .then(data => barChart(data));
     </script>
 </body>
 </html>
