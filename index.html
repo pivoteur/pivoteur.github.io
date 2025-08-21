@@ -1,8 +1,9 @@
 <html>
  <head>
   <title>Pivot Protocol</title>
-  <link rel='stylesheet' href='styles.css?version=4'></link>
+  <link rel='stylesheet' href='styles.css?version=5'></link>
  <script>
+  const version=5;   // MAKE SURE THIS MATCHES THE VERSION VALUE (above)
   let frames = ['dash', 'pools', 'port', 'echo', 'diy', 'treas'];
   const switchFrame = frame => {
      const i = f => 'iframe_' + f;
@@ -59,6 +60,8 @@
        <tr><td><hr/></td></tr>
        <tr><td><a href="https://x.com/pivocateur">Contact us</a></td></tr>
        <tr><td><hr/></td></tr>
+       <tr><td><em>revision: <span class='version'>1.0</span><em></td></tr>
+       <tr><td><hr/></td></tr>
       </table>
      </td>
      <td width='80%'>
@@ -98,5 +101,10 @@
     </tr>
    </table>
   </center>
+    <script src='libs/dom.js'></script>
+    <script>
+     replaceText('version', version);
+    </script>
+
  </body>
 </html>
