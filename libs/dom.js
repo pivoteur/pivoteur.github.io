@@ -107,7 +107,7 @@ async function indexPools() {
          let pool = row[idx['pool']];
          tot += parseUSD(row[idx['TVL']]);
          if(pool === 'n/a') {
-            nonPools.push(poolRow(row[idx['dapp']], row, idx, hrefIx, true));
+            nonPools.push(poolRow(row[idx['name']], row, idx, hrefIx, true));
          } else { pools.push(poolRow(pool, row, idx, hrefIx)); }
       });
 

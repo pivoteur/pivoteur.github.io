@@ -1,10 +1,10 @@
 <html>
  <head>
   <title>Pivot Protocol</title>
-  <link rel='stylesheet' href='styles.css?version=5'></link>
+  <link rel='stylesheet' href='styles.css?version=6'></link>
  <script>
-  const version=5;   // MAKE SURE THIS MATCHES THE VERSION VALUE (above)
-  let frames = ['dash', 'pools', 'port', 'echo', 'diy', 'treas'];
+  const version=6;   // MAKE SURE THIS MATCHES THE VERSION VALUE (above)
+  let frames = ['dash', 'pools', 'port', 'diy', 'treas'];
   const switchFrame = frame => {
      const i = f => 'iframe_' + f;
      frames.forEach(fram =>  {
@@ -34,14 +34,8 @@
         <td><a href="#" onclick="switchFrame('pools')">Pools</a></td>
        </tr>
        <tr>
-        <td><a href="#" onclick="switchFrame('echo')">Echo Pool</a></td>
-       </tr>
-       <tr>
         <td><a href="#" onclick="switchFrame('treas')">Treasury</a></td>
        </tr>
-       <!-- tr>
-        <td><a href="#" onclick="switchFrame('port')">My Portfolio</a></td>
-       </tr -->
        <tr><td><hr/></td></tr>
        <tr>
         <td><a href="#" onclick="switchFrame('diy')">DIY Charts++</a></td>
@@ -80,12 +74,7 @@
       <iframe src="portfolio.html"
               name="iframe_port"
               id="iframe_port"
-              title="Pools"
-              style="display:none"></iframe>
-      <iframe src="echo.html"
-              name="iframe_echo"
-              id="iframe_echo"
-              title="Echo Pool"
+              title="My Portfolio"
               style="display:none"></iframe>
       <iframe src="diy.html?t1=BTC&t2=ETH"
               name="iframe_diy"
