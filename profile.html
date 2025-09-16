@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Portfolio</title>
+    <link rel="stylesheet" href="styles.css"></link>
+    <style>
+     div { background: rgba(15,15,15,0.7); }
+    </style>
+    <script src='https://d3js.org/d3.v4.min.js'></script>
+</head>
+
+<body>
+   <center><h1>Your Portfolio</h1></center>
+   <h2>Your Portfolio TVL <span class='tvl'>$0.00</span></h2>
+
+  <style>
+   .venntooltip {
+      position: absolute;
+      text-align: center;
+      width: 400px;
+      heigth: 200px;
+      background: #333;
+      color: #ddd;
+      padding: 2px;
+      border: 0px;
+      border-radius: 8px;
+      opacity: 0;
+   }
+  </style>
+  <table border="1" width="100%" id="poolTable">
+   <tr><td colspan='5'><div id='vennChart'></div></td></tr>
+   <tr><td colspan='5'><hr/></td></tr>
+   <tr>
+    <th>Pool Name</th><th>incept</th><th>TVL</th><th>ROI</th><th>APR</th>
+   </tr>
+
+   <!-- data for pools inserted here via javascript -->
+
+   <tr><td colspan='5'><hr/></td></tr>
+   <tr><th colspan='5'>Non-pool stakes</th></tr>
+
+   <!-- data for treasure and echo pool inserted here -->
+
+  </table>
+
+  <p style="vertical-align:bottom">
+   <a href='#'
+      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#1-the-pivot-pools";'>
+Learn more <img src='imgs/leave-site.png' width='16'/></a> 
+about the Pivot pools.<br/>
+   <a href='#'
+      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/articles/staking.md";'>
+Learn more <img src='imgs/leave-site.png' width='16'/></a>
+about amplified staking.
+  </p>
+
+    <script src="libs/table.js"></script>
+    <script src='libs/usd.js'></script>
+    <script src='libs/tokens.js'></script>
+    <script src='https://benfred.github.io/venn.js/venn.js'></script>
+    <script src='libs/charts/venn.js'></script>
+    <script src='libs/dom.js'></script>
+    <script>
+
+let [profile] = Object.values(params());
+
+async function digestMessage(message) {
+  const encoder = new TextEncoder();
+  const data = encoder.encode(message); 
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hexHash;
+}
+
+// Example usage:
+digestMessage(profile).then(hash => {
+  //  console.log(hash); 
+});
+
+  indexPools(profile, "profiles");
+</script>
+
+</body>
+</html>

@@ -1,10 +1,10 @@
 <html>
  <head>
   <title>Pivot Protocol</title>
-  <link rel='stylesheet' href='styles.css?version=6'></link>
+  <link rel='stylesheet' href='styles.css?version=7'></link>
  <script>
-  const version=6;   // MAKE SURE THIS MATCHES THE VERSION VALUE (above)
-  let frames = ['dash', 'pools', 'port', 'diy', 'treas'];
+  const version=7;   // MAKE SURE THIS MATCHES THE VERSION VALUE (above)
+  let frames = ['dash', 'pools', 'prof', 'diy', 'treas'];
   const switchFrame = frame => {
      const i = f => 'iframe_' + f;
      frames.forEach(fram =>  {
@@ -41,6 +41,10 @@
         <td><a href="#" onclick="switchFrame('diy')">DIY Charts++</a></td>
        </tr>
        <tr><td><hr/></td></tr>
+       <tr>
+        <td><a href="#" onclick="switchFrame('prof')">Profile</a></td>
+       </tr>
+       <tr><td><hr/></td></tr>
        <tr><td>Docs</td></tr>
        <tr>
         <td>
@@ -54,7 +58,7 @@
        <tr><td><hr/></td></tr>
        <tr><td><a href="https://x.com/pivocateur">Contact us</a></td></tr>
        <tr><td><hr/></td></tr>
-       <tr><td><em>revision: <span class='version'>1.0</span><em></td></tr>
+       <tr><td><em>pre-release α, revision: <span class='version'>1.0</span><em></td></tr>
        <tr><td><hr/></td></tr>
       </table>
      </td>
@@ -71,10 +75,10 @@
               id="iframe_pools"
               title="Pools"
               style="display:none"></iframe>
-      <iframe src="portfolio.html"
-              name="iframe_port"
-              id="iframe_port"
-              title="My Portfolio"
+      <iframe src="login.html"
+              name="iframe_prof"
+              id="iframe_prof"
+              title="Profile"
               style="display:none"></iframe>
       <iframe src="diy.html?t1=BTC&t2=ETH"
               name="iframe_diy"

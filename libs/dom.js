@@ -94,33 +94,42 @@ const pivotTR = (tableId, rowIx, row) => {
   datum(tr, 4, apr);
 };
 
-async function indexPools() {
-   fetch('data/wallets.tsv').then(result => result.text()).then(data => {
-      const pools = [];
-      const nonPools = [];
-      let tot = 0;
+async function indexPools(wallets = 'wallets', subDir = '') {
+   let file = 'data/' + subDir + '/' + wallets + '.tsv';
+   fetch(file)
+      .then(response => {
+         if (!response.ok) {
+           throw new Error(wallets);
+         }
+         return response.text();
+      })
+      .then(data => {
+         const pools = [];
+         const nonPools = [];
+         let tot = 0;
 
-      let [wallets, idx] = table(data);
-      let hrefIx = idx['href'];
-      let poolRows = wallets.filter(row => row[hrefIx] !== 'n/a');
-      poolRows.forEach(row => {
-         let pool = row[idx['pool']];
-         tot += parseUSD(row[idx['TVL']]);
-         if(pool === 'n/a') {
-            nonPools.push(poolRow(row[idx['name']], row, idx, hrefIx, true));
-         } else { pools.push(poolRow(pool, row, idx, hrefIx)); }
-      });
+         let [wallets, idx] = table(data);
+         let hrefIx = idx['href'];
+         let poolRows = wallets.filter(row => row[hrefIx] !== 'n/a');
+         poolRows.forEach(row => {
+            let pool = row[idx['pool']];
+            tot += parseUSD(row[idx['TVL']]);
+            if(pool === 'n/a') {
+               nonPools.push(poolRow(row[idx['name']], row, idx, hrefIx, true));
+            } else { pools.push(poolRow(pool, row, idx, hrefIx)); }
+         });
 
-      replaceText('tvl', showUsd(tot));
+         replaceText('tvl', showUsd(tot));
 
-      let rowIx = 3;
-      pools.forEach(row => pivotTR("poolTable", rowIx++, row));
-      let stakeIx = rowIx + 2; // to hop over the horizontal rule
-      nonPools.forEach(row => pivotTR("poolTable", stakeIx++, row));
+         let rowIx = 3;
+         pools.forEach(row => pivotTR("poolTable", rowIx++, row));
+         let stakeIx = rowIx + 2; // to hop over the horizontal rule
+         nonPools.forEach(row => pivotTR("poolTable", stakeIx++, row));
 
-      let dappIx = idx['dapp'];
-      let pivots = wallets.filter(row => row[dappIx] === 'pools'
-                               || row[dappIx] === 'echo');
-      vennTbl(pivots, idx, 'vennChart');
-   });
+         let dappIx = idx['dapp'];
+         let pivots = wallets.filter(row => row[dappIx] === 'pools'
+                                  || row[dappIx] === 'echo');
+         vennTbl(pivots, idx, 'vennChart');
+      })
+      .catch(error => alert('No such profile: ' + error));
 }

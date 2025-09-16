@@ -25,8 +25,6 @@ const radarChartTbl = (wallets, idx, kind, offset=0) => {
         };
     });
 
-console.log('addys are', addys);
-
     colorify = (pd, r, g, b) => { 
        color = (post, r, g, b) => {
           return 'rgb' + post + '(' + r + ', ' + g + ', ' + b;
