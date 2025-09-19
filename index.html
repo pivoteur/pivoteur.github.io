@@ -1,10 +1,10 @@
 <html>
  <head>
   <title>Pivot Protocol</title>
-  <link rel='stylesheet' href='styles.css?version=7'></link>
+  <link rel='stylesheet' href='styles.css?version=8'></link>
  <script>
-  const version=7;   // MAKE SURE THIS MATCHES THE VERSION VALUE (above)
-  let frames = ['dash', 'pools', 'prof', 'diy', 'treas'];
+  const version=8;   // MAKE SURE THIS MATCHES THE VERSION VALUE (above)
+  let frames = ['undead', 'dash', 'pools', 'prof', 'diy', 'treas'];
   const switchFrame = frame => {
      const i = f => 'iframe_' + f;
      frames.forEach(fram =>  {
@@ -39,6 +39,9 @@
        <tr><td><hr/></td></tr>
        <tr>
         <td><a href="#" onclick="switchFrame('diy')">DIY Charts++</a></td>
+       </tr>
+       <tr>
+        <td><a href="#" onclick="switchFrame('undead')">$UNDEAD</a></td>
        </tr>
        <tr><td><hr/></td></tr>
        <tr>
@@ -89,6 +92,11 @@
               name="iframe_treas"
               id="iframe_treas"
               title="Treasury"
+              style="display:none"></iframe>
+      <iframe src="undead.html?last=15&analysis=2025-07-17"
+              name="iframe_undead"
+              id="iframe_undead"
+              title="$UNDEAD"
               style="display:none"></iframe>
      </td>
     </tr>

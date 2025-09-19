@@ -1,4 +1,4 @@
-const drawLineChart = (dates, lines, canvas='lineChart') => {
+const drawLineChart = (dates, lines, canvas='lineChart', reversed=false) => {
 
    const ctx = document.getElementById(canvas).getContext('2d');
 
@@ -6,6 +6,7 @@ const drawLineChart = (dates, lines, canvas='lineChart') => {
       type: 'line',
       data: { labels: dates, datasets: lines },
       options: { 
+         scales: { y: { reverse: reversed } },
          plugins: { 
             legend: { labels: { color: 'white' } },
             customCanvasBackgroundColor: { color: 'black' } } },

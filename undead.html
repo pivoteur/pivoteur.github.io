@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pivot Protocol DIY Chart++</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link rel="stylesheet" href="styles.css"></link>
+</head>
+<body>
+    <center>
+    <h1>$UNDEAD metrics</h1>
+
+<table border="0" width="75%">
+   <tr>
+    <td align="center"><h3>Rank</h3><br/>
+     <canvas id="rankChart" width="400" height="200"></canvas>
+    </td>
+    <td align="center"><h3>Price</h3><br/>
+     <canvas id="quoteChart" width="400" height="200"></canvas>
+    </td>
+   </tr>
+   <tr> 
+    <td align="center"><h3>Market Capitalization</h3><br/>
+     <canvas id="capChart" width="400" height="200"></canvas>
+    </td>
+    <td align="center"><h3>24-hour Volume</h3><br/>
+     <canvas id="volChart" width="400" height="200"></canvas>
+    </td>
+   </tr>
+   <tr>
+    <td colspan="2">Show last
+     <input type='text' id='last' value='100'></input> days.
+     <button type='button' onClick="go();">Submit</button>
+    </td>
+   </tr>
+
+   <tr><th colspan='2' align='center'>$UNDEAD Analysis</th></tr>
+   <tr>
+    <td colspan='2'>$UNDEAD performance analysis, 
+     <span class='today'>2025-09-18</span>
+    </td>
+   </tr>
+   <tr>
+    <td colspan='2'>
+     <ul>
+      <li>"δ" indicates change since <span class='basis'>2025-07-17</span></li>
+      <li>"α" is annualized since <span class='basis'>2025-07-17</span></li>
+     </ul>
+    </td>
+   </tr>
+   <tr>
+    <td colspan='2'>
+     <table>
+      <tr bgcolor='cyan' style='color:black;'>
+       <th>Metric</th>
+       <th>Value</th>
+       <th><span class='basis'>2025-07-17</span></th>
+       <th style='text-align:center;'>δ</th>
+       <th style='text-align:center;'>α</th>
+      </tr>
+      <tr>
+       <th bgcolor='lime' style='color:black;'>Rank</th>
+       <td><span class='rankValue'>8991</span></td>
+       <td><span class='rankBase'>8480</span></td>
+       <td><span class='rankDelta'>-6.03</span>%</td>
+       <td><span class='rankAlpha'>34.91</span>%</td>
+      </tr>
+      <tr>
+       <th bgcolor='lime' style='color:black;'>Quote</th>
+       <td>$<span class='quoteValue'>0.002993</span></td>
+       <td>$<span class='quoteBase'>0.002211</span></td>
+       <td><span class='quoteDelta'>35.37</span>%</td>
+       <td><span class='quoteAlpha'>204.91</span>%</td>
+      </tr>
+      <tr>
+       <th bgcolor='lime' style='color:black;'>Market Cap</th>
+       <td>$<span class='capValue'>45127</span></td>
+       <td>$<span class='capBase'>33187</span></td>
+       <td><span class='capDelta'>35.98</span>%</td>
+       <td><span class='capAlpha'>208.45</span>%</td>
+      </tr>
+      <tr>
+       <th bgcolor='lime' style='color:black;'>24-hour Volume</th>
+       <td>$<span class='volValue'>89518</span></td>
+       <td>$<span class='volBase'>94618</span></td>
+       <td><span class='volDelta'>-5.39</span>%</td>
+       <td><span class='volAlpha'>-31.23</span>%</td>
+      </tr>
+     </table>
+    </td>
+   <tr>
+   <tr>
+    <td colspan='2'>
+     $UNDEAD analysis-basis from date:
+     <input type='date' value='2024-11-21' id='anal' onChange='go();'></input>
+    </td>
+   </tr>
+  </table>
+</center>
+    <script src="libs/table.js"></script>
+    <script src="libs/canvas-bg.js"></script>
+    <script src='libs/usd.js'></script>
+    <script src='libs/tokens.js'></script>
+    <script src="libs/charts/bar.js"></script>
+    <script src='libs/charts/line.js'></script>
+    <script src='libs/dom.js'></script>
+    <script>
+   let [last, anal] = Object.values(params());
+
+   window.onload = () => {
+      let lastElt = document.getElementById('last');
+      let analElt = document.getElementById('anal');
+      replaceText('basis', anal);
+      lastElt.value = last;
+      analElt.value = anal;
+   };
+
+   const go = () => {
+      let last = document.getElementById('last').value;
+      let analysisDate = document.getElementById('anal').value;
+
+      location.href = "undead.html?last=" + last + "&anal=" + analysisDate;
+   };
+
+   fetch('data/undead.tsv').then(result => result.text()).then(data => {
+      let [tabl, idx] = sortedTable(data);
+      const dates = row(tabl, idx, 'date').slice(-last);
+
+// analysis
+
+      let base = ix(tabl, anal);
+      let curr = tabl.at(-1);
+      const today = curr[0];
+      const day = 1000 * 60 * 60 * 24; // Milliseconds in one day
+      const span = (new Date(today).getTime() - new Date(anal).getTime()) / day;
+
+      const annualize = delta => delta * 365 / span;
+      const updateRow = (name, parser, idx, invert=1) => {
+         let val = parser(curr[idx]);
+         replaceText(name + 'Value', val);
+         let bas = parser(base[idx]);
+         replaceText(name + 'Base', bas);
+         let d = invert * 100.0 * (val - bas) / bas;
+         replaceText(name + 'Delta', d.toFixed(2));
+         replaceText(name + 'Alpha', annualize(d).toFixed(2));
+      };
+
+      replaceText('today', today);
+
+// line charts
+
+      const rank = line('rank', row(tabl, idx, 'rank').slice(-last), 'blue');
+      drawLineChart(dates, [rank], 'rankChart', true);
+      updateRow('rank', parseFloat, 1, -1);
+
+      const quotes = line('quote', 
+                          row(tabl, idx, 'quote').slice(-last).map(parseUSD), 
+                          'blue');
+      drawLineChart(dates, [quotes], 'quoteChart');
+      updateRow('quote', parseUSD, 2);
+
+// bar charts
+
+      const caps = row(tabl, idx, 'market cap').slice(-last).map(parseUSD);
+      simpleBar(dates, caps, 'Market Cap', 'capChart');
+      updateRow('cap', parseUSD, 3);
+
+      const vols = row(tabl, idx, '24-hr volume').slice(-last).map(parseUSD);
+      simpleBar(dates, vols, '24-hour Volume', 'volChart');
+      updateRow('vol', parseUSD, 4);
+   });
+</script>
+</body>
+</html>

@@ -33,7 +33,13 @@ const orderedIndices = idx => {
    return orderedLabels;
 };
 
-const row = (table, idx, key) => table.map(r => r[idx[key]]);
+const row = (table, idx, key) => table.map(r => r[idx[key]]); // actually col()
+
+const ix = (table, date) => {
+   let x = 0;
+   while(table[x][0] != date) { x++; }
+   return table[x]; // unsafe when date-key not found
+};
 
 const sampleRow = table => {
    let idx = (Math.random() * table.length) | 0;

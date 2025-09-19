@@ -76,3 +76,32 @@ const barChartTbl = (labels, assets) => {
         plugins: [plugin]
     });
 };
+
+const simpleBar = (dates, bars, label, canvas = 'barChart') => {
+   const ctx1 = document.getElementById(canvas).getContext('2d');
+
+   const rgba = (r, g, b, a) =>
+      'rgba(' + r + ', ' + g + ', ' + b + ', ' + a + ')';
+
+   new Chart(ctx1, {
+      type: 'bar',
+      data: { 
+         labels: dates,
+         datasets: [ {
+               label: label,
+               data: bars,
+               backgroundColor: 'rgba(255, 159, 64, 0.6)',
+               type: 'bar'
+            }
+         ]
+      },
+      options: {
+         responsive: true,
+         plugins: {
+            legend: { labels: { color: 'white' } },
+            customCanvasBackgroundColor: { color: 'black' } },
+         scales: { y: { beginAtZero: false } }
+      },
+      plugins: [plugin]
+   });
+};
