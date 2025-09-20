@@ -7,6 +7,8 @@ function update1 { TSV=$1.tsv; rm -f $TSV; vi $TSV; git add $TSV }
 function update { update1 data/$1 }
 
 function pool { update1 data/pools/$1 }
+function opn { update1 data/pivots/open/raw/$1 }
+function cls { update1 data/pivots/close/raw/$1 }
 function profile { hashed=$(printf "%s" "$1" | sha256); update1 data/profiles/$hashed }
 
 function gains { echo "* actual ROI: $1 / $2 APR projected" | despace }
