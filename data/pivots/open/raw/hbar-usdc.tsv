@@ -1,0 +1,3 @@
+opened	pivot	tx_id	from	amount1	virtual	10% gain	quote1	val1	to	quote2	amount computed	amount2	commission	gas token	gas	gas quote	gas $	net	val2	diff	δ	δHBAR	δUSDC	closed
+2025-09-22	1	https://hashscan.io/mainnet/transaction/1758593425.249245000	HBAR	1,135.40	0	1249	$0.22	$249.79	USDC	$1.00	249.7883	248.82		HBAR	0.6783889	$0.22	$0.15	248.82	$248.82	-$0.97	-0.017	-33.09%	100.00%	*hedge
+2025-09-22	2	virtual swap	USDC	0	500	550	$1.00	$0.00	HBAR	$0.220000	0	2257.08		HBAR	0.0000000	$0.22	$0.00	2257.08	$496.56	$496.56	-0.017	65.77%	-65.79%	
