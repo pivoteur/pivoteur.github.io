@@ -1,0 +1,2 @@
+date	pivot	close	tx_id	from	from quote	to	to quote	gas estimated	gas token	gas price	gas	gas actual	gas $	rec	trade	vol	keeping	USDC $	USDC $ total	new to-computed	new to-actual	commission	gain	HBAR $	HBAR $ total	gain, total $	ROI	APR
+2025-10-30	1	1	https://hashscan.io/mainnet/transaction/1761859089.580629000	USDC	$1.00	HBAR	$0.1898	$0.20	HBAR	$0.19	1.0537408	0.926457	$0.18	248.82	248.81	$248.81	0.01	$0.01	$0.01	1311	1295	3.24684481	156	$29.65	$29.65	$29.66	13.76%	132.21%
