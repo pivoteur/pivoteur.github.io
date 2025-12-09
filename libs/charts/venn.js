@@ -16,12 +16,12 @@ const sets = kinds => {
    return ans;
 };
 
-const vennChart = (data, canvas, kind='dapp') => {
+const vennChart = (data, canvas, kind='blockchain') => {
    let [wallets, idx] = table(data);
    vennTbl(wallets, idx, canvas, kind);
 };
 
-const vennTbl = (table, idx, canvas, kind='dapp') => {
+const vennTbl = (table, idx, canvas, kind='blockchain') => {
    let kinds = tokenByKind(table, idx, kind);
    let vs = sets(kinds);
    let chart = venn.VennDiagram();
