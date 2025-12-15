@@ -1,4 +1,4 @@
-opened	pivot	close	tx_id	from	from_blockchain	amount1	virtual	10% gain	quote1	val1	to	to	quote2	amount computed	amount2	commission	gas token	gas	gas quote	gas $	net	sAVAX factor	as sAVAX	val2	diff	δ
+opened	pivot	close	tx_id	from	from_blockchain	amount1	virtual	10% gain	quote1	val1	to	to_blockchain	quote2	amount computed	amount2	commission	gas token	gas	gas quote	gas $	net	sAVAX factor	as sAVAX	val2	diff	δ
 2025-07-07	1	8	https://snowtrace.io/tx/0xa3c7504e79c56b8e7f3a7b91ac7ebb554d0b82ae07f7a29fe9ff250069cf8816	AVAX	Avalanche	1	0	0.8877	$18.05	$18.05	UNDEAD	Avalanche	$0.002358	7657	7089		AVAX	0.0005977	$18.05	$0.01	7089	0.807	0.807	$16.72	-$1.34	-51
 2025-07-07	2	2	https://snowtrace.io/tx/0x68f5d6ea6c53a7dd031f1d0782ba57221f7673d00d3cbd70aa051f2bbf167943	UNDEAD	Avalanche	7000	0	7700	$0.002358	$16.51	AVAX	Avalanche	$18.05	0.91423	0.9669		AVAX	0.0008393	$18.05	$0.02	0.97	0.807	0.7803	$17.46	$0.95	-51
 2025-07-09	3	8	https://snowtrace.io/tx/0xe9cb12f63f434a9856c3f4dcbd049d10575f736ca825fdc14095da4dffcfe290	AVAX	Avalanche	1.215805471	0	1.0793	$18.52	$22.52	UNDEAD	Avalanche	$0.002366	9516	8557		AVAX	0.0016897	$18.52	$0.03	8557	0.807	0.9812	$20.25	-$2.27	128
