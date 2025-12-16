@@ -1,5 +1,7 @@
-opened	pivot	close	tx_id	from	amount1	virtual	10% gain	quote1	val1	to	quote2	amount computed	amount2	commission	gas token	gas	gas quote	gas $	net	val2	diff	δ	δHBAR	δUSDC	closed
-2025-09-22	1	1	https://hashscan.io/mainnet/transaction/1758593425.249245000	HBAR	1,135.40	0	1249	$0.22	$249.79	USDC	$1.00	249.7883	248.82		HBAR	0.6783889	$0.22	$0.15	248.82	$248.82	-$0.97	-0.017	-33.09%	100.00%	*hedge
-2025-09-22	2	0	virtual swap	USDC	0	500	550	$1.00	$500.00	HBAR	$0.22	2273	2257.08		HBAR	0	$0.22	$0.00	2257.08	$496.56	-$3.44	-0.017	65.77%	-65.79%	
-2025-10-30	3	0	https://hashscan.io/mainnet/transaction/1761891165.133842000	HBAR	2,569.00	0	2826	$0.1932	$496.33	USDC	$1.00	496.3308	496.48		HBAR	0.5209600	$0.1932	$0.10	496.48	$496.48	$0.15	0.011	-42.43%	199.54%	
-2025-10-30	4	0	virtual swap	USDC	0	500	550	$1.00	$500.00	HBAR	$0.1932	2588	2,569.93	12	HBAR	0	$0.1932	$0.0000	2,557.90	$494.19	-$5.81	0.011	111.39%	-200.95%	
+opened	pivot	close	tx_id	from	from_blockchain	amount1	virtual	10% gain	quote1	val1	to	to_blockchain	quote2	amount computed	amount2	commission	gas token	gas	gas quote	gas $	net	val2	diff	δ	closed
+2025-09-22	1	1	https://hashscan.io/mainnet/transaction/1758593425.249245000	HBAR	Hedera	1,135	0	1249	$0.22	$249.79	USDC	Hedera	$1.00	249.7883	248.82		HBAR	0.6783889	$0.22	$0.15	248.82	$248.82	-$0.97	-0.017	*hedge
+2025-09-22	2	0	virtual swap	USDC	Avalanche	0	500	550	$1.00	$500.00	HBAR	Hedera	$0.22	2273	2257		HBAR	0	$0.22	$0.00	2257	$496.56	-$3.44	-0.017	
+2025-10-30	3	2	https://hashscan.io/mainnet/transaction/1761891165.133842000	HBAR	Hedera	2,569	0	2826	$0.1932	$496.33	USDC	Hedera	$1.00	496.3308	496.48		HBAR	0.5209600	$0.1932	$0.10	496.48	$496.48	$0.15	0.011	
+2025-10-30	4	0	virtual swap	USDC	Avalanche	0	500	550	$1.00	$500.00	HBAR	Hedera	$0.1932	2588	2570	12	HBAR	0	$0.1932	$0.0000	2558	$494.19	-$5.81	0.011	
+2025-12-15	5	0	https://hashscan.io/mainnet/transaction/1765842748.595539000	HBAR	Hedera	943	0	1037	$0.1190	$112.19	USDC	Hedera	$1.00	112.1861	107.26		HBAR	0.7920000	$0.12	$0.09	107.26	$107.26	-$4.92	-0.016	*hedge
+2025-12-15	6	0	virtual swap	USDC	Hedera	0	215	237	$1.00	$215.00	HBAR	Hedera	$0.12	1807	1876		HBAR	0	$0.12	$0.00	1876	$223.20	$8.20	-0.016	
