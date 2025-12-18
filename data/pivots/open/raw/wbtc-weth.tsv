@@ -1,0 +1,7 @@
+opened	open	close	tx_id	from	from_blockchain	amount1	virtual	10% gain	quote1	val1	to	to_blockchain	quote2	amount computed	amount2	commission	gas token	gas	gas quote	gas $	net	val2	diff	δ
+2025-11-26	1	0	https://snowtrace.io/tx/0xd95e5dbb3c78f272855a6d901e24b4a478e5a3425237a4ba3501535b944477a9	BTC	Avalanche	0.0570	0	0.0627	$86,651.00	$4,939.11	ETH	Hedera	$2,904.08	1.7007	1.698174		AVAX	0.000968	$14.01	$0.01	1.6626	$4,828.32	-$110.78	-0.143
+2025-11-26	2	0	virtual swap	ETH	Avalanche	0	1.6950	1.8645	$2,904.08	$4,922.42	BTC	Hedera	$86,651.00	0.05681	0.05681		AVAX	0	$14.01	$0.00	0.05576365	$4,831.98	-$90.44	-0.143
+2025-11-28	3	0	https://snowtrace.io/tx/0xb69c600e93fdc8db5f3a580b257387563efad254115876b4319a39c29c48de4b	BTC	Avalanche	0.0550	0	0.0605	$91,525.00	$5,033.88	ETH	Hedera	$3,035.23	1.6585	1.642951		AVAX	0.000851	$14.87	$0.01	1.5533	$4,714.74	-$319.13	0.127
+2025-11-28	4	0	virtual swap	ETH	Avalanche	0	1.6450	1.8095	$3,035.23	$4,992.95	BTC	Hedera	$91,525.00	0.05455	0.05491		AVAX	0	$14.87	$0.00	0.05238778	$4,794.79	-$198.16	0.127
+2025-12-01	5	0	virtual swap	BTC	Avalanche	0	0.0554	0.0609	$89,617.00	$4,964.78	ETH	Hedera	$3,031.24	1.6379	1.629356		AVAX	0	$14.87	$0.01	1.5389	$4,664.87	-$299.91	-0.368
+2025-12-01	6	0	virtual swap	ETH	Avalanche	0	1.1376	1.2514	$3,031.24	$3,448.34	BTC	Hedera	$89,617.00	0.03848	0.03865		AVAX	0	$14.87	$0.00	0.03712	$3,326.58	-$121.76	-0.368
