@@ -1,3 +1,5 @@
-opened	pivot	close	tx_id	from	from_blockchain	amount1	virtual	10% gain	quote1	val1	to	to_blockchain	quote2	amount computed	amount2	commission	gas token	gas	gas quote	gas $	net	val2	diff	δ
-2025-12-07	1	0	https://hashscan.io/mainnet/transaction/1765114733.599354000	HBAR	Hedera	18,506.00	0	20357	$0.1334	$2,468.70	BTC	Hedera	$89,351.00	0.0276	0.02735		HBAR	0.6652800	$0.1334	$0.09	0.02735	$2,444.11	-$24.59	40525
-2025-12-07	2	0	virtual swap	BTC	Avalanche	0	0.056	0.0616	$89,351.00	$5,003.66	HBAR	Hedera	$0.1334	37509	37194		HBAR	0	$0.1334	$0.00	37194	$4,961.62	-$42.04	40525
+opened	pivot	close	tx_id	from	from_blockchain	amount1	virtual	10% gain	quote1	val1	to	to_blockchain	quote2	amount computed	amount2	commission	gas token	gas	gas quote	gas $	net	val2	diff	δ	closed
+2025-12-07	1	1	https://hashscan.io/mainnet/transaction/1765114733.599354000	HBAR	Hedera	18,506.00	0	20357	$0.1334	$2,468.70	BTC	Hedera	$89,351.00	0.0276	0.02735		HBAR	0.6652800	$0.1334	$0.09	0.02735	$2,444.11	-$24.59	40525	*hedge
+2025-12-07	2	0	virtual swap	BTC	Avalanche	0	0.056	0.0616	$89,351.00	$5,003.66	HBAR	Hedera	$0.1334	37509	37194		HBAR	0	$0.1334	$0.00	37194	$4,961.62	-$42.04	40525	
+2025-12-19	3	0	https://hashscan.io/mainnet/transaction/1766210429.858169000	HBAR	Hedera	18,000	0	19800	$0.1098	$1,976.40	BTC	Hedera	$88,368.00	0.0224	0.02258		HBAR	1.2403200	$0.1098	$0.14	0.02258	$1,995.04	$18.64	87482	*hedge
+2025-12-19	4	0	virtual swap	BTC	Avalanche	0	0.04565	0.0502	$88,368.00	$4,034.00	HBAR	Hedera	$0.1098	36740	35158		HBAR	0	$0.1098	$0.00	35158	$3,860.35	-$173.65	87482	

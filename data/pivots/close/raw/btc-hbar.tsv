@@ -1,0 +1,2 @@
+date	pivot	close	tx_id	from	from quote	to	to quote	gas estimated	gas token	gas price	gas	gas actual	gas $	rec	trade	vol	keeping	BTC $	BTC $ total	new to-computed	new to-actual	commission	gain	HBAR $	HBAR $ total	gain, total $	ROI	APR
+2025-12-19	1	1	https://hashscan.io/mainnet/transaction/1766162999.415837000	BTC	$88,368.00	HBAR	$0.1098	$0.20	HBAR	$0.1098	1.8214936	1.04576076	$0.1148	0.02735	0.02735	$2,416.86	0.00000	$0.36	$0.36	22015	21270	1	2,763	$303.40	$303.40	$303.76	14.95%	454.62%
