@@ -31,38 +31,30 @@
      </td>
     </tr>
     <tr>
-     <td colspan='2' width="70%">
+     <td colspan='2' width="75%">
       <canvas id="pivotChart" width="800" height="400"></canvas>
      </td>
-     <td width="30%">
+     <td width="25%">
       <table border="0">
+       <tr><th align='center'>Pivot Swap</th></tr>
        <tr><td>&nbsp;</td></tr>
-       <tr><th>Pivot Swap</th></tr>
        <tr>
 <td>
-<div class="aquarium-container">
-  <div class="input-group">
-    <select class="aqua-select">
-      <option>BTC</option>
-      <option>ETH</option>
-      <option>USDC</option>
-      <option>HBAR</option>
-    </select>
-    <input type="text" class="aqua-number" placeholder="Qty" min="1" max="10">
+<div class="aqua-container">
+  <div class="field-group">
+    <label for="field1" id="label1">Label A</label>
+    <input type="text" id="field1" value="Value 1" onChange="recompute()">
+    <label for="field1" id="amount1">$1000.00</label>
   </div>
-</div>
-       </td></tr>
-       <tr><td>
-      <div class="aquarium-container">
-  <div class="input-group">
-    <select class="aqua-select">
-      <option>BTC</option>
-      <option>ETH</option>
-      <option>USDC</option>
-      <option>HBAR</option>
-    </select>
-    <input type="text" class="aqua-number" placeholder="Qty" min="1" max="10">
+  
+  <div class="field-group">
+    <label for="field1" id="label2">Label B</label>
+    <label for="field1" id="field2">Value 2</label>
   </div>
+  
+  <center>
+   <button id="rotateBtn" onclick="swapValues()">🔄 &nbsp; Flip</button>
+  </center>
 </div>
  
        </td></tr>
@@ -95,6 +87,11 @@ about pivot arbitrage.
     <script src="libs/charts/pivot.js"></script>
     <script src='libs/dom.js'></script>
     <script>
+const swapValues = () => {
+  [f1.value, f2.innerText] = [f2.innerText, f1.value];
+  [l1.innerText, l2.innerText] = [l2.innerText, l1.innerText];
+};
+
 const removeOptions = selectElement => {
    var i, L = selectElement.options.length - 1;
    for(i = L; i >= 0; i--) {
@@ -125,6 +122,11 @@ const go = () => {
 
 let prices = {};
 let [t1, t2] = Object.values(params());
+  const f1 = document.getElementById('field1');
+  const f2 = document.getElementById('field2');
+  const l1 = document.getElementById('label1');
+  const l2 = document.getElementById('label2');
+  const a1 = document.getElementById('amount1');
 
         fetch(pivotsUrl).then(response => response.text())
                         .then(data => {
@@ -137,10 +139,30 @@ let [t1, t2] = Object.values(params());
       prices[tok] = currentPrices[idx[tok]];
    }
    tag1.value = t1;
+   l1.innerText = t1;
    refreshOptions(t1);
    tag2.value = t2;
+   l2.innerText = t2;
+   f1.value = round(1000.0 / prices[t1]);
+   f2.innerText = round(1000.0 / prices[t2]);
    pivotChartsTbl(t1, t2, table, idx);
 });
+
+const recompute = () => {
+   let tot = prices[l1.innerText] * f1.value;
+   let tot1 = Math.round(tot * 100)/100;
+   a1.innerText = "$" + tot1;
+   f2.innerText = round(tot1 / prices[l2.innerText]);
+};
+
+const round = amount => {
+   let fix = 2;
+   if(amount < 1) { fix = 4;
+   } else if(amount < 0.01) { fix = 6;
+   } else if(amount > 1000) { fix = 0; }
+   return amount.toFixed(fix);
+};
+
     </script>
 </body>
 </html>
