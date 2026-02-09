@@ -94,11 +94,6 @@ const pivotTR = (tableId, rowIx, row) => {
   datum(tr, 4, apr);
 };
 
-async function poolInfo(wallets = 'wallets', subDir = '') {
-   const poolInfos = [wallettos, idxen, pools, nonPools, tot];
-   return poolInfos;
-}
-
 const assets = names => {
    let ans = new Set();
    names.forEach(toks => { toks.forEach(tok => ans.add(tok)); });
