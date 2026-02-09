@@ -82,7 +82,7 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
 
 about pivot arbitrage.
 </p>
-
+    <script src="libs/usd.js"></script>
     <script src="libs/indicators.js"></script>
     <script src="libs/table.js"></script>
     <script src="libs/pivots.js"></script>
@@ -138,10 +138,15 @@ let [t1, t2] = Object.values(params());
    let currentPrices = table[table.length - 1];
    let tag1 = document.getElementById('token1');
    let tag2 = document.getElementById('token2');
-   for (tok in idx) {
-      tag1.options.add(new Option(tok, tok));
-      prices[tok] = currentPrices[idx[tok]];
-   }
+   poolNames().then(names => {
+      let tokens = assets(names);
+      for (tok in idx) {
+         if(tokens.has(tok)) {
+            tag1.options.add(new Option(tok, tok));
+            prices[tok] = currentPrices[idx[tok]];
+         }
+      }
+   });
    tag1.value = t1;
    l1.innerText = t1;
    refreshOptions(t1);
