@@ -95,12 +95,21 @@ const pivotTR = (tableId, rowIx, row) => {
 };
 
 async function poolInfo(wallets = 'wallets', subDir = '') {
+   const poolInfos = [wallettos, idxen, pools, nonPools, tot];
+   return poolInfos;
+}
+
+const assets = names => {
+   let ans = new Set();
+   names.forEach(toks => { toks.forEach(tok => ans.add(tok)); });
+   return ans;
+};
+
+async function indexPools(wallets = 'wallets', subDir = '') {
    let file = 'data/' + subDir + '/' + wallets + '.tsv';
    const pools = [];
    const nonPools = [];
    let tot = 0;
-   let wallettos = [];
-   let idxen = {};
    fetch(file)
       .then(response => {
          if (!response.ok) {
@@ -110,8 +119,6 @@ async function poolInfo(wallets = 'wallets', subDir = '') {
       })
       .then(data => {
          let [wallets, idx] = table(data);
-         walletto = wallets;
-         idxen = idx;
          let hrefIx = idx['href'];
          let poolRows = wallets.filter(row => row[hrefIx] !== 'n/a');
          poolRows.forEach(row => {
@@ -121,33 +128,16 @@ async function poolInfo(wallets = 'wallets', subDir = '') {
                nonPools.push(poolRow(row[idx['name']], row, idx, hrefIx, true));
             } else { pools.push(poolRow(pool, row, idx, hrefIx)); }
          });
-      });
-   const poolInfos = [wallettos, idxen, pools, nonPools, tot];
-   return poolInfos;
-}
+         replaceText('tvl', showUsd(tot));
 
-const assets = names => {
-   let ans = new Set();
-   names.forEach(name => {
-      let toks = name.split('+');
-      toks.forEach(tok => ans.add(tok));
-   });
-   return ans;
-};
+         let rowIx = 3;
+         pools.forEach(row => pivotTR("poolTable", rowIx++, row));
+         let stakeIx = rowIx + 2; // to hop over the horizontal rule
+         nonPools.forEach(row => pivotTR("poolTable", stakeIx++, row));
 
-async function indexPools(wallets = 'wallets', subDir = '') {
-   poolInfo(wallets, subDir).then(poolData => {
-      let [wallets, idx, pools, nonPools, tot] = poolData;
-      replaceText('tvl', showUsd(tot));
-
-      let rowIx = 3;
-      pools.forEach(row => pivotTR("poolTable", rowIx++, row));
-      let stakeIx = rowIx + 2; // to hop over the horizontal rule
-      nonPools.forEach(row => pivotTR("poolTable", stakeIx++, row));
-
-      let dappIx = idx['dapp'];
-      let pivots = wallets.filter(row => row[dappIx] === 'pools'
-                                  || row[dappIx] === 'echo');
-      vennTbl(pivots, idx, 'vennChart');
-   }).catch(error => alert('No such profile: ' + error));
+         let dappIx = idx['dapp'];
+         let pivots = wallets.filter(row => row[dappIx] === 'pools'
+                                     || row[dappIx] === 'echo');
+         vennTbl(pivots, idx, 'vennChart');
+      }).catch(error => alert('No such profile: ' + error));
 }

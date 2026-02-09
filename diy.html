@@ -90,6 +90,7 @@ about pivot arbitrage.
     <script src='libs/charts/line.js'></script>
     <script src="libs/charts/pivot.js"></script>
     <script src='libs/dom.js'></script>
+    <script src='libs/pool-assets.js'></script>
     <script>
 const swapValues = () => {
   [f1.value, f2.innerText] = [f2.innerText, f1.value];
@@ -138,15 +139,13 @@ let [t1, t2] = Object.values(params());
    let currentPrices = table[table.length - 1];
    let tag1 = document.getElementById('token1');
    let tag2 = document.getElementById('token2');
-   poolNames().then(names => {
-      let tokens = assets(names);
-      for (tok in idx) {
-         if(tokens.has(tok)) {
-            tag1.options.add(new Option(tok, tok));
-            prices[tok] = currentPrices[idx[tok]];
-         }
+   let tokens = assets(poolAssets['assets']);
+   for (const tok of Object.keys(idx)) {
+      if(tokens.has(tok)) {
+         tag1.options.add(new Option(tok, tok));
+         prices[tok] = currentPrices[idx[tok]];
       }
-   });
+   }
    tag1.value = t1;
    l1.innerText = t1;
    refreshOptions(t1);
