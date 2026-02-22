@@ -46,16 +46,19 @@
     <label for="field1">Pivot Swap</label>
   </div>
   <div class="field-group">
-    <label for="field1" id="label1">Label A</label>
+    <label for="field1" id="label1">Token A</label>
     <input type="text" id="field1" value="Value 1" onChange="recompute()">
     <label for="field1" id="amount1">$1000.00</label>
   </div>
   
   <div class="field-group">
-    <label for="field1" id="label2">Label B</label>
-    <label for="field1" id="field2">Value 2</label>
+    <label for="field1" id="label2">Value Token B</label>
   </div>
   
+  <div class="field-group">
+    <label for="field1" id="fees">Swap fees: fee Token A</label>
+  </div>
+
   <center>
    <button id="rotateBtn" onclick="swapValues()">🔄 &nbsp; Flip</button>
   </center>
@@ -128,10 +131,13 @@ const go = () => {
 let prices = {};
 let [t1, t2] = Object.values(params());
   const f1 = document.getElementById('field1');
-  const f2 = document.getElementById('field2');
   const l1 = document.getElementById('label1');
   const l2 = document.getElementById('label2');
+  const fl = document.getElementById('fees');
   const a1 = document.getElementById('amount1');
+  let amt1 = 0.0;
+  let amt2 = 0.0;
+  let fees = 0.0;
 
         fetch(pivotsUrl).then(response => response.text())
                         .then(data => {
@@ -154,10 +160,17 @@ let [t1, t2] = Object.values(params());
    let [a, b] = [t1, t2];
    if(rev) { [b, a] = [t1, t2]; }
    l1.innerText = a;
-   l2.innerText = b;
-   f1.value = round(1000.0 / prices[a]);
-   f2.innerText = round(1000.0 / prices[b]);
+   amt1 = round(1000.0 / prices[a]);
+   fees = amt1 / 100.0;
+   amt2 = round(990.0 / prices[b]);
+   l2.innerText = amt2 + ' ' + b;
+   fl.innerText = 'Swap fees: ' + fees;
 });
+
+const showSwap = amt => {
+   amt1 = amt;
+   fees = round(amt1 / 100.0);
+   amt2 = round(amt1 * 0.99 / prices[
 
 const recompute = () => {
    let tot = prices[l1.innerText] * f1.value;
