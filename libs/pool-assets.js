@@ -1,9 +1,11 @@
+
 // created by: pools, version: 1.00
 
 
 const poolAssets = {
-   generated: '2026-02-20',
+   generated: '2026-02-28',
    assets: [
+      [ 'ADA', 'USDC' ],
       [ 'AVAX', 'UNDEAD' ],
       [ 'BTC', 'ADA' ],
       [ 'BTC', 'AVAX' ],
@@ -11,10 +13,11 @@ const poolAssets = {
       [ 'BTC', 'HBAR' ],
       [ 'BTC', 'UNDEAD' ],
       [ 'BTC', 'USDC' ],
+      [ 'ETH', 'ADA' ],
       [ 'ETH', 'UNDEAD' ],
+      [ 'HBAR', 'UNDEAD' ],
       [ 'HBAR', 'USDC' ],
-      [ 'UNDEAD', 'USDC' ],
-      [ 'WBTC', 'WETH' ]
+      [ 'UNDEAD', 'USDC' ]
    ]
 };
 
