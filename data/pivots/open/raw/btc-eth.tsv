@@ -60,5 +60,5 @@ opened	open	close	tx_id	from	from_blockchain	amount1	virtual	10% gain	quote1	val
 2025-11-28	59	0	virtual swap	ETH	Avalanche	0	0.8225	0.9048	$3,035.23	$2,496.48	BTC	Hedera	$91,525.00	0.02728	0.02746		AVAX	0	$14.87	$0.00	0.02619389	$2,397.40	-$99.08	0.127	
 2025-12-01	60	0	virtual swap	BTC	Avalanche	0	0.0277	0.0305	$89,617.00	$2,482.39	ETH	Hedera	$3,031.24	0.8189	0.814678		AVAX	0	$14.87	$0.01	0.7695	$2,332.44	-$149.95	-0.368	
 2025-12-01	61	10	virtual swap	ETH	Avalanche	0	0.5688	0.6257	$3,031.24	$1,724.17	BTC	Hedera	$89,617.00	0.01924	0.01932		AVAX	0	$14.87	$0.00	0.01856	$1,663.29	-$60.88	-0.368	✅
-2026-03-01	62	0	https://snowtrace.io/tx/0x611ec4ba3e496b12d9496ca69fb2dc94facc68265eeca86dddfa3963e3c0b6d3	BTC	Avalanche	0.0261	0	0.0287	$66,869.00	$1,745.28	ETH	Avalanche	$1,998.14	0.8735	0.882291		AVAX	0.000555	$9.13	$0.01	1.6626	$3,322.11	$1,576.83	-0.318	*hedge
+2026-03-01	62	0	https://snowtrace.io/tx/0x611ec4ba3e496b12d9496ca69fb2dc94facc68265eeca86dddfa3963e3c0b6d3	BTC	Avalanche	0.0261	0	0.0287	$66,869.00	$1,745.28	ETH	Avalanche	$1,998.14	0.8735	0.882291		AVAX	0.000555	$9.13	$0.01	0.8823	$1,762.94	$17.66	-0.318	*hedge
 2026-03-01	63	0	virtual swap	ETH	Avalanche	0	1.5000	1.6500	$1,998.14	$2,997.21	BTC	Avalanche	$66,869.00	0.04482	0.04428		AVAX	0	$9.13	$0.00	0.04428	$2,961.22	-$35.99	-0.318	
