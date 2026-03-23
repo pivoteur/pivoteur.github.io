@@ -1,4 +1,4 @@
-export PIVOT_DATA_DIR=$PIVOT_DIR/data
+export PIVOT_DATA_DIR=$PIVOT_PAGES_DIR/data
 
 export WALLETS=$PIVOT_DATA_DIR/wallets.tsv
 
