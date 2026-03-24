@@ -1,3 +1,3 @@
 opened	open	close	tx_id	updated	from	from_blockchain	amount1	virtual	quote1	val1	gain_10_percent	to	to_blockchain	net	ersatz	quote2	val2
-2026-02-27	1	0	virtual swap	2026-03-19	UNDEAD	Hedera	0	370519.13	$0.002427	$899.26	407571.03	HBAR	Hedera	9697	0	$0.0927	$899.26
+2026-02-27	1	0	virtual swap	2026-03-19	UNDEAD	Hedera	0	370519.13	$0.002427	$899.25	407571.03	HBAR	Hedera	9697	0	$0.0927	$898.91
 2026-02-27	2	0	virtual swap	n/a	HBAR	Hedera	0	9697	$0.1004	$973.58	10666.7	UNDEAD	Hedera	497500	0	$0.001957	$973.61

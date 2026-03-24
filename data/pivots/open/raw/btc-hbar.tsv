@@ -1,6 +1,6 @@
 opened	open	close	tx_id	updated	from	from_blockchain	amount1	virtual	quote1	val1	gain_10_percent	to	to_blockchain	net	ersatz	quote2	val2
 2025-12-07	1	1	https://hashscan.io/mainnet/transaction/1765114733.599354000	n/a	HBAR	Hedera	18506	0	$0.1334	$2468.70	20356.6	BTC	Hedera	0.02735	0	$89351.00	$2443.75
-2026-02-25	2	0	virtual swap	2026-03-19	BTC	Hedera	0	0.049559932	$69597.00	$3449.22	0.054515928	HBAR	Hedera	37194	0	$0.0927	$3449.22
+2026-02-25	2	0	virtual swap	2026-03-23	BTC	Hedera	0	0.048768982	$68180.00	$3325.07	0.053645883	HBAR	Hedera	37194	0	$0.0894	$3325.07
 2026-03-09	3	0	https://hashscan.io/mainnet/transaction/1766210429.858169000	n/a	HBAR	Hedera	18000	0	$0.1098	$1976.40	19800	BTC	Hedera	0.02258	0	$88368.00	$1995.35
 2026-03-09	4	2	virtual swap	n/a	BTC	Avalanche	0	0.04565	$88368.00	$4034.00	0.050215002	HBAR	Hedera	35158	0	$0.1098	$3860.35
 2026-01-12	5	0	https://hashscan.io/mainnet/transaction/1768276622.259919000	n/a	HBAR	Hedera	4400	0	$0.1156	$508.64	4840	BTC	Hedera	0.00554	0	$90711.00	$502.54
