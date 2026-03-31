@@ -35,7 +35,6 @@ jobs:
           cargo build --manifest-path protocol/dapps/assets/Cargo.toml --bin assets
           echo "$GITHUB_WORKSPACE/protocol/dapps/assets/target/debug" >> $GITHUB_PATH
 
-
       - name: Putting date and URL into the env
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV

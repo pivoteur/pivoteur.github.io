@@ -33,7 +33,6 @@ jobs:
       - name: Build virtsz 
         run: cargo build --manifest-path protocol/dapps/virtsz/Cargo.toml --bin virtsz 
 
-
       - name: Putting date into the env
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
