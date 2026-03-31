@@ -2,4 +2,4 @@ opened	open	close	tx_id	updated	from	from_blockchain	amount1	virtual	quote1	val1
 2026-02-27	1	0	virtual swap	2026-03-19	UNDEAD	Hedera	0	370519.13	$0.002427	$899.25	407571.03	HBAR	Hedera	9697	0	$0.0927	$898.91
 2026-02-27	2	0	virtual swap	2026-03-28	HBAR	Hedera	0	8635.02	$0.0899	$776.29	9498.521	UNDEAD	Hedera	497500	0	$0.001561	$776.60
 2026-03-30	3	0	virtual swap	n/a	HBAR	Hedera	0	176060	$0.0905	$15933.43	193666	UNDEAD	Hedera	9949965	0	$0.001601	$15929.89
-2026-03-30	4	0	https://hashscan.io/mainnet/transaction/1774931056.838244211	n/a	UNDEAD	Hedera	127157	0	$0.001600	$203.45	139872.7	HBAR	Hedera	2138	0	$0.0905	$193.43
+2026-03-30	4	0	https://hashscan.io/mainnet/transaction/1774931056.838244211	n/a	UNDEAD	Hedera	127157	0	$0.001600	$203.45	139872.7	HBAR	Hedera	2138	0	$0.0905	$193.49
