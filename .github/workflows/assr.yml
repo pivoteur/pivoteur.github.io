@@ -26,7 +26,6 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
-          token: ${{ secrets.PIVOT_GIT_TOKEN }}
           path: crypto-n-rust
 
       - name: Build assets
