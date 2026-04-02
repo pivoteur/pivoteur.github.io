@@ -27,3 +27,5 @@ opened	open	close	tx_id	updated	from	from_blockchain	amount1	virtual	quote1	val1
 2025-11-23	26	0	virtual_swap	2026-04-02	BTC	Avalanche	0	0.04878666	$66909.00	$3264.27	0.053665325	AVAX	Avalanche	373.4859	0	$8.74	$3264.27
 2025-12-19	27	0	virtual_swap	n/a	AVAX	Avalanche	0	162	$11.94	$1934.28	178.2	BTC	Avalanche	0.022615	0	$87922.00	$1988.36
 2025-12-19	28	6	virtual_swap	n/a	BTC	Avalanche	0	0.04525	$87922.00	$3978.47	0.049775	AVAX	Avalanche	324.1673	0	$11.94	$3870.56
+2026-04-02	29	0	virtual_swap	n/a	AVAX	Avalanche	0	970	$8.74	$8,477.80	1067	BTC	Avalanche	0.1267064222	0	$66,909.00	$8,477.80
+2026-04-02	30	0	virtual_swap	n/a	BTC	Avalanche	0	0.03	$66,909.00	$2,007.27	0.033	AVAX	Avalanche	229.6647597	0	$8.74	$2,007.27
