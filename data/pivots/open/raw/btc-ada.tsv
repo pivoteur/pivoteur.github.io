@@ -1,3 +1,3 @@
 opened	open	close	tx_id	updated	from	from_blockchain	amount1	virtual	quote1	val1	gain_10_percent	to	to_blockchain	net	ersatz	quote2	val2
-2026-02-20	1	0	virtual_swap	2026-04-07	BTC	Cardano	0	0.031908818	$68653.00	$2190.64	0.0350997	ADA	Cardano	9000	0	$0.2434	$2190.64
+2026-02-20	1	0	virtual_swap	2026-04-07	BTC	Cardano	0	0.031908818	$68653.00	$2190.64	0.0350997	ADA	Cardano	9000	0	$0.2434	$2190.60
 2026-02-20	2	0	https://cexplorer.io/tx/89497098819dc1ad6d37f7e192bf03e4a85998057a069a316fcc0fd63f3227bf	n/a	ADA	Cardano	9000	0	$0.2700	$2430.00	9900	BTC	Cardano	0.03609	0	$65964.00	$2380.64
