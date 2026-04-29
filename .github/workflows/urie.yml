@@ -66,18 +66,6 @@ jobs:
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
           echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
 
-      - name: run panic and Log Output
+      - name: run panic with manual inputs on Github Actions
         run: |
-          panic ${{inputs.ix}} "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" # > use_your_noodle/data/clothes.csv
-
-      - name: Commit and push results
-        env: 
-          USER1_NAME: ${{ vars.USER1_NAME }}
-          USER1_EMAIL: ${{ secrets.USER1_EMAIL }}
-        run: |
-          cd use_your_noodle
-          git config --local user.name "$USER1_NAME"
-          git config --local user.email "$USER1_EMAIL"
-          git add data/clothes.csv 
-          git commit -m "clothes updated $LE_DATE"
-          git push
+          panic "${{inputs.ix}}" "${{inputs.tx_id}}" "${{inputs.new_to_actual}}"
