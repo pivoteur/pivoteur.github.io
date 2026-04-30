@@ -69,3 +69,5 @@ jobs:
       - name: run urie with manual inputs on Github Actions
         run: |
           urie "${{inputs.ix}}" "${{inputs.tx_id}}" "${{inputs.new_to_actual}}"
+
+          
