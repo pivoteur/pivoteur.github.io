@@ -29,15 +29,16 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          repository: pivoteur/protocol
           path: protocol
+
       - uses: dtolnay/rust-toolchain@stable
+
       - uses: Swatinem/rust-cache@v2
         with:
-          workspaces: "quizzes/src/quiz08/b_urie"
+          workspaces: "protocol/quizzes/src/quiz08/b_urie"
 
-      - name: Set up rust
-        uses: dtolnay/rust-toolchain@stable
-      - name: Checkout crypto-n-rust # needed for `book` dependencies
+      - name: Checkout crypto-n-rust
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
