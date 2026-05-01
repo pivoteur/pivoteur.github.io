@@ -1,0 +1,39 @@
+name: pools
+
+on:
+  workflow_dispatch:
+
+jobs:
+  run-pools:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
+        uses: actions/checkout@v4
+
+      - name: Checkout protocol # Only needed to build pools
+        uses: actions/checkout@v4
+        with: 
+          repository: pivoteur/protocol
+          path: protocol
+
+      - name: Set up rust
+        uses: dtolnay/rust-toolchain@stable
+          
+      - name: Checkout crypto-n-rust # needed for pools' book dependencies
+        uses: actions/checkout@v4
+        with:
+          repository: logicalgraphs/crypto-n-rust
+          path: crypto-n-rust
+
+      - name: Build pools
+        run: |
+          cargo build --manifest-path protocol/dapps/pools/Cargo.toml --bin pools
+          echo "$GITHUB_WORKSPACE/protocol/dapps/pools/target/debug" >> $GITHUB_PATH
+
+      - name: Putting date into the env
+        run: |
+          echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: run pools
+        run: |
+          pools pivot $LE_DATE
