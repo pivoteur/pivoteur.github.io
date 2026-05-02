@@ -30,9 +30,10 @@ jobs:
           cargo build --manifest-path protocol/dapps/pools/Cargo.toml --bin pools
           echo "$GITHUB_WORKSPACE/protocol/dapps/pools/target/debug" >> $GITHUB_PATH
 
-      - name: Putting date into the env
+      - name: Adding the date and pivot_data_dir into the env
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "PIVOT_DATA_DIR=pivoteur.github.io/data" >> $GITHUB_ENV
 
       - name: run pools
         run: |
