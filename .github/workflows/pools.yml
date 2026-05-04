@@ -2,6 +2,9 @@ name: pools
 
 on:
   workflow_dispatch:
+  schedule:
+    # test the cron ("Min Hour Day Month DayofWeek" in UTC) at scheduled time 
+    - cron: "02 06 * * *" # in our time zone, this is 1.02 AM Eastern Time
 
 permissions:
   contents: write
