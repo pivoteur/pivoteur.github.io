@@ -33,7 +33,7 @@ jobs:
       - name: Adding the date and pivot_data_dir into the env
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "PIVOT_DATA_DIR=pivoteur.github.io/data" >> $GITHUB_ENV
+          echo "PIVOT_DATA_DIR=data" >> $GITHUB_ENV
 
       - name: run pools
         run: |
