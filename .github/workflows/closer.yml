@@ -1,4 +1,4 @@
-name: clothes
+name: closer
 
 on:
   workflow_dispatch:
@@ -23,7 +23,7 @@ permissions:
   contents: write
 
 jobs:
-  run-panic:
+  run-closer:
     runs-on: ubuntu-latest
 
     steps:
