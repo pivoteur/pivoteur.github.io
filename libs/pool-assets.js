@@ -1,4 +1,4 @@
-// created by: pools, version: 1.00
+// created by: pools, version: 1.01
 
 
 const poolAssets = {
