@@ -1,20 +1,18 @@
 
-// created by: pools, version: 1.00
+// created by: pools, version: 2.02
 
-
+ 
 const poolAssets = {
-   generated: '2026-04-03',
+   generated: '2026-05-05',
    assets: [
-      [ 'ADA', 'USDC' ],
       [ 'AVAX', 'UNDEAD' ],
-      [ 'BTC', 'ADA' ],
-      [ 'BTC', 'AVAX' ],
-      [ 'BTC', 'ETH' ],
-      [ 'BTC', 'UNDEAD' ],
-      [ 'BTC', 'USDC' ],
-      [ 'ETH', 'ADA' ],
       [ 'ETH', 'UNDEAD' ],
-      [ 'UNDEAD', 'USDC' ]
+      [ 'BTC', 'ETH' ],
+      [ 'BTC', 'USDC' ],
+      [ 'UNDEAD', 'USDC' ],
+      [ 'BTC', 'AVAX' ],
+      [ 'BTC', 'UNDEAD' ]
    ]
 };
+
 

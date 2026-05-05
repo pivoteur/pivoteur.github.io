@@ -1,22 +1,22 @@
-name: duskymin
+name: pools
 
 on:
   workflow_dispatch:
   schedule:
     # test the cron ("Min Hour Day Month DayofWeek" in UTC) at scheduled time 
-    - cron: "32 08 * * *" # in our time zone, this is 04:32 AM Eastern Time
+    - cron: "02 06 * * *" # in our time zone, this is 1.02 AM Eastern Time
 
 permissions:
   contents: write
 
 jobs:
-  run-duskymin:
+  run-pools:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
         uses: actions/checkout@v4
 
-      - name: Checkout protocol # Only needed to build dusk
+      - name: Checkout protocol # Only needed to build pools
         uses: actions/checkout@v4
         with: 
           repository: pivoteur/protocol
@@ -25,25 +25,25 @@ jobs:
       - name: Set up rust
         uses: dtolnay/rust-toolchain@stable
           
-      - name: Checkout crypto-n-rust # Only needed for dusk's `book` dependencies
+      - name: Checkout crypto-n-rust # needed for pools' book dependencies
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
           path: crypto-n-rust
 
-      - name: Build dusk
+      - name: Build pools
         run: |
-          cargo build --manifest-path protocol/dapps/dusk/Cargo.toml --bin dusk
-          echo "$GITHUB_WORKSPACE/protocol/dapps/dusk/target/debug" >> $GITHUB_PATH
-      
-      - name: Putting date and URL into the env
+          cargo build --manifest-path protocol/dapps/pools/Cargo.toml --bin pools
+          echo "$GITHUB_WORKSPACE/protocol/dapps/pools/target/debug" >> $GITHUB_PATH
+
+      - name: Adding the date and pivot_data_dir into the env
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
-      
-      - name: run dusk and Log Output
+          echo "PIVOT_DATA_DIR=data" >> $GITHUB_ENV
+
+      - name: run pools
         run: |
-          dusk --min pivot $LE_DATE > data/pivots/calls.csv
+          pools pivot $LE_DATE > libs/pool-assets.js
 
       - name: Commit and push results
         env: 
@@ -52,7 +52,7 @@ jobs:
         run: |
           git config --local user.name "$USER0_NAME"
           git config --local user.email "$USER0_EMAIL"
-          git add data/pivots/calls.csv
+          git add libs/pool-assets.js
           git diff --staged --quiet && echo "Nothing to commit, skipping push" && exit 0
-          git commit -m "dusk --min $LE_DATE"
+          git commit -m "pools $LE_DATE"
           git push
