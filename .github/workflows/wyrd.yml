@@ -27,13 +27,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          path: use_your_noodle
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: "pivot_dapps/new_automation"
+      - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
+        uses: actions/checkout@v4
 
       - name: Checkout protocol # needed for `lib` dependencies
         uses: actions/checkout@v4
