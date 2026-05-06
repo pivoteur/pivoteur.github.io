@@ -27,13 +27,8 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v4
-        with:
-          path: use_your_noodle
-      - uses: dtolnay/rust-toolchain@stable
-      - uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: "pivot_dapps/new_automation"
+      - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
+        uses: actions/checkout@v4
 
       - name: Checkout protocol # needed for `lib` dependencies
         uses: actions/checkout@v4
@@ -69,3 +64,14 @@ jobs:
       - name: run wyrd with manual inputs on Github Actions
         run: |
           wyrd "${{inputs.ix}}" "${{inputs.tx_id}}" "${{inputs.new_to_actual}}"
+
+      - name: Commit and push results
+        run: |
+          git config --local user.name "$USER0_NAME"
+          git config --local user.email "$USER0_EMAIL"
+          git add data/pivots/close/raw/*.tsv
+          git diff --staged --quiet && echo "Nothing to commit, skipping push" && exit 0
+          git commit -m "wyrd $LE_DATE"
+          git push
+
+          
