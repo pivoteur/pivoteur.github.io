@@ -43,7 +43,7 @@ jobs:
 
       - name: run assets and Log Output
         run: |
-          assets pivot $LE_DATE >> data/assets.tsv
+          assets pivot $LE_DATE >> data/assets.csv
 
       - name: Commit and push results
         env: 
