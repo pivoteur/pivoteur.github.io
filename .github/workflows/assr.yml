@@ -43,7 +43,7 @@ jobs:
 
       - name: run assets and Log Output
         run: |
-          assets pivot $LE_DATE >> data/assets.tsv
+          assets pivot $LE_DATE >> data/assets.csv
 
       - name: Commit and push results
         env: 
@@ -52,7 +52,7 @@ jobs:
         run: |
           git config --local user.name "$USER0_NAME"
           git config --local user.email "$USER0_EMAIL"
-          git add data/assets.tsv
+          git add data/assets.csv
           git diff --staged --quiet && echo "Nothing to commit, skipping push" && exit 0
           git commit -m "assets $LE_DATE"
           git push
