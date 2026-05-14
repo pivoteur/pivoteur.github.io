@@ -44,7 +44,7 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
     <script src='libs/indicators.js'></script>
     <script src='libs/dom.js'></script>
     <script>
-       fetch('data/assets.tsv')
+       fetch('data/assets.csv')
             .then(result => result.text())
             .then(data => tvlChart(data));
        fetch('data/wallets.tsv')
