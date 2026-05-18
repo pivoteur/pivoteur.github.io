@@ -60,11 +60,10 @@ jobs:
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
           echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
-          echo "CLOSE_PIVOT_DIR=data/pivots/close/raw" >> $GITHUB_ENV
 
       - name: run wyrd with manual inputs on Github Actions
         run: |
-          wyrd pivot "${{inputs.ix}}" "${{inputs.tx_id}}" "${{inputs.new_to_actual}}"
+          wyrd pivot data/pivots/close/raw "${{inputs.ix}}" "${{inputs.tx_id}}" "${{inputs.new_to_actual}}"
 
       - name: Commit and push results
         run: |
