@@ -45,7 +45,7 @@ jobs:
           echo "current dir has the following"
           ls -l
           find . -name virtsz
-          sh ./protocol/scripts/auto-virtsz.sh data/pivots/open/raw
+          sh ./protocol/scripts/auto-virtsz.sh pivot data/pivots/open/raw
 
       - name: Commit and push results
         env: 
