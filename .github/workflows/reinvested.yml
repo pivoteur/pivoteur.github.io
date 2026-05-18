@@ -59,8 +59,8 @@ jobs:
 
       - name: Build reinvested
         run: |
-          cargo build --manifest-path protocol/quizzes/src/quiz11/Cargo.toml --bin reinvested
-          echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz11/target/debug" >> $GITHUB_PATH
+          cargo build --manifest-path protocol/dapps/reinvested/Cargo.toml --bin reinvested
+          echo "$GITHUB_WORKSPACE/protocol/dapps/reinvested/target/debug" >> $GITHUB_PATH
 
       - name: Run reinvested
         env:
