@@ -24,6 +24,11 @@ jobs:
 
       - name: Set up rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "protocol/dapps/pools -> target"
           
       - name: Checkout crypto-n-rust # needed for pools' book dependencies
         uses: actions/checkout@v4
@@ -39,7 +44,6 @@ jobs:
       - name: Adding the date and pivot_data_dir into the env
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "PIVOT_DATA_DIR=data" >> $GITHUB_ENV
 
       - name: run pools
         run: |

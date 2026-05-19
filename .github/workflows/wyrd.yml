@@ -38,6 +38,12 @@ jobs:
 
       - name: Set up rust
         uses: dtolnay/rust-toolchain@stable
+
+      - name: Cache Rust dependencies
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: "protocol/dapps/wyrd -> target"
+
       - name: Checkout crypto-n-rust # needed for `book` dependencies
         uses: actions/checkout@v4
         with:
@@ -59,13 +65,15 @@ jobs:
       - name: adding the date and pivot_url into the env
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
 
       - name: run wyrd with manual inputs on Github Actions
         run: |
           wyrd pivot data/pivots/close/raw "${{inputs.ix}}" "${{inputs.tx_id}}" "${{inputs.new_to_actual}}"
 
       - name: Commit and push results
+        env: 
+          USER0_NAME: ${{ vars.USER0_NAME }}
+          USER0_EMAIL: ${{ secrets.USER0_EMAIL }}
         run: |
           git config --local user.name "$USER0_NAME"
           git config --local user.email "$USER0_EMAIL"
