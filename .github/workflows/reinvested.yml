@@ -3,6 +3,17 @@ name: reinvested
 on:
   workflow_dispatch:
     inputs:
+      investor:
+        description: 'Investor name / Telegram chat'
+        required: true
+        type: choice
+        options:
+          - Pivot_Internal_Bot
+          - someone else 0
+          - someone else 1
+          - someone else 2
+          - someone else 3
+          - someone else 4
       token_a:
         description: 'Reinvested token, left side of pool (e.g. AVAX)'
         required: true
@@ -21,7 +32,7 @@ on:
         required: true
         type: string
       url:
-        description: 'Tweet URL'
+        description: 'Tweet URL (e.g. x.com/pivocateur)'
         required: true
         type: string
 
@@ -51,6 +62,7 @@ jobs:
       - name: Showing reinvested's vars
         run: |
           echo "=== Running reinvested with manual inputs ==="
+          echo "investor:    ${{ inputs.investor }}"
           echo "token_a:     ${{ inputs.token_a }}"
           echo "token_b:     ${{ inputs.token_b }}"
           echo "pivot_count: ${{ inputs.pivot_count }}"
@@ -66,9 +78,9 @@ jobs:
         env:
           REINVESTED_BOT: ${{ secrets.PIVOT_PROTOCOL_ROBBIE }}
         run: |
-          reinvested "${{ inputs.token_a }}"     \
+          reinvested "${{ inputs.investor }}"     \
+                     "${{ inputs.token_a }}"     \
                      "${{ inputs.token_b }}"     \
                      "${{ inputs.pivot_count }}" \
                      "${{ inputs.amount }}"      \
                      "${{ inputs.url }}"
-
