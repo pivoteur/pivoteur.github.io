@@ -49,16 +49,16 @@ jobs:
         with:
           repository: pivoteur/protocol
           path: protocol
-
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
-
+          
       - name: Checkout crypto-n-rust # needed for book dependencies
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
           path: crypto-n-rust
-
+          
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+  
       - name: Showing reinvested's vars
         run: |
           echo "=== Running reinvested with manual inputs ==="
@@ -76,7 +76,8 @@ jobs:
 
       - name: Run reinvested
         env:
-          REINVESTED_BOT: ${{ secrets.PIVOT_PROTOCOL_ROBBIE }}
+          REINVESTED_BOT:    ${{ secrets.PIVOT_PROTOCOL_ROBBIE }}
+          INVESTOR_CHAT_IDS: ${{ secrets.INVESTOR_CHAT_IDS }}
         run: |
           reinvested "${{ inputs.investor }}"     \
                      "${{ inputs.token_a }}"     \
