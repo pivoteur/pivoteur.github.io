@@ -28,7 +28,7 @@ jobs:
       - name: Cache Rust dependencies
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: "protocol/dapps/pools -> target"
+          workspaces: "protocol/dapps/pools -> target/debug"
           
       - name: Checkout crypto-n-rust # needed for pools' book dependencies
         uses: actions/checkout@v4
