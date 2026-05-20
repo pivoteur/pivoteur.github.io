@@ -65,4 +65,3 @@ jobs:
                       "${{ inputs.amount }}"   \
                       "${{ inputs.tweet_url }}" \
                       "${{ inputs.tx_url }}"
-
