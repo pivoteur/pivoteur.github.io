@@ -47,9 +47,10 @@ jobs:
       - name: Add binary to PATH
         run: echo "$GITHUB_WORKSPACE/protocol/dapps/virtsz/target/release" >> $GITHUB_PATH
 
-      - name: Setting date
+      - name: Set date and pivot_url
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
 
       - name: Run virtsz
         run: |
