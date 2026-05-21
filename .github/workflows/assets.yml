@@ -42,7 +42,7 @@ jobs:
         run: |
           cargo build --manifest-path protocol/dapps/assets/Cargo.toml \
           --bin assets \
-          --release --locked
+          --release
 
       - name: Add binary to PATH
         run: echo "$GITHUB_WORKSPACE/protocol/dapps/assets/target/release" >> $GITHUB_PATH

@@ -63,7 +63,7 @@ jobs:
         run: |
           cargo build --manifest-path protocol/dapps/wyrd/Cargo.toml \
           --bin wyrd \
-          --release --locked
+          --release
 
       - name: Add binary to PATH
         run: echo "$GITHUB_WORKSPACE/protocol/dapps/wyrd/target/release" >> $GITHUB_PATH

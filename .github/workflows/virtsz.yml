@@ -42,7 +42,7 @@ jobs:
         run: |
           cargo build --manifest-path protocol/dapps/virtsz/Cargo.toml \
           --bin virtsz \
-          --release --locked
+          --release
 
       - name: Add binary to PATH
         run: echo "$GITHUB_WORKSPACE/protocol/dapps/virtsz/target/release" >> $GITHUB_PATH
