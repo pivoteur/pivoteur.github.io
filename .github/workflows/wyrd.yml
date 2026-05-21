@@ -68,8 +68,9 @@ jobs:
       - name: Add binary to PATH
         run: echo "$GITHUB_WORKSPACE/protocol/dapps/wyrd/target/release" >> $GITHUB_PATH
 
-      - name: Set date
-        run: echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+      - name: Set date and pivot_url
+        run: |
+          echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Run wyrd
         run: |
@@ -91,3 +92,5 @@ jobs:
 
           git commit -m "wyrd $LE_DATE"
           git push
+
+          
