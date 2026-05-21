@@ -1,0 +1,58 @@
+name: hwaet
+
+on:
+  workflow_dispatch:
+  #schedule:
+    # test the cron ("Min Hour Day Month DayofWeek" in UTC) at scheduled time 
+    #- cron: "02 06 * * *" # in our time zone, this is 1.02 AM Eastern Time
+
+permissions:
+  contents: write
+
+jobs:
+  run-hwaet:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
+        uses: actions/checkout@v4
+
+      - name: Checkout protocol # Only needed to build hwaet
+        uses: actions/checkout@v4
+        with: 
+          repository: pivoteur/protocol
+          path: protocol
+
+      - name: Checkout crypto-n-rust # Only needed for hwaet' book dependencies
+        uses: actions/checkout@v4
+        with:
+          repository: logicalgraphs/crypto-n-rust
+          path: crypto-n-rust
+
+      - name: Set up rust
+        uses: dtolnay/rust-toolchain@stable
+          
+      - name: Build hwaet
+        run: |
+          cargo build --manifest-path protocol/dapps/hwaet/Cargo.toml --bin hwaet
+          echo "$GITHUB_WORKSPACE/protocol/dapps/hwaet/target/debug" >> $GITHUB_PATH
+
+      - name: Adding the date and pivot_data_dir into the env
+        run: |
+          echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
+
+      - name: run hwaet
+        run: |
+          hwaet pivot $LE_DATE > libs/pool-health.js
+
+      - name: Commit and push results
+        env: 
+          USER0_NAME: ${{ vars.USER0_NAME }}
+          USER0_EMAIL: ${{ secrets.USER0_EMAIL }}
+        run: |
+          git config --local user.name "$USER0_NAME"
+          git config --local user.email "$USER0_EMAIL"
+          git add libs/pool-health.js
+          git diff --staged --quiet && echo "Nothing to commit, skipping push" && exit 0
+          git commit -m "hwaet $LE_DATE"
+          git push
