@@ -35,22 +35,24 @@ jobs:
         with: 
           repository: pivoteur/protocol
           path: protocol
-
-      - name: Set up rust
-        uses: dtolnay/rust-toolchain@stable
-
-      - name: Cache Rust dependencies
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: "protocol/dapps/wyrd -> target"
-
+          
       - name: Checkout crypto-n-rust # needed for `book` dependencies
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
           path: crypto-n-rust
 
-      - name: Showing wyrd's vars
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: protocol/dapps/wyrd
+
+      - name: Show input parameters
         run: |
           echo "=== Running wyrd with manual inputs ==="
           echo "ix: ${{ inputs.ix }}"
@@ -59,14 +61,17 @@ jobs:
 
       - name: Build wyrd
         run: |
-          cargo build --manifest-path protocol/dapps/wyrd/Cargo.toml --bin wyrd
-          echo "$GITHUB_WORKSPACE/protocol/dapps/wyrd/target/debug" >> $GITHUB_PATH
+          cargo build --manifest-path protocol/dapps/wyrd/Cargo.toml \
+          --bin wyrd \
+          --release --locked
 
-      - name: adding the date and pivot_url into the env
-        run: |
-          echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+      - name: Add binary to PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/dapps/wyrd/target/release" >> $GITHUB_PATH
 
-      - name: run wyrd with manual inputs on Github Actions
+      - name: Set date
+        run: echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+
+      - name: Run wyrd
         run: |
           wyrd pivot data/pivots/close/raw "${{inputs.ix}}" "${{inputs.tx_id}}" "${{inputs.new_to_actual}}"
 
@@ -78,8 +83,11 @@ jobs:
           git config --local user.name "$USER0_NAME"
           git config --local user.email "$USER0_EMAIL"
           git add data/pivots/close/raw/*.tsv
-          git diff --staged --quiet && echo "Nothing to commit, skipping push" && exit 0
+
+          if git diff --staged --quiet; then
+            echo "Nothing to commit, skipping push"
+            exit 0
+          fi
+
           git commit -m "wyrd $LE_DATE"
           git push
-
-          
