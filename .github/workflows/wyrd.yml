@@ -56,7 +56,7 @@ jobs:
           cargo build --manifest-path protocol/dapps/wyrd/Cargo.toml --bin wyrd
           echo "$GITHUB_WORKSPACE/protocol/dapps/wyrd/target/debug" >> $GITHUB_PATH
 
-      - name: Build Appender
+      - name: Build appender
         run: |
           cargo build --manifest-path protocol/dapps/appender/Cargo.toml --bin appender
           echo "$GITHUB_WORKSPACE/protocol/dapps/appender/target/debug" >> $GITHUB_PATH
@@ -68,7 +68,7 @@ jobs:
 
       - name: run wyrd with manual inputs on Github Actions
         run: |
-          wyrd pivot data/pivots/close/raw "${{inputs.ix}}" "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" | appender
+          wyrd pivot data/pivots/close/raw "${{inputs.ix}}" "${{inputs.tx_id}}" "${{inputs.new_to_actual}}"
 
       - name: Commit and push results
         run: |
