@@ -1,10 +1,10 @@
-name: virr
+name: virtsz
 
 on:
   workflow_dispatch:
   schedule:
     # test the cron ("Min Hour Day Month DayofWeek" in UTC) at scheduled time 
-    - cron: "05 08 * * *" # in our time zone, this is 4:05 AM Eastern Time
+    - cron: "05 08 * * *" # this is 4:05 AM Eastern Standard Time
 
 permissions:
   contents: write
@@ -22,29 +22,42 @@ jobs:
           repository: pivoteur/protocol
           path: protocol
 
-      - name: Set up rust
-        uses: dtolnay/rust-toolchain@stable
-          
       - name: Checkout crypto-n-rust # needed for virtsz's `book` dependencies
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
           path: crypto-n-rust
 
-      - name: Build virtsz 
-        run: cargo build --manifest-path protocol/dapps/virtsz/Cargo.toml --bin virtsz 
+      - name: Install Rust toolchain
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
 
-      - name: Putting date into the env
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: protocol/dapps/virtsz
+
+      - name: Build virtsz 
+        run: |
+          cargo build --manifest-path protocol/dapps/virtsz/Cargo.toml \
+          --bin virtsz \
+          --release --locked
+
+      - name: Add binary to PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/dapps/virtsz/target/release" >> $GITHUB_PATH
+
+      - name: Setting date
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "PATH=protocol/dapps/virtsz/target/debug:$PATH" >> $GITHUB_ENV
-          echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
 
       - name: Run virtsz
         run: |
-          echo "current dir has the following"
+          echo "Current directory contents:"
           ls -l
-          find . -name virtsz
+          echo "Looking for virtsz binary:"
+          find . -name virtsz -type f
+          
           sh ./protocol/scripts/auto-virtsz.sh pivot data/pivots/open/raw
 
       - name: Commit and push results
@@ -55,6 +68,11 @@ jobs:
           git config --local user.name "$USER0_NAME"
           git config --local user.email "$USER0_EMAIL"
           git add data/pivots/open/raw/*.tsv
-          git diff --staged --quiet && echo "Nothing to commit, skipping push" && exit 0
+
+          if git diff --staged --quiet; then
+            echo "Nothing to commit, skipping push"
+            exit 0
+          fi
+
           git commit -m "virtsz $LE_DATE"
           git push

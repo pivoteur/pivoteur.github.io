@@ -9,11 +9,11 @@ on:
         type: choice
         options:
           - Pivot_Internal_Bot
-          - someone else 0
-          - someone else 1
-          - someone else 2
-          - someone else 3
-          - someone else 4
+          - alpaha
+          - phi
+          - psi
+          - pi
+          - tau
       token_a:
         description: 'Reinvested token, left side of pool (e.g. AVAX)'
         required: true
@@ -56,10 +56,17 @@ jobs:
           repository: logicalgraphs/crypto-n-rust
           path: crypto-n-rust
           
-      - name: Set up Rust
+      - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
-  
-      - name: Showing reinvested's vars
+        with:
+          toolchain: stable
+
+      - name: Cache Rust
+        uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: protocol/dapps/reinvested
+
+      - name: Show input parameters
         run: |
           echo "=== Running reinvested with manual inputs ==="
           echo "investor:    ${{ inputs.investor }}"
@@ -71,8 +78,12 @@ jobs:
 
       - name: Build reinvested
         run: |
-          cargo build --manifest-path protocol/dapps/reinvested/Cargo.toml --bin reinvested
-          echo "$GITHUB_WORKSPACE/protocol/dapps/reinvested/target/debug" >> $GITHUB_PATH
+          cargo build --manifest-path protocol/dapps/reinvested/Cargo.toml \
+          --bin reinvested \
+          --release --locked
+
+      - name: Add binary to PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/dapps/reinvested/target/release" >> $GITHUB_PATH
 
       - name: Run reinvested
         env:
