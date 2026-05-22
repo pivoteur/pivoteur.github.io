@@ -80,7 +80,7 @@ jobs:
         run: |
           cargo build --manifest-path protocol/dapps/reinvested/Cargo.toml \
           --bin reinvested \
-          --release --locked
+          --release
 
       - name: Add binary to PATH
         run: echo "$GITHUB_WORKSPACE/protocol/dapps/reinvested/target/release" >> $GITHUB_PATH

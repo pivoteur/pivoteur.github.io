@@ -42,13 +42,15 @@ jobs:
         run: |
           cargo build --manifest-path protocol/dapps/assets/Cargo.toml \
           --bin assets \
-          --release --locked
+          --release
 
       - name: Add binary to PATH
         run: echo "$GITHUB_WORKSPACE/protocol/dapps/assets/target/release" >> $GITHUB_PATH
 
-      - name: Adding date
-        run: echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+      - name: Set date and pivot_rul
+        run: |
+          echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
 
       - name: Run assets and log output
         run: assets pivot $LE_DATE >> data/assets.csv

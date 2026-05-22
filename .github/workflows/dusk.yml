@@ -42,7 +42,7 @@ jobs:
         run: |
           cargo build --manifest-path protocol/dapps/dusk/Cargo.toml \
           --bin dusk \
-          --release --locked
+          --release
 
       - name: Add binary to PATH
         run: echo "$GITHUB_WORKSPACE/protocol/dapps/dusk/target/release" >> $GITHUB_PATH
