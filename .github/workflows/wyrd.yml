@@ -27,16 +27,16 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
+      - name: Checkout pivoteur.github.io
         uses: actions/checkout@v4
 
-      - name: Checkout protocol # needed for `lib` dependencies
+      - name: Checkout protocol
         uses: actions/checkout@v4
         with: 
           repository: pivoteur/protocol
           path: protocol
           
-      - name: Checkout crypto-n-rust # needed for `book` dependencies
+      - name: Checkout crypto-n-rust
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
@@ -50,7 +50,7 @@ jobs:
       - name: Cache Rust
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: protocol/dapps/wyrd
+          workspaces: protocol/dapps
 
       - name: Show input parameters
         run: |
@@ -59,23 +59,39 @@ jobs:
           echo "tx_id: ${{ inputs.tx_id }}"
           echo "new_to_actual: ${{ inputs.new_to_actual }}"
 
-      - name: Build wyrd
-        run: |
-          cargo build --manifest-path protocol/dapps/wyrd/Cargo.toml \
-          --bin wyrd \
-          --release
-
-      - name: Add binary to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/wyrd/target/release" >> $GITHUB_PATH
-
-      - name: Set date and pivot_url
+      - name: Base variables
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
+          echo "PGI=pivoteur.github.io" >> $GITHUB_ENV
+          echo "DAPPS_DIR=protocol/dapps" >> $GITHUB_ENV
+          echo "TARGET_DIR=target/release" >> $GITHUB_ENV
+          echo "GIT_RAW_URL=https://raw.githubusercontent.com" >> $GITHUB_ENV
 
-      - name: Run wyrd
+      - name: Establish pathing to dapps
         run: |
-          wyrd pivot data/pivots/close/raw "${{inputs.ix}}" "${{inputs.tx_id}}" "${{inputs.new_to_actual}}"
+          echo "PROTOCOL=pivoteur/$PGI" >> $GITHUB_ENV
+          echo "GIT_DAPPS_DIR=$GITHUB_WORKSPACE/$DAPPS_DIR" >> $GITHUB_ENV
+
+      - name: protocol URL and paths to dapps
+        run: |
+          echo "PIVOT_URL=$GIT_RAW_URL/$PROTOCOL" >> $GITHUB_ENV
+          echo "$GIT_DAPPS_DIR/wyrd/$TARGET_DIR" >> $GITHUB_PATH
+          echo "$GIT_DAPPS_DIR/appender/$TARGET_DIR" >> $GITHUB_PATH
+
+      - name: Build wyrd
+        run: |
+          cargo build --manifest-path $DAPPS_DIR/wyrd/Cargo.toml \
+          --bin wyrd --release
+
+      - name: Build appender
+        run: |
+          cargo build --manifest-path $DAPPS_DIR/appender/Cargo.toml \
+          --bin appender --release
+
+      - name: Run wyrd and append to close pivot table
+        run: |
+          wyrd pivot $GITHUB_WORKSPACE/data/pivots/close/raw "${{inputs.ix}}" \
+          "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" | appender
 
       - name: Commit and push results
         env: 
