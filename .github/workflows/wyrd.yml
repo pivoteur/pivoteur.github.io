@@ -25,12 +25,6 @@ permissions:
 jobs:
   run-wyrd:
     runs-on: ubuntu-latest
-    env:
-      DAPPS_DIR: "protocol/dapps"
-      TARGET_DIR: "target/release"
-      GIT_DAPPS_DIR: $GITHUB_WORKSPACE/$DAPPS_DIR
-      GIT_RAW_URL: "https://raw.githubusercontent.com"
-      PROTOCOL_URL: "$GIT_RAW_URL/pivoteur/pivoteur.github.io"
 
     steps:
       - name: Checkout pivoteur.github.io
@@ -56,7 +50,7 @@ jobs:
       - name: Cache Rust
         uses: Swatinem/rust-cache@v2
         with:
-          workspaces: protocol/dapps/wyrd
+          workspaces: protocol/dapps
 
       - name: Show input parameters
         run: |
@@ -64,6 +58,19 @@ jobs:
           echo "ix: ${{ inputs.ix }}"
           echo "tx_id: ${{ inputs.tx_id }}"
           echo "new_to_actual: ${{ inputs.new_to_actual }}"
+
+      - name: Add binary to PATH; set date and pivot protocol URL
+        run: |
+          echo "DAPPS_DIR=protocol/dapps" >> $GITHUB_ENV
+          echo "TARGET_DIR=target/release" >> $GITHUB_ENV
+          echo "GIT_DAPPS_DIR=$GITHUB_WORKSPACE/$DAPPS_DIR" >> $GITHUB_ENV
+          echo "GIT_RAW_URL=https://raw.githubusercontent.com" >> $GITHUB_ENV
+          echo "PROTOCOL=pivoteur/pivoteur.github.io" >> $GITHUB_ENV
+          echo "PROTOCOL_URL=$GIT_RAW_URL/$PROTOCOL" >> $GITHUB_ENV
+          echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "PIVOT_URL=$PROTOCOL_URL" >> $GITHUB_ENV
+          echo "$GIT_DAPPS_DIR/wyrd/$TARGET_DIR" >> $GITHUB_PATH
+          echo "$GIT_DAPPS_DIR/appender/$TARGET_DIR" >> $GITHUB_PATH
 
       - name: Build wyrd
         run: |
@@ -74,16 +81,6 @@ jobs:
         run: |
           cargo build --manifest-path $DAPPS_DIR/appender/Cargo.toml \
           --bin appender --release
-
-      - name: Add binary to PATH
-        run: |
-          echo "$GIT_DAPPS_DIR/wyrd/$TARGET_DIR" >> $GITHUB_PATH
-          echo "$GIT_DAPPS_DIR/appender/$TARGET_DIR" >> $GITHUB_PATH
-
-      - name: Set date and pivot_url
-        run: |
-          echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "PIVOT_URL=$PROTOCOL_URL" >> $GITHUB_ENV
 
       - name: Run wyrd
         run: |
