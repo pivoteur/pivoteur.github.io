@@ -59,16 +59,18 @@ jobs:
           echo "tx_id: ${{ inputs.tx_id }}"
           echo "new_to_actual: ${{ inputs.new_to_actual }}"
 
-      - name: Add binary to PATH; set date and pivot protocol URL
+      - name: Base variables
         run: |
           echo "DAPPS_DIR=protocol/dapps" >> $GITHUB_ENV
           echo "TARGET_DIR=target/release" >> $GITHUB_ENV
           echo "GIT_DAPPS_DIR=$GITHUB_WORKSPACE/$DAPPS_DIR" >> $GITHUB_ENV
           echo "GIT_RAW_URL=https://raw.githubusercontent.com" >> $GITHUB_ENV
           echo "PROTOCOL=pivoteur/pivoteur.github.io" >> $GITHUB_ENV
-          echo "PROTOCOL_URL=$GIT_RAW_URL/$PROTOCOL" >> $GITHUB_ENV
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "PIVOT_URL=$PROTOCOL_URL" >> $GITHUB_ENV
+
+      - name: protocol URL and paths to dapps
+        run: |
+          echo "PIVOT_URL=$GIT_RAW_URL/$PROTOCOL" >> $GITHUB_ENV
           echo "$GIT_DAPPS_DIR/wyrd/$TARGET_DIR" >> $GITHUB_PATH
           echo "$GIT_DAPPS_DIR/appender/$TARGET_DIR" >> $GITHUB_PATH
 
