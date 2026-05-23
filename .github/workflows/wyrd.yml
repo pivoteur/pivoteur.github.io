@@ -25,18 +25,24 @@ permissions:
 jobs:
   run-wyrd:
     runs-on: ubuntu-latest
+    env:
+      DAPPS_DIR: "protocol/dapps"
+      TARGET_DIR: "target/release"
+      GIT_DAPPS_DIR: $GITHUB_WORKSPACE/$DAPPS_DIR
+      GIT_RAW_URL: "https://raw.githubusercontent.com"
+      PROTOCOL_URL: "$GIT_RAW_URL/pivoteur/pivoteur.github.io"
 
     steps:
-      - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
+      - name: Checkout pivoteur.github.io
         uses: actions/checkout@v4
 
-      - name: Checkout protocol # needed for `lib` dependencies
+      - name: Checkout protocol
         uses: actions/checkout@v4
         with: 
           repository: pivoteur/protocol
           path: protocol
           
-      - name: Checkout crypto-n-rust # needed for `book` dependencies
+      - name: Checkout crypto-n-rust
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
@@ -61,21 +67,28 @@ jobs:
 
       - name: Build wyrd
         run: |
-          cargo build --manifest-path protocol/dapps/wyrd/Cargo.toml \
-          --bin wyrd \
-          --release
+          cargo build --manifest-path $DAPPS_DIR/wyrd/Cargo.toml \
+          --bin wyrd --release
+
+      - name: Build appender
+        run: |
+          cargo build --manifest-path $DAPPS_DIR/appender/Cargo.toml \
+          --bin appender --release
 
       - name: Add binary to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/wyrd/target/release" >> $GITHUB_PATH
+        run: |
+          echo "$GIT_DAPPS_DIR/wyrd/$TARGET_DIR" >> $GITHUB_PATH
+          echo "$GIT_DAPPS_DIR/appender/$TARGET_DIR" >> $GITHUB_PATH
 
       - name: Set date and pivot_url
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
+          echo "PIVOT_URL=$PROTOCOL_URL" >> $GITHUB_ENV
 
       - name: Run wyrd
         run: |
-          wyrd pivot data/pivots/close/raw "${{inputs.ix}}" "${{inputs.tx_id}}" "${{inputs.new_to_actual}}"
+          wyrd pivot data/pivots/close/raw "${{inputs.ix}}" \
+          "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" | appender
 
       - name: Commit and push results
         env: 
