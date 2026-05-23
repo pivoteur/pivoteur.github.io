@@ -62,13 +62,14 @@ jobs:
       - name: Base variables
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "PROTOCOL=pivoteur/pivoteur.github.io" >> $GITHUB_ENV
+          echo "PGI=pivoteur.github.io" >> $GITHUB_ENV
           echo "DAPPS_DIR=protocol/dapps" >> $GITHUB_ENV
           echo "TARGET_DIR=target/release" >> $GITHUB_ENV
           echo "GIT_RAW_URL=https://raw.githubusercontent.com" >> $GITHUB_ENV
 
       - name: Establish pathing to dapps
         run: |
+          echo "PROTOCOL=pivoteur/$PGI" >> $GITHUB_ENV
           echo "GIT_DAPPS_DIR=$GITHUB_WORKSPACE/$DAPPS_DIR" >> $GITHUB_ENV
 
       - name: protocol URL and paths to dapps
@@ -89,7 +90,7 @@ jobs:
 
       - name: Run wyrd
         run: |
-          wyrd pivot data/pivots/close/raw "${{inputs.ix}}" \
+          wyrd pivot $PGI/data/pivots/close/raw "${{inputs.ix}}" \
           "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" | appender
 
       - name: Commit and push results
