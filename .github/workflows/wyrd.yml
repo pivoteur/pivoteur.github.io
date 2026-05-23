@@ -89,7 +89,11 @@ jobs:
           --bin appender --release
 
       - name: Find pool tables
-        run: find $GITHUB_WORKSPACE -name "btc-eth.tsv"
+        run: |
+          find $GITHUB_WORKSPACE -name "btc-eth.tsv"
+          echo "PWD: "; pwd
+          echo "File? $GITHUB_WORKSPACE/data/pivots/close/raw "
+          ls -1 $GITHUB_WORKSPACE/data/pivots/close/raw
 
       - name: Run wyrd and append to close pivot table
         run: |
