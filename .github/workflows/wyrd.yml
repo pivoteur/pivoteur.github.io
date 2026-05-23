@@ -88,9 +88,12 @@ jobs:
           cargo build --manifest-path $DAPPS_DIR/appender/Cargo.toml \
           --bin appender --release
 
-      - name: Run wyrd
+      - name: Find pool tables
+        run: find $GITHUB_WORKSPACE -name "btc-eth.tsv"
+
+      - name: Run wyrd and append to close pivot table
         run: |
-          wyrd pivot $PGI/data/pivots/close/raw "${{inputs.ix}}" \
+          wyrd pivot $GITHUB_WORKSPACE/data/pivots/close/raw "${{inputs.ix}}" \
           "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" | appender
 
       - name: Commit and push results
