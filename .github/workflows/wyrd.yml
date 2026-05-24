@@ -90,7 +90,7 @@ jobs:
 
       - name: Run wyrd and append to close pivot table
         run: |
-          wyrd pivot $GITHUB_WORKSPACE/data/pivots/close/raw "${{inputs.ix}}" \
+          wyrd pivot data/pivots/close/raw "${{inputs.ix}}" \
           "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" | appender
 
       - name: Commit and push results
