@@ -61,6 +61,7 @@ jobs:
 
       - name: Base variables
         run: |
+          echo "DAPP=wyrd" >> $GITHUB_ENV
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
           echo "PGI=pivoteur.github.io" >> $GITHUB_ENV
           echo "DAPPS_DIR=protocol/dapps" >> $GITHUB_ENV
@@ -75,7 +76,7 @@ jobs:
       - name: protocol URL and paths to dapps
         run: |
           echo "PIVOT_URL=$GIT_RAW_URL/$PROTOCOL" >> $GITHUB_ENV
-          echo "$GIT_DAPPS_DIR/wyrd/$TARGET_DIR" >> $GITHUB_PATH
+          echo "$GIT_DAPPS_DIR/$DAPP/$TARGET_DIR" >> $GITHUB_PATH
           echo "$GIT_DAPPS_DIR/appender/$TARGET_DIR" >> $GITHUB_PATH
 
       - name: Build wyrd
