@@ -27,7 +27,6 @@ jobs:
 
       - name: Copy diagnostics to pivoteur.github.io
         run: |
-          mkdir -p pivoteur.github.io/data
           cp protocol/data/diagnostics.txt pivoteur.github.io/data/diagnostics.txt
 
       - name: Commit and push diagnostics
