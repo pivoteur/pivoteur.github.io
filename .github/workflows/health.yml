@@ -1,0 +1,42 @@
+name: health
+
+on:
+  workflow_dispatch:
+#  schedule:
+    # test the cron ("Min Hour Day Month DayofWeek" in UTC) at scheduled time 
+#    - cron: "23 05 * * *" # this is 1:23 AM Eastern Standard Time
+
+permissions:
+  contents: write
+
+jobs:
+  update_health:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout pivoteur.github.io
+        uses: actions/checkout@v4
+        with:
+          path: pivoteur.github.io
+
+      - name: Checkout protocol
+        uses: actions/checkout@v4
+        with:
+          repository: pivoteur/protocol
+          path: protocol
+
+      - name: Copy diagnostics to pivoteur.github.io
+        run: |
+          cp protocol/data/diagnostics.txt pivoteur.github.io/data/diagnostics.txt
+
+      - name: Commit and push diagnostics
+        env:
+          USER0_NAME: ${{ vars.USER0_NAME }}
+          USER0_EMAIL: ${{ secrets.USER0_EMAIL }}
+        run: |
+          cd pivoteur.github.io
+          git config user.name "$USER0_NAME"
+          git config user.email "$USER0_EMAIL"
+          git add data/diagnostics.txt
+          git commit -m "health of the protocol [skip ci]" || echo "No changes to commit"
+          git push
