@@ -1,0 +1,398 @@
+<html>
+ <head>
+  <title>Protocol Health</title>
+  <link rel='stylesheet' href='styles.css?version=16'></link>
+  <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap'>
+  <style>
+   * { box-sizing: border-box; margin: 0; padding: 0; }
+
+   body {
+     background: transparent;
+     font-family: 'JetBrains Mono', monospace;
+     color: #c8d8e8;
+     padding: 32px 24px;
+   }
+
+   #header { margin-bottom: 28px; }
+
+   #header h2 {
+     font-size: 20px;
+     font-weight: 700;
+     color: #ffffff;
+     letter-spacing: -0.01em;
+     margin-bottom: 5px;
+   }
+
+   #stamp {
+     font-size: 10px;
+     color: rgba(200,216,232,0.35);
+     letter-spacing: 0.07em;
+     text-transform: uppercase;
+   }
+
+   .diag-section-heading {
+     font-size: 10px;
+     color: rgba(200,216,232,0.3);
+     letter-spacing: 0.1em;
+     text-transform: uppercase;
+     margin: 20px 0 8px 2px;
+   }
+
+   .diag-row {
+     padding: 13px 16px;
+     background: rgba(255,255,255,0.03);
+     border: 1px solid rgba(255,255,255,0.06);
+     border-radius: 8px;
+     margin-bottom: 7px;
+     opacity: 0;
+     transform: translateY(8px);
+     animation: fadeUp 0.4s ease forwards;
+   }
+
+   .diag-row-top {
+     display: flex;
+     width: 100%;
+     align-items: center;
+     justify-content: space-between;
+     gap: 12px;
+   }
+
+   .diag-row-left {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     flex: 1;
+     min-width: 0;
+   }
+
+   .dot {
+     width: 7px;
+     height: 7px;
+     border-radius: 50%;
+     flex-shrink: 0;
+   }
+   .dot-pass { background: #00e5a0; box-shadow: 0 0 6px #00e5a088; }
+   .dot-fail { background: #ff6b6b; box-shadow: 0 0 6px #ff6b6b88; }
+
+   .diag-label {
+     font-size: 13px;
+     color: #c8d8e8;
+     letter-spacing: 0.02em;
+   }
+
+   .diag-sublabel {
+     font-size: 11px;
+     color: rgba(200,216,232,0.38);
+     margin-left: 4px;
+     letter-spacing: 0.04em;
+   }
+
+   .diag-counts {
+     font-size: 11px;
+     color: rgba(200,216,232,0.32);
+     white-space: nowrap;
+     margin-left: 6px;
+   }
+
+   .diag-counts-fail { color: #ff9999; }
+
+   .diag-row-right {
+     display: flex;
+     align-items: center;
+     gap: 14px;
+     flex-shrink: 0;
+   }
+
+   .diag-status {
+     font-size: 10px;
+     color: rgba(200,216,232,0.4);
+     letter-spacing: 0.05em;
+     text-transform: uppercase;
+     text-align: right;
+     line-height: 1.4;
+   }
+
+   .diag-pct {
+     font-size: 13px;
+     font-weight: 600;
+     min-width: 52px;
+     text-align: right;
+   }
+   .pct-high { color: #00e5a0; }
+   .pct-mid  { color: #f0c040; }
+   .pct-low  { color: #ff6b6b; }
+
+   .diag-total {
+     font-size: 13px;
+     font-weight: 600;
+     color: #00e5a0;
+   }
+
+   .diag-bar-wrap {
+     width: 100%;
+     height: 3px;
+     background: rgba(255,255,255,0.07);
+     border-radius: 2px;
+     margin-top: 9px;
+     overflow: hidden;
+   }
+
+   .diag-bar-fill {
+     height: 100%;
+     border-radius: 2px;
+     transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+   }
+
+   .diag-failures {
+     margin-top: 9px;
+     padding: 7px 10px;
+     background: rgba(255,107,107,0.07);
+     border-left: 2px solid rgba(255,107,107,0.5);
+     border-radius: 0 4px 4px 0;
+     font-size: 11px;
+     color: #ff9999;
+     line-height: 1.7;
+   }
+
+   .diag-fail-banner {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+     padding: 13px 16px;
+     background: rgba(255,107,107,0.08);
+     border: 1px solid rgba(255,107,107,0.25);
+     border-radius: 8px;
+     margin-bottom: 7px;
+     font-size: 13px;
+     color: #ff6b6b;
+     font-weight: 600;
+     opacity: 0;
+     animation: fadeUp 0.4s ease forwards;
+   }
+
+   hr.diag-divider {
+     border: none;
+     border-top: 1px solid rgba(255,255,255,0.05);
+     margin: 18px 0;
+   }
+
+   #graph-area {
+     margin-top: 24px;
+     padding: 18px 16px;
+     border: 1px dashed rgba(255,255,255,0.08);
+     border-radius: 8px;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+     color: rgba(200,216,232,0.2);
+     font-size: 10px;
+     letter-spacing: 0.09em;
+     text-transform: uppercase;
+   }
+
+   @keyframes fadeUp {
+     to { opacity: 1; transform: translateY(0); }
+   }
+  </style>
+ </head>
+ <body>
+  <div id="header">
+   <h2>Protocol Health</h2>
+   <div id="stamp">Loading...</div>
+  </div>
+  <div id="report"></div>
+  <div id="graph-area">Graph area</div>
+
+  <script>
+   fetch('data/diagnostics.txt')
+     .then(r => {
+       if (!r.ok) throw new Error('Could not load diagnostics.txt');
+       return r.text();
+     })
+     .then(text => {
+       const lines = text.split('\n');
+       let stamp = '';
+
+       // entries: { crate, sublabel, status, coverage, passed, failed, failures[], total, totalOf }
+       const entries = [];
+       let cur = null;
+
+       lines.forEach(line => {
+
+         // === RAT Diagnostics Log (Mon Jun 1 06:37:54 UTC 2026) ===
+         if (line.startsWith('=== RAT Diagnostics Log')) {
+           const m = line.match(/\((.+?)\)/);
+           if (m) stamp = m[1];
+
+         } else if (line.startsWith('--- [')) {
+           if (cur) entries.push(cur);
+
+           // format: "--- [crate] sublabel | verdict | COV% coverage | N passed, M failed"
+           //      or "--- [crate] verdict | COV% coverage | N passed, M failed"
+           //      or "--- [dapps] itr"
+           const rest = line.replace(/^---\s*/, '');              // "[book] All tests passed | ..."
+           const bm   = rest.match(/^\[(\w+)\]\s*(.*)/);
+           if (!bm) return;
+
+           const crate     = bm[1];
+           const remainder = bm[2];
+           const parts     = remainder.split('|').map(s => s.trim());
+
+           // sublabel = first part if it doesn't contain verdict keywords
+           let sublabel  = null;
+           let startIdx  = 0;
+           if (parts[0] && !parts[0].match(/All tests passed|TESTS FAILED/i) && parts.length > 1) {
+             sublabel = parts[0];   // e.g. "test-flow" or "coverage" or "itr"
+             startIdx = 1;
+           }
+
+           const verdict  = parts[startIdx] || '';
+           const status   = verdict.includes('TESTS FAILED') ? 'fail' : 'pass';
+
+           let coverage = null;
+           let passed   = null;
+           let failed   = null;
+           parts.forEach(p => {
+             const cm = p.match(/([\d.]+)%\s*coverage/);
+             const pm = p.match(/(\d+)\s*passed/);
+             const fm = p.match(/(\d+)\s*failed/);
+             if (cm) coverage = parseFloat(cm[1]);
+             if (pm) passed   = parseInt(pm[1]);
+             if (fm) failed   = parseInt(fm[1]);
+           });
+
+           cur = { crate, sublabel, status, coverage, passed, failed, failures: [], total: null, totalOf: null };
+
+         } else if (line.match(/total:\s*\d+\/\d+/) && cur) {
+           const m = line.match(/total:\s*(\d+)\/(\d+)/);
+           if (m) { cur.total = parseInt(m[1]); cur.totalOf = parseInt(m[2]); }
+
+         } else if (line.match(/^\s+\S+::\S+/) && cur) {
+           // failure detail: "  module::test_name"
+           cur.failures.push(line.trim());
+
+         } else if (line.trim() === '' && cur) {
+           entries.push(cur);
+           cur = null;
+         }
+       });
+       if (cur) entries.push(cur);
+
+       // ---- Render ----
+       const crateEntries = entries.filter(e => e.crate !== 'dapps');
+       const dappsEntries = entries.filter(e => e.crate === 'dapps');
+
+       let html  = '';
+       let delay = 0;
+
+       const pctClass  = p => p >= 80 ? 'pct-high' : p >= 60 ? 'pct-mid' : 'pct-low';
+       const barColor  = p => p >= 80 ? '#00e5a0'  : p >= 60 ? '#f0c040' : '#ff6b6b';
+
+       function renderCrateRow(e) {
+         const labelStr    = `[${e.crate}]`;
+         const sublabelStr = e.sublabel
+           ? `<span class="diag-sublabel">${e.sublabel}</span>`
+           : '';
+         const countsStr = (e.passed !== null)
+           ? `<span class="diag-counts">${e.passed} passed${
+               e.failed > 0
+                 ? `, <span class="diag-counts-fail">${e.failed} failed</span>`
+                 : ''
+             }</span>`
+           : '';
+
+         if (e.status === 'fail') {
+           const failuresHtml = e.failures.length
+             ? `<div class="diag-failures">${e.failures.join('<br>')}</div>`
+             : '';
+           return `<div class="diag-fail-banner" style="animation-delay:${delay}ms;flex-direction:column;align-items:flex-start">
+             <div style="display:flex;align-items:center;gap:8px">
+               <span class="dot dot-fail"></span>
+               <span>${labelStr}${sublabelStr} — TESTS FAILED ${countsStr}</span>
+             </div>
+             ${failuresHtml}
+           </div>`;
+         }
+
+         const covStr = e.coverage !== null ? e.coverage.toFixed(2) + '%' : null;
+         const cls    = e.coverage !== null ? pctClass(e.coverage) : '';
+         const color  = e.coverage !== null ? barColor(e.coverage) : '#00e5a0';
+         const width  = e.coverage !== null ? e.coverage : 100;
+
+         // test-flow rows (no coverage): show pass count on right, full-width bar
+         const rightHtml = covStr
+           ? `<span class="diag-status">ALL TESTS<br>PASSED</span>
+              <span class="diag-pct ${cls}">${covStr}</span>`
+           : (e.passed !== null
+               ? `<span class="diag-pct pct-high">${e.passed} passed</span>`
+               : `<span class="diag-status">ALL TESTS<br>PASSED</span>`);
+
+         const barHtml = `<div class="diag-bar-wrap">
+           <div class="diag-bar-fill" style="width:${width}%;background:${color};box-shadow:0 0 8px ${color}88"></div>
+         </div>`;
+
+         const failuresHtml = e.failures.length
+           ? `<div class="diag-failures">${e.failures.join('<br>')}</div>`
+           : '';
+
+         // only show counts on left for coverage rows (test-flow shows count on right)
+         const leftCounts = covStr ? countsStr : '';
+
+         return `<div class="diag-row" style="animation-delay:${delay}ms">
+           <div class="diag-row-top">
+             <div class="diag-row-left">
+               <span class="dot dot-pass"></span>
+               <span class="diag-label">${labelStr}${sublabelStr}</span>
+               ${leftCounts}
+             </div>
+             <div class="diag-row-right">${rightHtml}</div>
+           </div>
+           ${barHtml}
+           ${failuresHtml}
+         </div>`;
+       }
+
+       if (crateEntries.length > 0) {
+         html += '<div class="diag-section-heading">Coverage</div>';
+         crateEntries.forEach(e => {
+           html += renderCrateRow(e);
+           delay += 70;
+         });
+       }
+
+       if (crateEntries.length > 0 && dappsEntries.length > 0) {
+         html += '<hr class="diag-divider">';
+       }
+
+       if (dappsEntries.length > 0) {
+         html += '<div class="diag-section-heading">Integration</div>';
+         dappsEntries.forEach(e => {
+           const pct   = e.totalOf ? (e.total / e.totalOf) * 100 : 100;
+           const color = pct >= 100 ? '#00e5a0' : pct >= 80 ? '#f0c040' : '#ff6b6b';
+           html += `<div class="diag-row" style="animation-delay:${delay}ms">
+             <div class="diag-row-top">
+               <div class="diag-row-left">
+                 <span class="dot dot-pass"></span>
+                 <span class="diag-label">[dapps] itr</span>
+               </div>
+               <span class="diag-total">${e.total}/${e.totalOf}</span>
+             </div>
+             <div class="diag-bar-wrap">
+               <div class="diag-bar-fill" style="width:${pct}%;background:${color};box-shadow:0 0 8px ${color}88"></div>
+             </div>
+           </div>`;
+           delay += 70;
+         });
+       }
+
+       document.getElementById('stamp').textContent = stamp ? 'Last run: ' + stamp : '';
+       document.getElementById('report').innerHTML  = html;
+     })
+     .catch(err => {
+       document.getElementById('stamp').textContent = '';
+       document.getElementById('report').innerHTML  =
+         `<div class="diag-fail-banner">Could not load diagnostics: ${err.message}</div>`;
+     });
+  </script>
+ </body>
+</html>
