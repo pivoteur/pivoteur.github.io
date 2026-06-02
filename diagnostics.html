@@ -290,8 +290,11 @@
 
        function renderCrateRow(e) {
          const labelStr    = `[${e.crate}]`;
-         const sublabelStr = e.sublabel
-           ? `<span class="diag-sublabel">${e.sublabel}</span>`
+         // infer sublabel for quizzes if not written by rat: no coverage = test-flow, has coverage = coverage
+         const inferredSublabel = e.sublabel
+           || (e.crate === 'quizzes' ? (e.coverage !== null ? 'coverage' : 'test-flow') : null);
+         const sublabelStr = inferredSublabel
+           ? `<span class="diag-sublabel">${inferredSublabel}</span>`
            : '';
          const countsStr = (e.passed !== null)
            ? `<span class="diag-counts">${e.passed} passed${
