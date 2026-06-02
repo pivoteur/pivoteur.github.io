@@ -292,7 +292,7 @@
          const labelStr    = `[${e.crate}]`;
          // infer sublabel for quizzes if not written by rat: no coverage = test-flow, has coverage = coverage
          const inferredSublabel = e.sublabel
-           || (e.crate === 'quizzes' ? (e.coverage !== null ? 'coverage' : 'test-flow') : null);
+           || (e.crate === 'quizzes' ? (e.coverage !== null ? 'with cargo tarpaulin' : 'with cargo make test-flow') : null);
          const sublabelStr = inferredSublabel
            ? `<span class="diag-sublabel">${inferredSublabel}</span>`
            : '';
@@ -356,7 +356,7 @@
        }
 
        if (crateEntries.length > 0) {
-         html += '<div class="diag-section-heading">Coverage</div>';
+         html += '<div class="diag-section-heading">Tests and Coverage</div>';
          crateEntries.forEach(e => {
            html += renderCrateRow(e);
            delay += 70;
