@@ -178,16 +178,63 @@
 
    #graph-area {
      margin-top: 24px;
-     padding: 18px 16px;
-     border: 1px dashed rgba(255,255,255,0.08);
+     padding: 20px 24px;
+     border: 1px solid rgba(255,255,255,0.06);
      border-radius: 8px;
+     background: rgba(255,255,255,0.02);
      display: flex;
      align-items: center;
-     justify-content: center;
-     color: rgba(200,216,232,0.2);
+     gap: 32px;
+     min-height: 200px;
+   }
+   #graph-canvas-wrap {
+     flex-shrink: 0;
+     width: 180px;
+     height: 180px;
+   }
+   #graph-legend {
+     flex: 1;
+     display: flex;
+     flex-direction: column;
+     gap: 9px;
+   }
+   .legend-heading {
      font-size: 10px;
-     letter-spacing: 0.09em;
+     color: rgba(200,216,232,0.3);
+     letter-spacing: 0.1em;
      text-transform: uppercase;
+     margin-bottom: 2px;
+   }
+   .legend-row {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: 10px;
+   }
+   .legend-left {
+     display: flex;
+     align-items: center;
+     gap: 8px;
+   }
+   .legend-dot {
+     width: 8px;
+     height: 8px;
+     border-radius: 50%;
+     flex-shrink: 0;
+   }
+   .legend-label {
+     font-size: 12px;
+     color: #c8d8e8;
+   }
+   .legend-value {
+     font-size: 12px;
+     color: rgba(200,216,232,0.5);
+     white-space: nowrap;
+   }
+   .legend-divider {
+     height: 1px;
+     background: rgba(255,255,255,0.05);
+     margin: 1px 0;
    }
 
    @keyframes fadeUp {
@@ -201,7 +248,10 @@
    <div id="stamp">Loading...</div>
   </div>
   <div id="report"></div>
-  <div id="graph-area">Graph area</div>
+  <div id="graph-area">
+   <div id="graph-canvas-wrap"><canvas id="pie-canvas" width="360" height="360" style="width:180px;height:180px"></canvas></div>
+   <div id="graph-legend"></div>
+  </div>
 
   <script>
    fetch('data/diagnostics.txt')
@@ -261,7 +311,14 @@
              if (fm) failed   = parseInt(fm[1]);
            });
 
-           cur = { crate, sublabel, status, coverage, passed, failed, failures: [], total: null, totalOf: null };
+           // parse line counts if present: "lines: 361/755"
+           let linesC = undefined, linesT = undefined;
+           parts.forEach(p => {
+             const lm = p.match(/lines:\s*(\d+)\/(\d+)/);
+             if (lm) { linesC = parseInt(lm[1]); linesT = parseInt(lm[2]); }
+           });
+
+           cur = { crate, sublabel, status, coverage, passed, failed, failures: [], total: null, totalOf: null, linesC, linesT };
 
          } else if (line.match(/total:\s*\d+\/\d+/) && cur) {
            const m = line.match(/total:\s*(\d+)\/(\d+)/);
@@ -292,7 +349,7 @@
          const labelStr    = `[${e.crate}]`;
          // infer sublabel for quizzes if not written by rat: no coverage = test-flow, has coverage = coverage
          const inferredSublabel = e.sublabel
-           || (e.crate === 'quizzes' ? (e.coverage !== null ? 'with cargo tarpaulin' : 'with cargo make test-flow') : null);
+           || (e.crate === 'quizzes' ? (e.coverage !== null ? 'coverage' : 'test-flow') : null);
          const sublabelStr = inferredSublabel
            ? `<span class="diag-sublabel">${inferredSublabel}</span>`
            : '';
@@ -356,7 +413,7 @@
        }
 
        if (crateEntries.length > 0) {
-         html += '<div class="diag-section-heading">Tests and Coverage</div>';
+         html += '<div class="diag-section-heading">Coverage</div>';
          crateEntries.forEach(e => {
            html += renderCrateRow(e);
            delay += 70;
@@ -390,6 +447,121 @@
 
        document.getElementById('stamp').textContent = stamp ? 'Last run: ' + stamp : '';
        document.getElementById('report').innerHTML  = html;
+
+       // ---- Pie chart ----------------------------------------------------------------------
+       // collect line counts from entries: "lines: N/T" field
+       const chartCrates = ['book', 'libs', 'quizzes'];
+       const crateColors = { book: '#ff6b6b', libs: '#00e5a0', quizzes: '#f0c040' };
+
+       // pull covered/total lines from entries that have them
+       const lineData = {};
+       entries.forEach(e => {
+         if (chartCrates.includes(e.crate) && e.linesC !== undefined) {
+           if (!lineData[e.crate]) lineData[e.crate] = { c: 0, t: 0 };
+           lineData[e.crate].c = e.linesC;
+           lineData[e.crate].t = e.linesT;
+         }
+         // fallback to coverage % if no line counts
+         if (chartCrates.includes(e.crate) && !lineData[e.crate] && e.coverage !== null) {
+           lineData[e.crate] = { c: e.coverage, t: 100, pctOnly: true };
+         }
+       });
+
+       const totalCovered   = chartCrates.reduce((s, k) => s + (lineData[k]?.c || 0), 0);
+       const totalLines     = chartCrates.reduce((s, k) => s + (lineData[k]?.t || 0), 0);
+       const totalUncovered = totalLines - totalCovered;
+
+       // build slices: sub-slices for covered (per crate), one slice for uncovered
+       const slices = [];
+       chartCrates.forEach(k => {
+         const d = lineData[k];
+         if (d && d.c > 0) slices.push({ label: k, value: d.c, color: crateColors[k] });
+       });
+       slices.push({ label: 'uncovered', value: totalUncovered, color: '#ff6b6b33', strokeColor: '#ff6b6b' });
+
+       // draw on canvas
+       const canvas = document.getElementById('pie-canvas');
+       if (canvas && totalLines > 0) {
+         const ctx    = canvas.getContext('2d');
+         const cx     = 180, cy = 180, r = 150, inner = 75;
+         let angle    = -Math.PI / 2;
+
+         slices.forEach(s => {
+           const sweep = (s.value / totalLines) * 2 * Math.PI;
+           ctx.beginPath();
+           ctx.moveTo(cx, cy);
+           ctx.arc(cx, cy, r, angle, angle + sweep);
+           ctx.closePath();
+           ctx.fillStyle   = s.color;
+           ctx.fill();
+           if (s.strokeColor) {
+             ctx.strokeStyle = s.strokeColor;
+             ctx.lineWidth   = 1.5;
+             ctx.stroke();
+           }
+
+           // percentage label on slice
+           const midAngle = angle + sweep / 2;
+           const lx = cx + (r * 0.68) * Math.cos(midAngle);
+           const ly = cy + (r * 0.68) * Math.sin(midAngle);
+           const pct = ((s.value / totalLines) * 100).toFixed(1);
+           if (sweep > 0.18) {
+             ctx.fillStyle   = s.label === 'uncovered' ? '#ff6b6b' : 'rgba(255,255,255,0.85)';
+             ctx.font        = 'bold 13px JetBrains Mono, monospace';
+             ctx.textAlign   = 'center';
+             ctx.textBaseline = 'middle';
+             ctx.fillText(pct + '%', lx, ly);
+           }
+           angle += sweep;
+         });
+
+         // donut hole
+         ctx.beginPath();
+         ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
+         ctx.fillStyle = 'rgba(8,13,24,0.95)';
+         ctx.fill();
+
+         // center label
+         const overallPct = totalLines > 0 ? ((totalCovered / totalLines) * 100).toFixed(1) : '—';
+         ctx.fillStyle    = '#00e5a0';
+         ctx.font         = 'bold 22px JetBrains Mono, monospace';
+         ctx.textAlign    = 'center';
+         ctx.textBaseline = 'middle';
+         ctx.fillText(overallPct + '%', cx, cy - 10);
+         ctx.fillStyle = 'rgba(200,216,232,0.35)';
+         ctx.font      = '11px JetBrains Mono, monospace';
+         ctx.fillText('covered', cx, cy + 14);
+       }
+
+       // ---- Legend ----
+       const dappsEntry = entries.find(e => e.crate === 'dapps');
+       let legendHtml = '<div class="legend-heading">Line Coverage</div>';
+       chartCrates.forEach(k => {
+         const d = lineData[k];
+         if (!d) return;
+         const valStr = d.pctOnly
+           ? d.c.toFixed(2) + '%'
+           : `${d.c.toLocaleString()} / ${d.t.toLocaleString()}`;
+         legendHtml += `<div class="legend-row">
+           <div class="legend-left">
+             <span class="legend-dot" style="background:${crateColors[k]};box-shadow:0 0 5px ${crateColors[k]}88"></span>
+             <span class="legend-label">[${k}]</span>
+           </div>
+           <span class="legend-value">${valStr}</span>
+         </div>`;
+       });
+       if (dappsEntry && dappsEntry.total !== null) {
+         legendHtml += '<div class="legend-divider"></div>';
+         const allPass = dappsEntry.total === dappsEntry.totalOf;
+         legendHtml += `<div class="legend-row">
+           <div class="legend-left">
+             <span class="legend-dot" style="background:#00e5a0;box-shadow:0 0 5px #00e5a088"></span>
+             <span class="legend-label">[dapps] itr</span>
+           </div>
+           <span class="legend-value" style="color:${allPass ? '#00e5a0' : '#ff6b6b'}">${dappsEntry.total}/${dappsEntry.totalOf} passed</span>
+         </div>`;
+       }
+       document.getElementById('graph-legend').innerHTML = legendHtml;
      })
      .catch(err => {
        document.getElementById('stamp').textContent = '';
