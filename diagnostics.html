@@ -189,8 +189,8 @@
    }
    #graph-canvas-wrap {
      flex-shrink: 0;
-     width: 180px;
-     height: 180px;
+     width: 240px;
+     height: 240px;
    }
    #graph-legend {
      flex: 1;
@@ -249,7 +249,7 @@
   </div>
   <div id="report"></div>
   <div id="graph-area">
-   <div id="graph-canvas-wrap"><canvas id="pie-canvas" width="360" height="360" style="width:180px;height:180px"></canvas></div>
+   <div id="graph-canvas-wrap"><canvas id="pie-canvas" width="480" height="480" style="width:240px;height:240px"></canvas></div>
    <div id="graph-legend"></div>
   </div>
 
@@ -483,7 +483,7 @@
        const canvas = document.getElementById('pie-canvas');
        if (canvas && totalLines > 0) {
          const ctx    = canvas.getContext('2d');
-         const cx     = 180, cy = 180, r = 150, inner = 75;
+         const cx     = 240, cy = 240, r = 200, inner = 95;
          let angle    = -Math.PI / 2;
 
          slices.forEach(s => {
@@ -516,10 +516,12 @@
          });
 
          // donut hole
+         ctx.globalCompositeOperation = 'destination-out';
          ctx.beginPath();
          ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
-         ctx.fillStyle = 'rgba(8,13,24,0.95)';
+         ctx.fillStyle = 'rgba(0,0,0,1)';
          ctx.fill();
+         ctx.globalCompositeOperation = 'source-over';
 
          // center label
          const overallPct = totalLines > 0 ? ((totalCovered / totalLines) * 100).toFixed(1) : '—';
