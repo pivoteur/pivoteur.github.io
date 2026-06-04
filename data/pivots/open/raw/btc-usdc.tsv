@@ -28,4 +28,4 @@ opened	open	close	tx_id	updated	from	from_blockchain	amount1	virtual	quote1	val1
 2026-04-02	27	0	virtual_swap	2026-05-06	BTC	Avalanche	0	0.017178198	$81812.00	$1405.38	0.01889602	USDC	Avalanche	1405.758	0	$1.00	$1405.76
 2026-04-02	28	7	virtual_swap	n/a	USDC	Avalanche	0	16700	$1.00	$16700.00	18370	BTC	Avalanche	0.2515174	0	$66397.00	$16700.00
 2026-04-16	29	0	virtual_swap	2026-05-06	BTC	Avalanche	0	0.43502778	$81812.00	$35590.49	0.47853056	USDC	Avalanche	35600	0	$1.00	$35600.00
-2026-04-16	30	0	virtual_swap	2026-05-28	USDC	Avalanche	0	14321.4	$1.00	$14321.40	15753.541	BTC	Avalanche	0.1969	0	$72701.00	$14314.83
+2026-04-16	30	0	virtual_swap	2026-06-04	USDC	Avalanche	0	12564.561	$1.00	$12559.66	13821.017	BTC	Avalanche	0.1969	0	$63787.00	$12559.66
