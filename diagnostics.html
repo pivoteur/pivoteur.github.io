@@ -3,6 +3,7 @@
   <title>Protocol Health</title>
   <link rel='stylesheet' href='styles.css?version=16'></link>
   <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap'>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
   <style>
    * { box-sizing: border-box; margin: 0; padding: 0; }
 
@@ -240,6 +241,51 @@
    @keyframes fadeUp {
      to { opacity: 1; transform: translateY(0); }
    }
+
+  #test-chart-wrap {
+    margin-bottom: 7px;
+  }
+  #test-chart-wrap svg {
+    overflow: visible;
+  }
+  .chart-axis line, .chart-axis path {
+    stroke: rgba(255,255,255,0.08);
+  }
+  .chart-axis text {
+    fill: rgba(200,216,232,0.45);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+  }
+  .chart-axis-right text {
+    fill: rgba(200,216,232,0.35);
+  }
+  .bar-label {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    text-anchor: middle;
+    pointer-events: none;
+  }
+  .chart-legend-row {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    margin-top: 10px;
+    margin-left: 48px;
+  }
+  .chart-legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 10px;
+    color: rgba(200,216,232,0.45);
+    letter-spacing: 0.05em;
+  }
+  .chart-legend-swatch {
+    width: 10px;
+    height: 10px;
+    border-radius: 2px;
+    flex-shrink: 0;
+  }
   </style>
  </head>
  <body>
@@ -335,7 +381,7 @@
        });
        if (cur) entries.push(cur);
 
-       // ---- Render ----
+       // ---- Render -----------------------------------------------------------------------------
        const crateEntries = entries.filter(e => e.crate !== 'dapps');
        const dappsEntries = entries.filter(e => e.crate === 'dapps');
 
@@ -413,11 +459,8 @@
        }
 
        if (crateEntries.length > 0) {
-         html += '<div class="diag-section-heading">Coverage</div>';
-         crateEntries.forEach(e => {
-           html += renderCrateRow(e);
-           delay += 70;
-         });
+         html += '<div class="diag-section-heading">Number of Tests</div>';
+         html += '<div id="test-chart-wrap"></div>';
        }
 
        if (crateEntries.length > 0 && dappsEntries.length > 0) {
@@ -447,6 +490,126 @@
 
        document.getElementById('stamp').textContent = stamp ? 'Last run: ' + stamp : '';
        document.getElementById('report').innerHTML  = html;
+
+       // ---- Grouped bar chart (book / libs / quizzes) -----------------------------------------------
+       if (crateEntries.length > 0 && document.getElementById('test-chart-wrap')) {
+         const chartData = [];
+
+         ['book', 'libs', 'quizzes'].forEach(k => {
+           const covEntry    = crateEntries.find(e => e.crate === k && e.coverage !== null);
+           const flowEntry   = crateEntries.find(e => e.crate === k && e.coverage === null && e.sublabel !== 'coverage');
+           const passedCount = k === 'quizzes'
+             ? (flowEntry?.passed ?? covEntry?.passed ?? 0)
+             : (covEntry?.passed ?? 0);
+           const cov         = covEntry?.coverage ?? null;
+           if (passedCount !== null || cov !== null) {
+             chartData.push({ crate: k, passed: passedCount, coverage: cov });
+           }
+         });
+
+         if (chartData.length === 0) return;
+
+         const margin = { top: 24, right: 52, bottom: 32, left: 48 };
+         const totalW = document.getElementById('test-chart-wrap').offsetWidth || 600;
+         const W      = totalW - margin.left - margin.right;
+         const H      = 180;
+
+         const svg = d3.select('#test-chart-wrap')
+           .append('svg')
+             .attr('width',  totalW)
+             .attr('height', H + margin.top + margin.bottom)
+           .append('g')
+             .attr('transform', `translate(${margin.left},${margin.top})`);
+
+         const crateNames  = chartData.map(d => d.crate);
+         const subgroups   = ['passed', 'coverage'];
+         const colorPassed = { book: '#ff6b6b', libs: '#00e5a0', quizzes: '#f0c040' };
+         const colorCov    = { book: '#ff6b6b66', libs: '#00e5a066', quizzes: '#f0c04066' };
+
+         const x0 = d3.scaleBand().domain(crateNames).range([0, W]).paddingInner(0.28).paddingOuter(0.18);
+         const x1 = d3.scaleBand().domain(subgroups).range([0, x0.bandwidth()]).padding(0.08);
+
+         const maxPassed   = d3.max(chartData, d => d.passed) || 1;
+         const yLeft  = d3.scaleLinear().domain([0, maxPassed * 1.15]).range([H, 0]);
+         const yRight = d3.scaleLinear().domain([0, 100]).range([H, 0]);
+
+         // axes
+         svg.append('g').attr('class', 'chart-axis')
+           .attr('transform', `translate(0,${H})`)
+           .call(d3.axisBottom(x0).tickSize(0))
+           .select('.domain').remove();
+
+         svg.selectAll('.chart-axis text').style('fill', 'rgba(200,216,232,0.55)').style('font-size', '11px');
+
+         svg.append('g').attr('class', 'chart-axis')
+           .call(d3.axisLeft(yLeft).ticks(4).tickSize(-W))
+           .call(g => g.select('.domain').remove())
+           .call(g => g.selectAll('.tick line').attr('stroke', 'rgba(255,255,255,0.05)'));
+
+         svg.append('g').attr('class', 'chart-axis chart-axis-right')
+           .attr('transform', `translate(${W},0)`)
+           .call(d3.axisRight(yRight).ticks(4).tickFormat(d => d + '%').tickSize(0))
+           .call(g => g.select('.domain').remove());
+
+         // bars
+         const groups = svg.selectAll('.bar-group')
+           .data(chartData)
+           .join('g')
+             .attr('class', 'bar-group')
+             .attr('transform', d => `translate(${x0(d.crate)},0)`);
+
+         // passed bars (solid)
+         groups.append('rect')
+           .attr('x',      x1('passed'))
+           .attr('y',      d => yLeft(d.passed))
+           .attr('width',  x1.bandwidth())
+           .attr('height', d => H - yLeft(d.passed))
+           .attr('fill',   d => colorPassed[d.crate])
+           .attr('rx', 2);
+
+         // value labels on passed bars
+         groups.append('text')
+           .attr('class', 'bar-label')
+           .attr('x', d => x1('passed') + x1.bandwidth() / 2)
+           .attr('y', d => yLeft(d.passed) - 5)
+           .attr('fill', d => colorPassed[d.crate])
+           .text(d => d.passed);
+
+         // coverage bars (translucent, right Y)
+         groups.filter(d => d.coverage !== null)
+           .append('rect')
+             .attr('x',      x1('coverage'))
+             .attr('y',      d => yRight(d.coverage))
+             .attr('width',  x1.bandwidth())
+             .attr('height', d => H - yRight(d.coverage))
+             .attr('fill',   d => colorCov[d.crate])
+             .attr('stroke', d => colorPassed[d.crate])
+             .attr('stroke-width', 1)
+             .attr('rx', 2);
+
+         // value labels on coverage bars
+         groups.filter(d => d.coverage !== null)
+           .append('text')
+             .attr('class', 'bar-label')
+             .attr('x', d => x1('coverage') + x1.bandwidth() / 2)
+             .attr('y', d => yRight(d.coverage) - 5)
+             .attr('fill', d => colorPassed[d.crate])
+             .text(d => d.coverage.toFixed(1) + '%');
+
+         // legend
+         d3.select('#test-chart-wrap').append('div')
+           .attr('class', 'chart-legend-row')
+           .html(`
+             <div class="chart-legend-item">
+               <div class="chart-legend-swatch" style="background:#c8d8e888"></div>
+               TESTS PASSED (left axis)
+             </div>
+             <div class="chart-legend-item">
+               <div class="chart-legend-swatch" style="background:#c8d8e833;border:1px solid #c8d8e855"></div>
+               COVERAGE % (right axis)
+             </div>
+           `);
+       }
 
        // ---- Pie chart ----------------------------------------------------------------------
        // collect line counts from entries: "lines: N/T" field
