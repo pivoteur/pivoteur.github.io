@@ -440,9 +440,9 @@
       return `<div class="task-row task-row-${cls}" style="animation-delay:${delay}ms">
         <div class="task-row-top">
           <span class="task-name">${name}</span>
-          <span class="task-pill task-pill-${pillCls}">${pillLabel}</span>
           <div class="task-right">
             ${countHtml}
+            <span class="task-pill task-pill-${pillCls}">${pillLabel}</span>
             ${timeHtml}
           </div>
         </div>
@@ -531,8 +531,8 @@
          taskHtml += `<div class="task-row task-row-${cls}" style="animation-delay:${delay}ms">
            <div class="task-row-top">
              <span class="task-name">ITR</span>
+             <span class="task-pill task-pill-${pillCls}">${pillLabel}</span>
              <div class="task-right">
-               <span class="task-pill task-pill-${pillCls}">${pillLabel}</span>
                <span class="task-count" style="color:${color}">${dappsEntry.total}/${dappsEntry.totalOf}</span>
              </div>
            </div>
@@ -540,7 +540,6 @@
         }
 
        document.getElementById('task-list').innerHTML = taskHtml;
-
        document.getElementById('stamp').textContent = stamp ? 'Last run: ' + stamp : '';
        // ---- Grouped bar chart (book / libs / quizzes) -----------------------------------------------
        if (crateEntries.length > 0 && document.getElementById('test-chart-wrap')) {
