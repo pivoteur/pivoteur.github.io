@@ -40,3 +40,4 @@ opened	open	close	tx_id	updated	from	from_blockchain	amount1	virtual	quote1	val1
 2026-04-09	39	0	virtual_swap	2026-06-10	BTC	Avalanche	0	0.01984016	$61419.00	$1218.56	0.021824177	UNDEAD	Avalanche	1268834	0	$0.000960	$1218.56
 2026-04-09	40	0	https://snowtrace.io/tx/0x476bf29f1812e39e70ee70c7bb23330e7e48e3ec892561f97ca102229a0442fb	n/a	UNDEAD	Avalanche	500000	0	$0.001261	$630.50	550000	BTC	Avalanche	0.01200514	0	$70914.00	$851.33
 2026-06-09	41	0	https://snowtrace.io/tx/0xa0db97460bf3a1f1d1cfe6affffab7850f4169873feec30dc18aeacc6f22f597	n/a	UNDEAD	Avalanche	1000000	0	$0.001180	$1,180.00	1100000	BTC	Avalanche	0.0170422	0	$63,354.00	$1,079.69
+2026-06-10	42	0	https://snowtrace.io/tx/0xd7a06a7d9e474ed555db593bb1c765e8f482b74e655eb93162ab0d3f25323bdb	n/a	UNDEAD	Avalanche	1000000	0	$0.000960	$960.00	1100000	BTC	Avalanche	0.01434269	0	$61,419.00	$880.91
