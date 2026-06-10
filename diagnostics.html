@@ -295,7 +295,7 @@
    <h2>Protocol Health</h2>
    <div id="stamp">Loading...</div>
   </div>
-  <div id="graph-area">
+  <div id="graph-area"> 
     <div id="graph-canvas-wrap"><canvas id="pie-canvas" width="480" height="480" style="width:480px;height:480px"></canvas></div>
     <div id="graph-legend"></div>
   </div>
@@ -417,6 +417,7 @@
        document.getElementById('report').innerHTML  = html;
        // ---- Grouped bar chart (book / libs / quizzes) -----------------------------------------------
        if (crateEntries.length > 0 && document.getElementById('test-chart-wrap')) {
+         requestAnimationFrame(() => {
          const chartData = [];
 
          ['book', 'libs', 'quizzes'].forEach(k => {
@@ -437,7 +438,7 @@
          if (chartData.length === 0) return;
 
          const margin = { top: 24, right: 52, bottom: 32, left: 48 };
-         const totalW = document.getElementById('test-chart-wrap').offsetWidth || 600;
+         const totalW = 530;
          const W      = totalW - margin.left - margin.right;
          const H      = 180;
 
@@ -557,6 +558,7 @@
              .attr('y', d => yLeft(d.failed) - 5)
              .attr('fill', '#ff6b6b')
              .text(d => d.failed);
+         });
        }
        // ---- Pie chart ----------------------------------------------------------------------
        const chartCrates = ['book', 'libs', 'quizzes'];
