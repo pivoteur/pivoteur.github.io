@@ -25,12 +25,6 @@ jobs:
           repository: pivoteur/protocol
           path: protocol
 
-      - name: Checkout crypto-n-rust
-        uses: actions/checkout@v4
-        with:
-          repository: logicalgraphs/crypto-n-rust
-          path: crypto-n-rust
-
       - name: Copy diagnostics to pivoteur.github.io
         run: |
           cp protocol/data/diagnostics.txt pivoteur.github.io/data/diagnostics.txt
@@ -39,7 +33,7 @@ jobs:
         run: |
           fetch_status() {
             local repo=$1 workflow=$2 name=$3
-            local url="https://api.github.com/repos/pivoteur/${repo}/actions/workflows/${workflow}/runs?per_page=1"
+            local url="https://api.github.com/repos/${repo}/actions/workflows/${workflow}/runs?per_page=1"
             local result=$(curl -s "$url")
             local status=$(echo "$result" | jq -r '.workflow_runs[0].conclusion // "unknown"')
             local ran_at=$(echo "$result" | jq -r '.workflow_runs[0].updated_at // "unknown"')
@@ -48,17 +42,17 @@ jobs:
 
           json=$(jq -n --argjson entries "$(
             echo '['
-            fetch_status "crypto-n-rust"      "quotes.yml"  "Quotes"
+            fetch_status "logicalgraphs/crypto-n-rust"      "quotes.yml"  "Quotes"
             echo ','
-            fetch_status "pivoteur.github.io" "assets.yml"  "Assets"
+            fetch_status "pivoteur/pivoteur.github.io" "assets.yml"  "Assets"
             echo ','
-            fetch_status "pivoteur.github.io" "virtsz.yml"  "Virtsz"
+            fetch_status "pivoteur/pivoteur.github.io" "virtsz.yml"  "Virtsz"
             echo ','
-            fetch_status "pivoteur.github.io" "dusk.yml"    "Dusk"
+            fetch_status "pivoteur/pivoteur.github.io" "dusk.yml"    "Dusk"
             echo ','
-            fetch_status "pivoteur.github.io" "hwaet.yml"   "Hwaet"
+            fetch_status "pivoteur/pivoteur.github.io" "hwaet.yml"   "Hwaet"
             echo ','
-            fetch_status "protocol"           "rat.yml"     "R.A.T."
+            fetch_status "pivoteur/protocol"           "rat.yml"     "R.A.T."
             echo ']'
           )" '$entries')
 
