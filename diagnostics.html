@@ -463,11 +463,14 @@
            .attr('transform', `translate(0,${H})`)
            .call(d3.axisBottom(x0).tickSize(0))
            .call(g => g.select('.domain').remove());
+
          svg.selectAll('.chart-axis text').style('fill', 'rgba(200,216,232,0.55)').style('font-size', '11px');
+
          svg.append('g').attr('class', 'chart-axis')
            .call(d3.axisLeft(yLeft).ticks(4).tickSize(-W))
            .call(g => g.select('.domain').remove())
            .call(g => g.selectAll('.tick line').attr('stroke', 'rgba(255,255,255,0.05)'));
+           
          svg.append('g').attr('class', 'chart-axis chart-axis-right')
            .attr('transform', `translate(${W},0)`)
            .call(d3.axisRight(yRight).ticks(4).tickFormat(d => d + '%').tickSize(0))
