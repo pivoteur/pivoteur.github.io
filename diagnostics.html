@@ -18,7 +18,7 @@
      font-family: 'JetBrains Mono', monospace;
      color: #c8d8e8;
      padding: 32px 24px;
-   }
+    }
 
    #header { margin-bottom: 28px; }
 
@@ -28,14 +28,14 @@
      color: #ffffff;
      letter-spacing: -0.01em;
      margin-bottom: 5px;
-   }
+    }
 
    #stamp {
      font-size: 10px;
      color: rgba(200,216,232,0.35);
      letter-spacing: 0.07em;
      text-transform: uppercase;
-   }
+    }
 
    .diag-section-heading {
      font-size: 10px;
@@ -43,7 +43,7 @@
      letter-spacing: 0.1em;
      text-transform: uppercase;
      margin: 20px 0 8px 2px;
-   }
+    }
 
    .diag-row {
      padding: 13px 16px;
@@ -54,7 +54,7 @@
      opacity: 0;
      transform: translateY(8px);
      animation: fadeUp 0.4s ease forwards;
-   }
+    }
 
    .diag-row-top {
      display: flex;
@@ -62,7 +62,7 @@
      align-items: center;
      justify-content: space-between;
      gap: 12px;
-   }
+    }
 
    .diag-row-left {
      display: flex;
@@ -70,14 +70,14 @@
      gap: 8px;
      flex: 1;
      min-width: 0;
-   }
+    }
 
    .dot {
      width: 7px;
      height: 7px;
      border-radius: 50%;
      flex-shrink: 0;
-   }
+    }
    .dot-pass { background: #00e5a0; box-shadow: 0 0 6px #00e5a088; }
    .dot-fail { background: #ff6b6b; box-shadow: 0 0 6px #ff6b6b88; }
 
@@ -85,21 +85,21 @@
      font-size: 13px;
      color: #c8d8e8;
      letter-spacing: 0.02em;
-   }
+    }
 
    .diag-sublabel {
      font-size: 11px;
      color: rgba(200,216,232,0.38);
      margin-left: 4px;
      letter-spacing: 0.04em;
-   }
+    }
 
    .diag-counts {
      font-size: 11px;
      color: rgba(200,216,232,0.32);
      white-space: nowrap;
      margin-left: 6px;
-   }
+    }
 
    .diag-counts-fail { color: #ff9999; }
 
@@ -108,7 +108,7 @@
      align-items: center;
      gap: 14px;
      flex-shrink: 0;
-   }
+    }
 
    .diag-status {
      font-size: 10px;
@@ -117,19 +117,19 @@
      text-transform: uppercase;
      text-align: right;
      line-height: 1.4;
-   }
+    }
 
    .diag-pct {
      font-size: 13px;
      font-weight: 600;
      min-width: 52px;
      text-align: right;
-   }
+    }
 
    .diag-total {
      font-size: 13px;
      font-weight: 600;
-   }
+    }
 
    .diag-bar-wrap {
      width: 100%;
@@ -138,13 +138,13 @@
      border-radius: 2px;
      margin-top: 9px;
      overflow: hidden;
-   }
+    }
 
    .diag-bar-fill {
      height: 100%;
      border-radius: 2px;
      transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
-   }
+    }
 
    .diag-failures {
      margin-top: 9px;
@@ -155,7 +155,7 @@
      font-size: 11px;
      color: #ff9999;
      line-height: 1.7;
-   }
+    }
 
    .diag-fail-banner {
      display: flex;
@@ -171,13 +171,13 @@
      font-weight: 600;
      opacity: 0;
      animation: fadeUp 0.4s ease forwards;
-   }
+    }
 
    hr.diag-divider {
      border: none;
      border-top: 1px solid rgba(255,255,255,0.05);
      margin: 18px 0;
-   }
+    }
 
    #graph-area {
      margin-top: 24px;
@@ -189,105 +189,215 @@
      align-items: center;
      gap: 32px;
      min-height: 400px;
-   }
+    }
+
    #graph-canvas-wrap {
      flex-shrink: 0;
      width: 480px;
      height: 480px;
-   }
+    }
+
    #graph-legend {
      flex: 1;
      display: flex;
      flex-direction: column;
      gap: 9px;
-   }
+    }
+
    .legend-heading {
      font-size: 10px;
      color: rgba(200,216,232,0.3);
      letter-spacing: 0.1em;
      text-transform: uppercase;
      margin-bottom: 2px;
-   }
+    }
+
    .legend-row {
      display: flex;
      align-items: center;
      justify-content: space-between;
      gap: 10px;
-   }
+    }
+
    .legend-left {
      display: flex;
      align-items: center;
      gap: 8px;
-   }
+    }
+
    .legend-dot {
      width: 8px;
      height: 8px;
      border-radius: 50%;
      flex-shrink: 0;
-   }
+    }
+
    .legend-label {
      font-size: 12px;
      color: #c8d8e8;
-   }
+    }
+
    .legend-value {
      font-size: 12px;
      color: rgba(200,216,232,0.5);
      white-space: nowrap;
-   }
+    }
+
    .legend-divider {
      height: 1px;
      background: rgba(255,255,255,0.05);
      margin: 1px 0;
-   }
+    }
 
    @keyframes fadeUp {
      to { opacity: 1; transform: translateY(0); }
-   }
+    }
 
-  #test-chart-wrap {
-    margin-bottom: 7px;
-  }
-  #test-chart-wrap svg {
-    overflow: visible;
-  }
-  .chart-axis line, .chart-axis path {
-    stroke: rgba(255,255,255,0.08);
-  }
-  .chart-axis text {
-    fill: rgba(200,216,232,0.45);
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-  }
-  .chart-axis-right text {
-    fill: rgba(200,216,232,0.35);
-  }
-  .bar-label {
-    font-family: 'JetBrains Mono', monospace;
-    font-size: 10px;
-    text-anchor: middle;
-    pointer-events: none;
-  }
-  .chart-legend-row {
-    display: flex;
-    align-items: center;
-    gap: 20px;
-    margin-top: 10px;
-    margin-left: 48px;
-  }
-  .chart-legend-item {
-    display: flex;
-    align-items: center;
-    gap: 6px;
-    font-size: 10px;
-    color: rgba(200,216,232,0.45);
-    letter-spacing: 0.05em;
-  }
-  .chart-legend-swatch {
-    width: 10px;
-    height: 10px;
-    border-radius: 2px;
-    flex-shrink: 0;
-  }
+    #test-chart-wrap {
+      margin-bottom: 7px;
+    }
+    #test-chart-wrap svg {
+      overflow: visible;
+    }
+    .chart-axis line, .chart-axis path {
+      stroke: rgba(255,255,255,0.08);
+    }
+    .chart-axis text {
+      fill: rgba(200,216,232,0.45);
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+    }
+    .chart-axis-right text {
+      fill: rgba(200,216,232,0.35);
+    }
+    .bar-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      text-anchor: middle;
+      pointer-events: none;
+    }
+    .chart-legend-row {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+      margin-top: 10px;
+      margin-left: 48px;
+    }
+    .chart-legend-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10px;
+      color: rgba(200,216,232,0.45);
+      letter-spacing: 0.05em;
+    }
+    .chart-legend-swatch {
+      width: 10px;
+      height: 10px;
+      border-radius: 2px;
+      flex-shrink: 0;
+    }
+
+    #report-columns {
+      display: flex;
+      gap: 6px;
+      align-items: flex-start;
+      margin-top: 4px;
+    }
+
+    #report-left {
+      flex-shrink: 0;
+      width: 530px;
+    }
+
+    #report-right {
+      flex: 1;
+      min-width: 0;
+      padding-right: 2px;
+    }
+
+    .task-row {
+      padding: 11px 14px;
+      border-radius: 8px;
+      border: 1px solid rgba(255,255,255,0.06);
+      border-left-width: 3px;
+      margin-bottom: 7px;
+      opacity: 0;
+      transform: translateY(8px);
+      animation: fadeUp 0.4s ease forwards;
+     }
+
+    .task-row-pass {
+      background: rgba(0,229,160,0.04);
+      border-left-color: #00e5a0;
+    }
+
+    .task-row-fail {
+      background: rgba(255,107,107,0.06);
+      border-left-color: #ff6b6b;
+    }
+
+    .task-row-unknown {
+      background: rgba(255,255,255,0.02);
+      border-left-color: rgba(255,255,255,0.15);
+    }
+
+    .task-row-top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .task-name {
+      font-size: 13px;
+      color: #c8d8e8;
+      letter-spacing: 0.02em;
+    }
+
+    .task-right {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-shrink: 0;
+    }
+
+    .task-pill {
+      font-size: 9px;
+      font-weight: 700;
+      letter-spacing: 0.08em;
+      padding: 2px 7px;
+      border-radius: 4px;
+      text-transform: uppercase;
+    }
+
+    .task-pill-pass {
+      background: rgba(0,229,160,0.15);
+      color: #00e5a0;
+    }
+
+    .task-pill-fail {
+      background: rgba(255,107,107,0.15);
+      color: #ff6b6b;
+    }
+
+    .task-pill-unknown {
+      background: rgba(255,255,255,0.07);
+      color: rgba(200,216,232,0.4);
+    }
+
+    .task-time {
+      font-size: 10px;
+      color: rgba(200,216,232,0.28);
+      letter-spacing: 0.04em;
+      text-align: right;
+      line-height: 1.5;
+    }
+
+    .task-count {
+      font-size: 12px;
+      font-weight: 600;
+    }
   </style>
  </head>
  <body>
@@ -299,122 +409,139 @@
     <div id="graph-canvas-wrap"><canvas id="pie-canvas" width="480" height="480" style="width:480px;height:480px"></canvas></div>
     <div id="graph-legend"></div>
   </div>
-  <div id="report"></div>
+  <div id="report-columns">
+    <div id="report-left"></div>
+    <div id="report-right">
+      <div class="diag-section-heading">Automated Tasks</div>
+      <div id="task-list"></div>
+    </div>
+  </div>
 
   <script>
-   fetch('data/diagnostics.txt')
-     .then(r => {
-       if (!r.ok) throw new Error('Could not load diagnostics.txt');
-       return r.text();
-     })
-     .then(text => {
-       const lines = text.split('\n');
-       let stamp = '';
+     function timeAgo(isoStr) {
+      const diff = Math.floor((Date.now() - new Date(isoStr)) / 1000);
+      if (diff < 60)    return diff + 's ago';
+      if (diff < 3600)  return Math.floor(diff / 60) + 'm ago';
+      if (diff < 86400) return Math.floor(diff / 3600) + 'h ago';
+      return Math.floor(diff / 86400) + 'd ago';
+    }
 
-       // entries: { crate, sublabel, status, coverage, passed, failed, failures[], total, totalOf }
-       const entries = [];
-       let cur = null;
+    function fmtDate(isoStr) {
+      const d = new Date(isoStr);
+      return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
+    }
 
-       lines.forEach(line => {
+    function renderTaskRow(name, isPass, pillLabel, countHtml, ranAt, delay) {
+      const cls     = isPass ? 'pass' : (pillLabel === 'UNKNOWN' ? 'unknown' : 'fail');
+      const pillCls = isPass ? 'pass' : (pillLabel === 'UNKNOWN' ? 'unknown' : 'fail');
+      const timeHtml = ranAt && ranAt !== 'unknown'
+        ? `<div class="task-time">${timeAgo(ranAt)}<br>${fmtDate(ranAt)}</div>`
+        : `<div class="task-time">—</div>`;
+      return `<div class="task-row task-row-${cls}" style="animation-delay:${delay}ms">
+        <div class="task-row-top">
+          <span class="task-name">${name}</span>
+          <span class="task-pill task-pill-${pillCls}">${pillLabel}</span>
+          <div class="task-right">
+            ${countHtml}
+            ${timeHtml}
+          </div>
+        </div>
+      </div>`;
+    }
 
-         // === RAT Diagnostics Log (Mon Jun 1 06:37:54 UTC 2026) ===
-         if (line.startsWith('=== RAT Diagnostics Log')) {
-           const m = line.match(/\((.+?)\)/);
-           if (m) stamp = m[1];
+    Promise.all([
+      fetch('data/diagnostics.txt').then(r => { if (!r.ok) throw new Error('Could not load diagnostics.txt'); return r.text(); }),
+      fetch('data/workflows.json').then(r => { if (!r.ok) throw new Error('Could not load workflows.json'); return r.json(); })
+    ])
+    .then(([text, workflows]) => {
+      const lines = text.split('\n');
+      let stamp = '';
+      const entries = [];
+      let cur = null;
 
-         } else if (line.startsWith('--- [')) {
-           if (cur) entries.push(cur);
-
-           const rest = line.replace(/^---\s*/, '');
-           const bm   = rest.match(/^\[(\w+)\]\s*(.*)/);
-           if (!bm) return;
-
-           const crate     = bm[1];
-           const remainder = bm[2];
-           const parts     = remainder.split('|').map(s => s.trim());
-
-           let sublabel  = null;
-           let startIdx  = 0;
-           if (parts[0] && !parts[0].match(/All tests passed|TESTS FAILED/i) && parts.length > 1) {
-             sublabel = parts[0];
-             startIdx = 1;
-           }
-
-           const verdict  = parts[startIdx] || '';
-           const status   = verdict.includes('TESTS FAILED') ? 'fail' : 'pass';
-
-           let coverage = null;
-           let passed   = null;
-           let failed   = null;
-           parts.forEach(p => {
-             const cm = p.match(/([\d.]+)%\s*coverage/);
-             const pm = p.match(/(\d+)\s*passed/);
-             const fm = p.match(/(\d+)\s*failed/);
-             if (cm) coverage = parseFloat(cm[1]);
-             if (pm) passed   = parseInt(pm[1]);
-             if (fm) failed   = parseInt(fm[1]);
-           });
-
-           let linesC = undefined, linesT = undefined;
-           parts.forEach(p => {
-             const lm = p.match(/lines:\s*(\d+)\/(\d+)/);
-             if (lm) { linesC = parseInt(lm[1]); linesT = parseInt(lm[2]); }
-           });
-
-           cur = { crate, sublabel, status, coverage, passed, failed, failures: [], total: null, totalOf: null, linesC, linesT };
-
-         } else if (line.match(/total:\s*\d+\/\d+/) && cur) {
-           const m = line.match(/total:\s*(\d+)\/(\d+)/);
-           if (m) { cur.total = parseInt(m[1]); cur.totalOf = parseInt(m[2]); }
-
-         } else if (line.match(/^\s+\S+::\S+/) && cur) {
-           cur.failures.push(line.trim());
-
-         } else if (line.trim() === '' && cur) {
-           entries.push(cur);
-           cur = null;
-         }
-       });
-       if (cur) entries.push(cur);
-       // ---- Render -----------------------------------------------------------------------------
+      lines.forEach(line => {
+        if (line.startsWith('=== RAT Diagnostics Log')) {
+          const m = line.match(/\((.+?)\)/);
+          if (m) stamp = m[1];
+        } else if (line.startsWith('--- [')) {
+          if (cur) entries.push(cur);
+          const rest = line.replace(/^---\s*/, '');
+          const bm   = rest.match(/^\[(\w+)\]\s*(.*)/);
+          if (!bm) return;
+          const crate     = bm[1];
+          const remainder = bm[2];
+          const parts     = remainder.split('|').map(s => s.trim());
+          let sublabel = null, startIdx = 0;
+          if (parts[0] && !parts[0].match(/All tests passed|TESTS FAILED/i) && parts.length > 1) {
+            sublabel = parts[0]; startIdx = 1;
+          }
+          const verdict = parts[startIdx] || '';
+          const status  = verdict.includes('TESTS FAILED') ? 'fail' : 'pass';
+          let coverage = null, passed = null, failed = null, linesC, linesT;
+          parts.forEach(p => {
+            const cm = p.match(/([\d.]+)%\s*coverage/);
+            const pm = p.match(/(\d+)\s*passed/);
+            const fm = p.match(/(\d+)\s*failed/);
+            const lm = p.match(/lines:\s*(\d+)\/(\d+)/);
+            if (cm) coverage = parseFloat(cm[1]);
+            if (pm) passed   = parseInt(pm[1]);
+            if (fm) failed   = parseInt(fm[1]);
+            if (lm) { linesC = parseInt(lm[1]); linesT = parseInt(lm[2]); }
+          });
+          cur = { crate, sublabel, status, coverage, passed, failed, failures: [], total: null, totalOf: null, linesC, linesT };
+        } else if (line.match(/total:\s*\d+\/\d+/) && cur) {
+          const m = line.match(/total:\s*(\d+)\/(\d+)/);
+          if (m) { cur.total = parseInt(m[1]); cur.totalOf = parseInt(m[2]); }
+        } else if (line.match(/^\s+\S+::\S+/) && cur) {
+          cur.failures.push(line.trim());
+        } else if (line.trim() === '' && cur) {
+          entries.push(cur); cur = null;
+        }
+      });
+      if (cur) entries.push(cur);
+       // ----- Render -----------------------------------------------------------------------------
        const crateEntries = entries.filter(e => e.crate !== 'dapps');
-       const dappsEntries = entries.filter(e => e.crate === 'dapps');
-
-       let html  = '';
+       const dappsEntry = entries.find(e => e.crate === 'dapps');
+       // ----- Left column: grouped-bar chart -----------------------------------------------------
+       let leftHtml = '';
+       if (crateEntries.length > 0) {
+        leftHtml += '<div class="diag-section-heading">Number of Tests</div>';
+        leftHtml += '<div id="test-chart-wrap"></div>';
+      }
+      document.getElementById('report-left').innerHTML = leftHtml;
+       // ----- Right column: automated tasks ------------------------------------------------------
+       let taskHtml  = '';
        let delay = 0;
 
-       if (crateEntries.length > 0) {
-         html += '<div class="diag-section-heading">Number of Tests</div>';
-         html += '<div id="test-chart-wrap"></div>';
-       }
+       workflows.forEach(w => {
+        const isPass = w.status === 'success';
+        const pill   = w.status === 'unknown' ? 'UNKNOWN' : (isPass ? 'SUCCESS' : 'FAILED');
+        taskHtml += renderTaskRow(w.name, isPass, pill, '', w.ran_at, delay);
+        delay += 60; 
+       });
 
-       if (crateEntries.length > 0 && dappsEntries.length > 0) {
-         html += '<hr class="diag-divider">';
-       }
+       // ----- dapps itr row at the bottom ------------------------------------------------------
+       if (dappsEntry && dappsEntry.total !== null) {
+         const pct       = dappsEntry.totalOf ? (dappsEntry.total / dappsEntry.totalOf) * 100 : 100;
+         const isPass    = pct === 100;
+         const color     = covColor(pct);
+         const cls       = isPass ? 'pass' : 'fail';
+         const pillCls   = isPass ? 'pass' : 'fail';
+         const pillLabel = isPass ? 'SUCCESS' : 'FAILURE';
+         taskHtml += `<div class="task-row task-row-${cls}" style="animation-delay:${delay}ms">
+           <div class="task-row-top">
+             <span class="task-name">ITR</span>
+             <div class="task-right">
+               <span class="task-pill task-pill-${pillCls}">${pillLabel}</span>
+               <span class="task-count" style="color:${color}">${dappsEntry.total}/${dappsEntry.totalOf}</span>
+             </div>
+           </div>
+         </div>`;
+        }
 
-       if (dappsEntries.length > 0) {
-         html += '<div class="diag-section-heading">Integration</div>';
-         dappsEntries.forEach(e => {
-           const pct   = e.totalOf ? (e.total / e.totalOf) * 100 : 100;
-           const color = covColor(pct);
-           html += `<div class="diag-row" style="animation-delay:${delay}ms">
-             <div class="diag-row-top">
-               <div class="diag-row-left">
-                 <span class="dot dot-pass"></span>
-                 <span class="diag-label">[dapps] itr</span>
-               </div>
-               <span class="diag-total" style="color:${color}">${e.total}/${e.totalOf}</span>
-             </div>
-             <div class="diag-bar-wrap">
-               <div class="diag-bar-fill" style="width:${pct}%;background:${color};box-shadow:0 0 8px ${color}88"></div>
-             </div>
-           </div>`;
-           delay += 70;
-         });
-       }
+       document.getElementById('task-list').innerHTML = taskHtml;
 
        document.getElementById('stamp').textContent = stamp ? 'Last run: ' + stamp : '';
-       document.getElementById('report').innerHTML  = html;
        // ---- Grouped bar chart (book / libs / quizzes) -----------------------------------------------
        if (crateEntries.length > 0 && document.getElementById('test-chart-wrap')) {
          requestAnimationFrame(() => {
@@ -451,10 +578,8 @@
 
          const crateNames = chartData.map(d => d.crate);
          const subgroups  = ['passed', 'coverage', 'failed'];
-
          const x0 = d3.scaleBand().domain(crateNames).range([0, W]).paddingInner(0.28).paddingOuter(0.18);
          const x1 = d3.scaleBand().domain(subgroups).range([0, x0.bandwidth()]).padding(0.08);
-
          const maxPassed = d3.max(chartData, d => d.passed) || 1;
          const yLeft     = d3.scaleLinear().domain([0, maxPassed * 1.15]).range([H, 0]);
          const yRight    = d3.scaleLinear().domain([0, 100]).range([H, 0]);
@@ -464,14 +589,11 @@
            .attr('transform', `translate(0,${H})`)
            .call(d3.axisBottom(x0).tickSize(0))
            .call(g => g.select('.domain').remove());
-
          svg.selectAll('.chart-axis text').style('fill', 'rgba(200,216,232,0.55)').style('font-size', '11px');
-
          svg.append('g').attr('class', 'chart-axis')
            .call(d3.axisLeft(yLeft).ticks(4).tickSize(-W))
            .call(g => g.select('.domain').remove())
            .call(g => g.selectAll('.tick line').attr('stroke', 'rgba(255,255,255,0.05)'));
-           
          svg.append('g').attr('class', 'chart-axis chart-axis-right')
            .attr('transform', `translate(${W},0)`)
            .call(d3.axisRight(yRight).ticks(4).tickFormat(d => d + '%').tickSize(0))
@@ -492,7 +614,6 @@
            .attr('height', d => H - yLeft(d.passed))
            .attr('fill',   () => '#00e5a0')
            .attr('rx', 2);
-
          // value labels on passed bars — always green
          groups.append('text')
            .attr('class', 'bar-label')
@@ -512,7 +633,6 @@
              .attr('stroke', d => covColor(d.coverage))
              .attr('stroke-width', 1)
              .attr('rx', 2);
-
          // value labels on coverage bars — interpolated
          groups.filter(d => d.coverage !== null)
            .append('text')
@@ -522,7 +642,7 @@
              .attr('fill', d => covColor(d.coverage))
              .text(d => d.coverage.toFixed(1) + '%');
 
-         // bar-chart's legend -------------------------------------
+         // bar-chart's legend --------------------------------------------------------------
          const anyFailed = chartData.some(d => d.failed > 0);
          d3.select('#test-chart-wrap').append('div')
            .attr('class', 'chart-legend-row')
@@ -550,7 +670,6 @@
              .attr('height', d => H - yLeft(d.failed))
              .attr('fill',   '#ff6b6b')
              .attr('rx', 2);
-
          groups.filter(d => d.failed > 0)
            .append('text')
              .attr('class', 'bar-label')
@@ -560,9 +679,9 @@
              .text(d => d.failed);
          });
        }
+
        // ---- Pie chart ----------------------------------------------------------------------
        const chartCrates = ['book', 'libs', 'quizzes'];
-
        const lineData = {};
        entries.forEach(e => {
          if (chartCrates.includes(e.crate) && e.linesC !== undefined) {
@@ -588,38 +707,27 @@
            slices.push({ label: k, value: d.c, color: covColor(cratePct) });
          }
        });
-       const uncoveredColor = covColor(totalLines > 0 ? (totalCovered / totalLines) * 100 : 0);
        slices.push({ label: 'uncovered', value: totalUncovered, color: '#ff6b6b22', strokeColor: '#ff6b6b' });
 
        const canvas = document.getElementById('pie-canvas');
        if (canvas && totalLines > 0) {
-         const ctx   = canvas.getContext('2d');
-         const cx    = 240, cy = 240, r = 200, inner = 95;
-         let angle   = -Math.PI / 2;
-
+         const ctx = canvas.getContext('2d');
+         const cx = 240, cy = 240, r = 200, inner = 95;
+         let angle = -Math.PI / 2;
          slices.forEach(s => {
            const sweep = (s.value / totalLines) * 2 * Math.PI;
-           ctx.beginPath();
-           ctx.moveTo(cx, cy);
-           ctx.arc(cx, cy, r, angle, angle + sweep);
-           ctx.closePath();
-           ctx.fillStyle = s.color;
-           ctx.fill();
-           if (s.strokeColor) {
-             ctx.strokeStyle = s.strokeColor;
-             ctx.lineWidth   = 1.5;
-             ctx.stroke();
-           }
-
+           ctx.beginPath(); ctx.moveTo(cx, cy);
+           ctx.arc(cx, cy, r, angle, angle + sweep); ctx.closePath();
+           ctx.fillStyle = s.color; ctx.fill();
+           if (s.strokeColor) { ctx.strokeStyle = s.strokeColor; ctx.lineWidth = 1.5; ctx.stroke(); }
            const midAngle = angle + sweep / 2;
-           const lx  = cx + (r * 0.68) * Math.cos(midAngle);
-           const ly  = cy + (r * 0.68) * Math.sin(midAngle);
+           const lx = cx + (r * 0.68) * Math.cos(midAngle);
+           const ly = cy + (r * 0.68) * Math.sin(midAngle);
            const pct = ((s.value / totalLines) * 100).toFixed(1);
            if (sweep > 0.18) {
              ctx.fillStyle    = s.label === 'uncovered' ? '#ff6b6b' : 'rgba(255,255,255,0.85)';
              ctx.font         = 'bold 13px JetBrains Mono, monospace';
-             ctx.textAlign    = 'center';
-             ctx.textBaseline = 'middle';
+             ctx.textAlign    = 'center'; ctx.textBaseline = 'middle';
              ctx.fillText(pct + '%', lx, ly);
            }
            angle += sweep;
@@ -627,37 +735,27 @@
 
          // donut hole
          ctx.globalCompositeOperation = 'destination-out';
-         ctx.beginPath();
-         ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
-         ctx.fillStyle = 'rgba(0,0,0,1)';
-         ctx.fill();
+         ctx.beginPath(); ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
+         ctx.fillStyle = 'rgba(0,0,0,1)'; ctx.fill();
          ctx.globalCompositeOperation = 'source-over';
-
          // center label - color driven by overall coverage
-         const overallPct      = totalLines > 0 ? (totalCovered / totalLines) * 100 : 0;
-         const overallPctStr   = overallPct.toFixed(1);
-         const overallColor    = covColor(overallPct);
-         ctx.fillStyle    = overallColor;
-         ctx.font         = 'bold 22px JetBrains Mono, monospace';
-         ctx.textAlign    = 'center';
-         ctx.textBaseline = 'middle';
-         ctx.fillText(overallPctStr + '%', cx, cy - 10);
-         ctx.fillStyle = 'rgba(200,216,232,0.35)';
-         ctx.font      = '11px JetBrains Mono, monospace';
+         const overallPct    = totalLines > 0 ? (totalCovered / totalLines) * 100 : 0;
+         const overallColor  = covColor(overallPct);
+         ctx.fillStyle = overallColor; ctx.font = 'bold 22px JetBrains Mono, monospace';
+         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+         ctx.fillText(overallPct.toFixed(1) + '%', cx, cy - 10);
+         ctx.fillStyle = 'rgba(200,216,232,0.35)'; ctx.font = '11px JetBrains Mono, monospace';
          ctx.fillText('covered', cx, cy + 14);
        }
 
        // ---- Legend ----------------------------------------------------------------------
-       const dappsEntry = entries.find(e => e.crate === 'dapps');
        let legendHtml = '<div class="legend-heading">Line Coverage</div>';
        chartCrates.forEach(k => {
          const d = lineData[k];
          if (!d) return;
          const cratePct = d.pctOnly ? d.c : (d.c / d.t) * 100;
          const lc       = covColor(cratePct);
-         const valStr   = d.pctOnly
-           ? d.c.toFixed(2) + '%'
-           : `${d.c.toLocaleString()} / ${d.t.toLocaleString()}`;
+         const valStr   = d.pctOnly ? d.c.toFixed(2) + '%' : `${d.c.toLocaleString()} / ${d.t.toLocaleString()}`;
          legendHtml += `<div class="legend-row">
            <div class="legend-left">
              <span class="legend-dot" style="background:${lc};box-shadow:0 0 5px ${lc}88"></span>
@@ -682,8 +780,8 @@
      })
      .catch(err => {
        document.getElementById('stamp').textContent = '';
-       document.getElementById('report').innerHTML  =
-         `<div class="diag-fail-banner">Could not load diagnostics: ${err.message}</div>`;
+       document.getElementById('report-left').innerHTML =
+         `<div class="diag-fail-banner">Could not load data: ${err.message}</div>`;
      });
   </script>
  </body>
