@@ -3,28 +3,27 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pivot Protocol – Cumulative Distributions</title>
+    <title>Pivot Protocol - Cumulative Distributions</title>
     <link rel="stylesheet" href="styles.css">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: Georgia, serif;
-            background: #f9f9f6;
+            background-color: "transparent";
             margin: 0;
             padding: 16px;
-            color: #222;
         }
         h2 {
             text-align: center;
             font-size: 1.2rem;
             font-weight: bold;
             margin-bottom: 4px;
-            color: #222;
+            color: #ffffff;
         }
         #summary {
             text-align: center;
             font-size: 0.85rem;
-            color: #555;
+            color: #aeaeae;
             margin-bottom: 16px;
         }
         #chartContainer {
@@ -45,7 +44,7 @@
     </style>
 </head>
 <body>
-    <h2>Cumulative Distributions (including reinvestments)</h2>
+    <h2>Cumulative Distributions</h2>
     <div id="summary">Loading…</div>
     <div id="error">Failed to load distributions data.</div>
     <div id="chartContainer">
@@ -54,13 +53,11 @@
     <script>
     // ----- Token config: label, TSV column prefix, bar color --------------------
     const TOKENS = [
-        { label: 'BTC $ total',    col: 'BTC $ total',    color: '#f7b731' },
-        { label: 'ETH $ total',    col: 'ETH $ total',    color: '#aaaaaa' },
-        { label: 'HBAR $ total',   col: 'HBAR $ total',   color: '#222222' },
-        { label: 'AVAX $ total',   col: 'AVAX $ total',   color: '#e84142' },
-        { label: 'BNB $ total',    col: 'BNB $ total',    color: '#f3ba2f' },
-        { label: 'stable $ total', col: 'stable $ total', color: '#4fc3f7' },
-        { label: 'UNDEAD $ total', col: 'UNDEAD $ total', color: '#b71c1c' },
+        { label: 'BTC $ total',    col: 'BTC $ total',    color: '#DE9E1F' },
+        { label: 'ETH $ total',    col: 'ETH $ total',    color: '#1F5FDE' },
+        { label: 'AVAX $ total',   col: 'AVAX $ total',   color: '#EB1E1E' },
+        { label: 'stable $ total', col: 'stable $ total', color: '#0B9999' },
+        { label: 'UNDEAD $ total', col: 'UNDEAD $ total', color: '#990B0B' },
     ];
     // ----- Parse TSV ------------------------------------------------------------
     function parseTSV(raw) {
@@ -136,7 +133,7 @@
                         },
                         title: {
                             display: true,
-                            text: 'Distributed/Reinvested',
+                            text: 'Distributed Value ($)',
                             font: { size: 11 },
                         },
                     },
