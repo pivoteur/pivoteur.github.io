@@ -35,6 +35,11 @@ on:
         description: 'Tweet URL (e.g. x.com/pivocateur)'
         required: true
         type: string
+      send:
+        description: 'Let Robbie send the message? (uncheck to display only)'
+        required: false
+        type: boolean
+        default: true
 
 jobs:
   run-reinvested:
@@ -75,6 +80,7 @@ jobs:
           echo "pivot_count: ${{ inputs.pivot_count }}"
           echo "amount:      ${{ inputs.amount }}"
           echo "url:         ${{ inputs.url }}"
+          echo "send:     ${{ inputs.send }}"
 
       - name: Build reinvested
         run: |
@@ -90,9 +96,12 @@ jobs:
           REINVESTED_BOT:    ${{ secrets.PIVOT_PROTOCOL_ROBBIE }}
           INVESTOR_CHAT_IDS: ${{ secrets.INVESTOR_CHAT_IDS }}
         run: |
-          reinvested "${{ inputs.investor }}"     \
+          reinvested "${{ inputs.investor }}"    \
                      "${{ inputs.token_a }}"     \
                      "${{ inputs.token_b }}"     \
                      "${{ inputs.pivot_count }}" \
                      "${{ inputs.amount }}"      \
-                     "${{ inputs.url }}"
+                     "${{ inputs.url }}"         \
+                     "${{ inputs.send }}"
+
+                     
