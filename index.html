@@ -1,10 +1,10 @@
 <html>
  <head>
   <title>Pivot Protocol</title>
-  <link rel='stylesheet' href='styles.css?version=18'></link>
+  <link rel='stylesheet' href='styles.css?version=19'></link>
  <script>
-  const version=18;   // MAKE SURE THIS MATCHES THE VERSION VALUE (above)
-  let frames = ['undead', 'dash', 'pools', 'prof', 'diy', 'treas', 'diag'];
+  const version=19;   // MAKE SURE THIS MATCHES THE VERSION VALUE (above)
+  let frames = ['undead', 'dash', 'pools', 'prof', 'diy', 'treas', 'diag', 'dist'];
   const switchFrame = frame => {
      const i = f => 'iframe_' + f;
      frames.forEach(fram =>  {
@@ -49,7 +49,10 @@
        </tr>
        <tr><td><hr/></td></tr>
        <tr>
-        <td><a href="#" onclick="switchFrame('diag')">Diagnostics</a></td> 
+        <td><a href="#" onclick="switchFrame('diag')">Diagnostics</a></td>
+        </tr>
+        <tr>
+        <td><a href="#" onclick="switchFrame('dist')">Distribution</a></td>
        </tr>
        <tr><td><hr/></td></tr>
        <tr><td>Docs</td></tr>
@@ -107,6 +110,11 @@
               name="iframe_diag"
               id="iframe_diag"
               title="Diagnostics"
+              style="display:none"></iframe>
+      <iframe src="distributions.html"
+              name="iframe_dist"
+              id="iframe_dist"
+              title="Distributions"
               style="display:none"></iframe>
      </td>
     </tr>
