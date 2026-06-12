@@ -186,7 +186,6 @@
      border-radius: 8px;
      background: rgba(255,255,255,0.02);
      display: flex;
-     /*align-items: center;*/
      gap: 32px;
      min-height: 400px;
     }
@@ -763,18 +762,6 @@
            <span class="legend-value" style="color:${lc}">${valStr}</span>
          </div>`;
        });
-       /*if (dappsEntry && dappsEntry.total !== null) {
-         const dappsPct   = dappsEntry.totalOf ? (dappsEntry.total / dappsEntry.totalOf) * 100 : 100;
-         const dappsColor = covColor(dappsPct);
-         legendHtml += '<div class="legend-divider"></div>';
-         legendHtml += `<div class="legend-row">
-           <div class="legend-left">
-             <span class="legend-dot" style="background:${dappsColor};box-shadow:0 0 5px ${dappsColor}88"></span>
-             <span class="legend-label">[dapps] itr</span>
-           </div>
-           <span class="legend-value" style="color:${dappsColor}">${dappsEntry.total}/${dappsEntry.totalOf} passed</span>
-         </div>`;
-       }*/
        document.getElementById('graph-legend').innerHTML = legendHtml;
      })
      .catch(err => {
