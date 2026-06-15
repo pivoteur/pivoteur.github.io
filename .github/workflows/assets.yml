@@ -45,9 +45,10 @@ jobs:
         run: |
           cargo install --path protocol/dapps/assets \
           --bin assets
+          --release
 
       - name: Add binary to PATH
-        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/dapps/assets/target/release" >> $GITHUB_PATH
 
       - name: Set date and pivot_url
         run: |
