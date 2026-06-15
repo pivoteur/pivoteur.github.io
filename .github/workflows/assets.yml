@@ -15,30 +15,37 @@ jobs:
     steps:
       - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
         uses: actions/checkout@v4
-
-      - name: Checkout protocol # Only needed to build assets
-        uses: actions/checkout@v4
-        with: 
-          repository: pivoteur/protocol
-          path: protocol
-          
-      - name: Checkout crypto-n-rust # needed for assets' `book` dependencies
-        uses: actions/checkout@v4
-        with:
-          repository: logicalgraphs/crypto-n-rust
-          path: crypto-n-rust
-
+ 
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
-          
+ 
       - name: Cache Rust
+        id: rust-cache
         uses: Swatinem/rust-cache@v2
-        with: 
-          workspaces: protocol/dapps/assets
-
+        with:
+          workspaces: "protocol/dapps/assets -> target"
+ 
+      - name: Set cache flag
+        run: echo "CACHE_HIT=${{ steps.rust-cache.outputs.cache-hit }}" >> $GITHUB_ENV
+ 
+      - name: Checkout protocol # Only needed to build assets
+        if: env.CACHE_HIT != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: pivoteur/protocol
+          path: protocol
+ 
+      - name: Checkout crypto-n-rust # needed for assets' `book` dependencies
+        if: env.CACHE_HIT != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: logicalgraphs/crypto-n-rust
+          path: crypto-n-rust
+ 
       - name: Build assets
+        if: env.CACHE_HIT != 'true'
         run: |
           cargo build --manifest-path protocol/dapps/assets/Cargo.toml \
           --bin assets \
