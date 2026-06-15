@@ -15,32 +15,31 @@ jobs:
     steps:
       - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
         uses: actions/checkout@v4
- 
+
+      - name: Checkout protocol # needed by cache step to locate Cargo.toml
+        uses: actions/checkout@v4
+        with:
+          repository: pivoteur/protocol
+          path: protocol
+
       - name: Install Rust toolchain
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
- 
+
       - name: Cache Rust
         id: rust-cache
         uses: Swatinem/rust-cache@v2
         with:
           workspaces: "protocol/dapps/assets -> target"
 
-      - name: Checkout protocol # Only needed to build assets
-        if: steps.rust-cache.outputs.cache-hit != 'true'
-        uses: actions/checkout@v4
-        with:
-          repository: pivoteur/protocol
-          path: protocol
- 
       - name: Checkout crypto-n-rust # needed for assets' `book` dependencies
         if: steps.rust-cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
           path: crypto-n-rust
- 
+
       - name: Build assets
         if: steps.rust-cache.outputs.cache-hit != 'true'
         run: |
