@@ -35,14 +35,12 @@ jobs:
           prefix-key: "v1-rust"
 
       - name: Checkout crypto-n-rust # needed for assets' `book` dependencies
-        if: steps.rust-cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
           path: crypto-n-rust
 
       - name: Build assets
-        if: steps.rust-cache.outputs.cache-hit != 'true'
         run: |
           cargo build --manifest-path protocol/dapps/assets/Cargo.toml \
             --bin assets \
