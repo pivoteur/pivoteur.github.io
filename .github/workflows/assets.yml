@@ -46,7 +46,9 @@ jobs:
           cargo build --manifest-path protocol/dapps/assets/Cargo.toml \
             --bin assets \
             --release
-          echo "$GITHUB_WORKSPACE/protocol/dapps/assets/target/release" >> $GITHUB_PATH
+
+      - name: Add assets to PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/dapps/assets/target/release" >> $GITHUB_PATH
 
       - name: Set date and pivot_url
         run: |
