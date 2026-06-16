@@ -43,12 +43,10 @@ jobs:
       - name: Build assets
         if: steps.rust-cache.outputs.cache-hit != 'true'
         run: |
-          cargo install --path protocol/dapps/assets \
-          --bin assets
-          --release
-
-      - name: Add binary to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/assets/target/release" >> $GITHUB_PATH
+          cargo build --manifest-path protocol/dapps/assets/Cargo.toml \
+            --bin assets \
+            --release
+          echo "$GITHUB_WORKSPACE/protocol/dapps/assets/target/release" >> $GITHUB_PATH
 
       - name: Set date and pivot_url
         run: |
