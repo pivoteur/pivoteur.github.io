@@ -1,5 +1,5 @@
-name: distribute
- 
+name: distributed
+
 on:
   workflow_dispatch:
     inputs:
@@ -25,37 +25,64 @@ on:
         required: false
         type: string
         default: 'asdf'
- 
+      send:
+        description: 'Let Robbie send the message? (uncheck to display only)'
+        required: false
+        type: boolean
+        default: true
+
 permissions:
   contents: write
- 
+
 jobs:
   run-distributed:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout pivoteur.github.io
         uses: actions/checkout@v4
- 
+
       - name: Checkout protocol
         uses: actions/checkout@v4
         with:
           repository: pivoteur/protocol
           path: protocol
- 
+
+      - name: Cache distributed binary
+        id: binary-cache
+        uses: actions/cache@v3
+        with:
+          path: protocol/dapps/distributed/target/debug/distributed
+          key: distributed-binary-${{ hashFiles('protocol/dapps/distributed/**/*.rs', 'protocol/dapps/distributed/Cargo.toml', 'protocol/dapps/distributed/Cargo.lock') }}
+
+      - name: Set up Rust
+        if: steps.binary-cache.outputs.cache-hit != 'true'
+        uses: dtolnay/rust-toolchain@stable
+
       - name: Checkout crypto-n-rust
+        if: steps.binary-cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
           path: crypto-n-rust
- 
-      - name: Set up Rust
-        uses: dtolnay/rust-toolchain@stable
- 
+
+      - name: Show input parameters
+        run: |
+          echo "=== Running distributed with manual inputs ==="
+          echo "token_a:   ${{ inputs.token_a }}"
+          echo "token_b:   ${{ inputs.token_b }}"
+          echo "amount:    ${{ inputs.amount }}"
+          echo "tweet_url: ${{ inputs.tweet_url }}"
+          echo "tx_url:    ${{ inputs.tx_url }}"
+          echo "send:      ${{ inputs.send }}"
+
       - name: Build distributed
+        if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
           cargo build --manifest-path protocol/dapps/distributed/Cargo.toml --bin distributed
-          echo "$GITHUB_WORKSPACE/protocol/dapps/distributed/target/debug" >> $GITHUB_PATH
- 
+
+      - name: Add distributed to PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/dapps/distributed/target/debug" >> $GITHUB_PATH
+
       - name: Run distributed
         env:
           REINVESTED_BOT: ${{ secrets.REINVESTED_BOT }}
@@ -64,4 +91,5 @@ jobs:
                       "${{ inputs.token_b }}"  \
                       "${{ inputs.amount }}"   \
                       "${{ inputs.tweet_url }}" \
-                      "${{ inputs.tx_url }}"
+                      "${{ inputs.tx_url }}"   \
+                      "${{ inputs.send }}"
