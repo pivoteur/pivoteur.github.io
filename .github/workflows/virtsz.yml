@@ -16,35 +16,40 @@ jobs:
       - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
         uses: actions/checkout@v4
 
-      - name: Checkout protocol # Only needed to build virtsz
+      - name: Checkout protocol # needed by cache step to locate Cargo.toml
         uses: actions/checkout@v4
-        with: 
+        with:
           repository: pivoteur/protocol
           path: protocol
 
-      - name: Checkout crypto-n-rust # needed for virtsz's `book` dependencies
+      - name: Cache virtsz binary
+        id: binary-cache
+        uses: actions/cache@v3
+        with:
+          path: protocol/dapps/virtsz/target/release/virtsz
+          key: virtsz-binary-${{ hashFiles('protocol/dapps/virtsz/**/*.rs', 'protocol/dapps/virtsz/Cargo.toml', 'protocol/dapps/virtsz/Cargo.lock') }}
+
+      - name: Install Rust toolchain
+        if: steps.binary-cache.outputs.cache-hit != 'true'
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Checkout crypto-n-rust
+        if: steps.binary-cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
           path: crypto-n-rust
 
-      - name: Install Rust toolchain
-        uses: dtolnay/rust-toolchain@stable
-        with:
-          toolchain: stable
-
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: protocol/dapps/virtsz
-
-      - name: Build virtsz 
+      - name: Build virtsz
+        if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
           cargo build --manifest-path protocol/dapps/virtsz/Cargo.toml \
-          --bin virtsz \
-          --release
+            --bin virtsz \
+            --release
 
-      - name: Add binary to PATH
+      - name: Add virtsz to PATH
         run: echo "$GITHUB_WORKSPACE/protocol/dapps/virtsz/target/release" >> $GITHUB_PATH
 
       - name: Set date and pivot_url
@@ -58,11 +63,11 @@ jobs:
           ls -l
           echo "Looking for virtsz binary:"
           find . -name virtsz -type f
-          
+
           sh ./protocol/scripts/auto-virtsz.sh pivot data/pivots/open/raw
 
       - name: Commit and push results
-        env: 
+        env:
           USER0_NAME: ${{ vars.USER0_NAME }}
           USER0_EMAIL: ${{ secrets.USER0_EMAIL }}
         run: |
