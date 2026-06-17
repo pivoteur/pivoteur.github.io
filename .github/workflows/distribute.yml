@@ -1,0 +1,67 @@
+name: distribute
+ 
+on:
+  workflow_dispatch:
+    inputs:
+      token_a:
+        description: 'Distributed token, left side of pool (e.g. USDC)'
+        required: true
+        type: string
+      token_b:
+        description: 'Paired token, right side of pool (e.g. UNDEAD)'
+        required: true
+        type: string
+      amount:
+        description: 'Amount distributed to investor (e.g. 0.4349)'
+        required: true
+        type: string
+      tweet_url:
+        description: 'Tweet URL (default: x.com/pivocateur/status/2054570565474635869)'
+        required: false
+        type: string
+        default: 'x.com/pivocateur/status/2054570565474635869'
+      tx_url:
+        description: 'Snowtrace tx URL (default: asdf)'
+        required: false
+        type: string
+        default: 'asdf'
+ 
+permissions:
+  contents: write
+ 
+jobs:
+  run-distributed:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pivoteur.github.io
+        uses: actions/checkout@v4
+ 
+      - name: Checkout protocol
+        uses: actions/checkout@v4
+        with:
+          repository: pivoteur/protocol
+          path: protocol
+ 
+      - name: Checkout crypto-n-rust
+        uses: actions/checkout@v4
+        with:
+          repository: logicalgraphs/crypto-n-rust
+          path: crypto-n-rust
+ 
+      - name: Set up Rust
+        uses: dtolnay/rust-toolchain@stable
+ 
+      - name: Build distributed
+        run: |
+          cargo build --manifest-path protocol/dapps/distributed/Cargo.toml --bin distributed
+          echo "$GITHUB_WORKSPACE/protocol/dapps/distributed/target/debug" >> $GITHUB_PATH
+ 
+      - name: Run distributed
+        env:
+          REINVESTED_BOT: ${{ secrets.REINVESTED_BOT }}
+        run: |
+          distributed "${{ inputs.token_a }}"  \
+                      "${{ inputs.token_b }}"  \
+                      "${{ inputs.amount }}"   \
+                      "${{ inputs.tweet_url }}" \
+                      "${{ inputs.tx_url }}"
