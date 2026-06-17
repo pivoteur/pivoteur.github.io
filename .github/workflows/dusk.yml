@@ -10,7 +10,7 @@ permissions:
   contents: write
 
 jobs:
-  run-duskymin:
+  run-dusk:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
