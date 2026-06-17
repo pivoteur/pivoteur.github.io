@@ -22,25 +22,28 @@ jobs:
           repository: pivoteur/protocol
           path: protocol
 
+      - name: Cache assets binary
+        id: binary-cache
+        uses: actions/cache@v3
+        with:
+          path: protocol/dapps/assets/target/release/assets
+          key: assets-binary-${{ hashFiles('protocol/dapps/assets/**/*.rs', 'protocol/dapps/assets/Cargo.toml', 'protocol/dapps/assets/Cargo.lock') }}
+
       - name: Install Rust toolchain
+        if: steps.binary-cache.outputs.cache-hit != 'true'
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
 
-      - name: Cache Rust
-        id: rust-cache
-        uses: Swatinem/rust-cache@v2
-        with:
-          workspaces: "protocol/dapps/assets -> target"
-          prefix-key: "v1-rust"
-
-      - name: Checkout crypto-n-rust # needed for assets' `book` dependencies
+      - name: Checkout crypto-n-rust
+        if: steps.binary-cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
           path: crypto-n-rust
 
       - name: Build assets
+        if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
           cargo build --manifest-path protocol/dapps/assets/Cargo.toml \
             --bin assets \
