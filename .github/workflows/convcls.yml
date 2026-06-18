@@ -73,9 +73,15 @@ jobs:
       - name: Run convcls
         run: |
           convcls data/pivots/open/raw/${{ inputs.pool }}.tsv \
-                  data/pivots/close/raw/${{ inputs.pool }}.tsv
+                  data/pivots/close/raw/${{ inputs.pool }}.tsv \
+                  > /tmp/convcls_out.tsv
+          if [ "${{ inputs.dry_run }}" = "false" ]; then
+            mv /tmp/convcls_out.tsv data/pivots/close/raw/${{ inputs.pool }}.tsv
+          else
+            cat /tmp/convcls_out.tsv
+          fi
 
-      - name: Set date
+      - name: Set date 
         if: ${{ inputs.dry_run == false }}
         run: echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
