@@ -9,7 +9,7 @@ on:
         type: choice
         options:
           - Pivot_Internal_Bot
-          - alpaha
+          - alpha
           - phi
           - psi
           - pi
