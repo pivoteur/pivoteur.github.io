@@ -26,8 +26,8 @@ jobs:
         id: binary-cache
         uses: actions/cache@v3
         with:
-          path: protocol/quizzes/src/quiz05/a_assets/target/release/assets
-          key: assets-binary-${{ hashFiles('protocol/quizzes/src/quiz05/a_assets/**/*.rs', 'protocol/quizzes/src/quiz05/a_assets/Cargo.toml') }}
+          path: protocol/quizzes/src/quiz06/c_assets/target/release/assets
+          key: assets-binary-${{ hashFiles('protocol/quizzes/src/quiz06/c_assets/**/*.rs', 'protocol/quizzes/src/quiz06/c_assets/Cargo.toml') }}
 
       - name: Install Rust toolchain
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -45,12 +45,12 @@ jobs:
       - name: Build assets
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/quizzes/src/quiz05/a_assets/Cargo.toml \
+          cargo build --manifest-path protocol/quizzes/src/quiz06/c_assets/Cargo.toml \
             --bin assets \
             --release
 
       - name: Add assets to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz05/a_assets/target/release" >> $GITHUB_PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz06/c_assets/target/release" >> $GITHUB_PATH
 
       - name: Set date and pivot_url
         run: |
