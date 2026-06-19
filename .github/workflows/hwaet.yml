@@ -26,8 +26,8 @@ jobs:
         id: binary-cache
         uses: actions/cache@v3
         with:
-          path: protocol/dapps/hwaet/target/release/hwaet
-          key: hwaet-binary-${{ hashFiles('protocol/dapps/hwaet/**/*.rs', 'protocol/dapps/hwaet/Cargo.toml', 'protocol/dapps/hwaet/Cargo.lock') }}
+          path: protocol/quizzes/src/quiz07/d_health/target/release/hwaet
+          key: hwaet-binary-${{ hashFiles('protocol/quizzes/src/quiz07/d_health/**/*.rs', 'protocol/quizzes/src/quiz07/d_health/Cargo.toml') }}
 
       - name: Install Rust toolchain
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -45,12 +45,12 @@ jobs:
       - name: Build hwaet
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/dapps/hwaet/Cargo.toml \
+          cargo build --manifest-path protocol/quizzes/src/quiz07/d_health/Cargo.toml \
             --bin hwaet \
             --release
 
       - name: Add hwaet to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/hwaet/target/release" >> $GITHUB_PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz07/d_health/target/release" >> $GITHUB_PATH
 
       - name: Setting date and URL
         run: |

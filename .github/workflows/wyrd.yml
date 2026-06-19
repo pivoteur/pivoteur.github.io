@@ -40,15 +40,15 @@ jobs:
         id: wyrd-cache
         uses: actions/cache@v3
         with:
-          path: protocol/dapps/wyrd/target/release/wyrd
-          key: wyrd-binary-${{ hashFiles('protocol/dapps/wyrd/**/*.rs', 'protocol/dapps/wyrd/Cargo.toml', 'protocol/dapps/wyrd/Cargo.lock') }}
+          path: protocol/quizzes/src/quiz08/b_wyrd/target/release/wyrd
+          key: wyrd-binary-${{ hashFiles('protocol/quizzes/src/quiz08/b_wyrd/**/*.rs', 'protocol/quizzes/src/quiz08/b_wyrd/Cargo.toml') }}
 
       - name: Cache appender binary
         id: appender-cache
         uses: actions/cache@v3
         with:
-          path: protocol/dapps/appender/target/release/appender
-          key: appender-binary-${{ hashFiles('protocol/dapps/appender/**/*.rs', 'protocol/dapps/appender/Cargo.toml', 'protocol/dapps/appender/Cargo.lock') }}
+          path: protocol/quizzes/src/quiz08/c_appender/target/release/appender
+          key: appender-binary-${{ hashFiles('protocol/quizzes/src/quiz08/c_appender/**/*.rs', 'protocol/quizzes/src/quiz08/c_appender/Cargo.toml') }}
 
       - name: Install Rust toolchain
         if: steps.wyrd-cache.outputs.cache-hit != 'true' || steps.appender-cache.outputs.cache-hit != 'true'
@@ -72,34 +72,30 @@ jobs:
 
       - name: Base variables
         run: |
-          echo "DAPP=wyrd" >> $GITHUB_ENV
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
           echo "PGI=pivoteur.github.io" >> $GITHUB_ENV
-          echo "DAPPS_DIR=protocol/dapps" >> $GITHUB_ENV
-          echo "TARGET_DIR=target/release" >> $GITHUB_ENV
           echo "GIT_RAW_URL=https://raw.githubusercontent.com" >> $GITHUB_ENV
 
       - name: Establish pathing to dapps
         run: |
           echo "PROTOCOL=pivoteur/$PGI" >> $GITHUB_ENV
-          echo "GIT_DAPPS_DIR=$GITHUB_WORKSPACE/$DAPPS_DIR" >> $GITHUB_ENV
 
       - name: protocol URL and paths to dapps
         run: |
           echo "PIVOT_URL=$GIT_RAW_URL/$PROTOCOL" >> $GITHUB_ENV
-          echo "$GIT_DAPPS_DIR/$DAPP/$TARGET_DIR" >> $GITHUB_PATH
-          echo "$GIT_DAPPS_DIR/appender/$TARGET_DIR" >> $GITHUB_PATH
+          echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz08/b_wyrd/$TARGET_DIR" >> $GITHUB_PATH
+          echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz08/c_appender/$TARGET_DIR" >> $GITHUB_PATH
 
       - name: Build wyrd
         if: steps.wyrd-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path $DAPPS_DIR/wyrd/Cargo.toml \
+          cargo build --manifest-path protocol/quizzes/src/quiz08/b_wyrd/Cargo.toml \
             --bin wyrd --release
 
       - name: Build appender
         if: steps.appender-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path $DAPPS_DIR/appender/Cargo.toml \
+          cargo build --manifest-path protocol/quizzes/src/quiz08/c_appender/Cargo.toml \
             --bin appender --release
 
       - name: Run wyrd and append to close pivot table

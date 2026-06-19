@@ -26,8 +26,8 @@ jobs:
         id: binary-cache
         uses: actions/cache@v3
         with:
-          path: protocol/dapps/dusk/target/release/dusk
-          key: dusk-binary-${{ hashFiles('protocol/dapps/dusk/**/*.rs', 'protocol/dapps/dusk/Cargo.toml', 'protocol/dapps/dusk/Cargo.lock') }}
+          path: protocol/quizzes/src/quiz05/b_dusk/target/release/dusk
+          key: dusk-binary-${{ hashFiles('protocol/quizzes/src/quiz05/b_dusk_min/**/*.rs', 'protocol/quizzes/src/quiz05/b_dusk_min/Cargo.toml') }}
 
       - name: Install Rust toolchain
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -45,12 +45,12 @@ jobs:
       - name: Build dusk
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/dapps/dusk/Cargo.toml \
+          cargo build --manifest-path protocol/quizzes/src/quiz05/b_dusk/Cargo.toml \
             --bin dusk \
             --release
 
       - name: Add dusk to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/dusk/target/release" >> $GITHUB_PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz05/b_dusk/target/release" >> $GITHUB_PATH
 
       - name: Setting date and URL
         run: |

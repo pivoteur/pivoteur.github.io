@@ -51,8 +51,8 @@ jobs:
         id: binary-cache
         uses: actions/cache@v3
         with:
-          path: protocol/dapps/distributed/target/debug/distributed
-          key: distributed-binary-${{ hashFiles('protocol/dapps/distributed/**/*.rs', 'protocol/dapps/distributed/Cargo.toml', 'protocol/dapps/distributed/Cargo.lock') }}
+          path: protocol/quizzes/src/quiz11/b_distributed/target/debug/distributed
+          key: distributed-binary-${{ hashFiles('protocol/quizzes/src/quiz11/b_distributed/**/*.rs', 'protocol/quizzes/src/quiz11/b_distributed/Cargo.toml') }}
 
       - name: Set up Rust
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -78,10 +78,10 @@ jobs:
       - name: Build distributed
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/dapps/distributed/Cargo.toml --bin distributed
+          cargo build --manifest-path protocol/quizzes/src/quiz11/b_distributed/Cargo.toml --bin distributed
 
       - name: Add distributed to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/distributed/target/debug" >> $GITHUB_PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz11/b_distributed/target/debug" >> $GITHUB_PATH
 
       - name: Run distributed
         env:
@@ -91,5 +91,5 @@ jobs:
                       "${{ inputs.token_b }}"  \
                       "${{ inputs.amount }}"   \
                       "${{ inputs.tweet_url }}" \
-                      "${{ inputs.tx_url }}"   \
+                      "${{ inputs.tx_url }}"    \
                       "${{ inputs.send }}"

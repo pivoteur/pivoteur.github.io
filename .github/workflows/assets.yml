@@ -26,8 +26,8 @@ jobs:
         id: binary-cache
         uses: actions/cache@v3
         with:
-          path: protocol/dapps/assets/target/release/assets
-          key: assets-binary-${{ hashFiles('protocol/dapps/assets/**/*.rs', 'protocol/dapps/assets/Cargo.toml', 'protocol/dapps/assets/Cargo.lock') }}
+          path: protocol/quizzes/src/quiz05/a_assets/target/release/assets
+          key: assets-binary-${{ hashFiles('protocol/quizzes/src/quiz05/a_assets/**/*.rs', 'protocol/quizzes/src/quiz05/a_assets/Cargo.toml') }}
 
       - name: Install Rust toolchain
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -45,12 +45,12 @@ jobs:
       - name: Build assets
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/dapps/assets/Cargo.toml \
+          cargo build --manifest-path protocol/quizzes/src/quiz05/a_assets/Cargo.toml \
             --bin assets \
             --release
 
       - name: Add assets to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/assets/target/release" >> $GITHUB_PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz05/a_assets/target/release" >> $GITHUB_PATH
 
       - name: Set date and pivot_url
         run: |
@@ -72,7 +72,7 @@ jobs:
           if git diff --staged --quiet; then
             echo "Nothing to commit, skipping push"
             exit 0
-          fi
+          fi  
 
           git commit -m "assets $LE_DATE"
           git push
