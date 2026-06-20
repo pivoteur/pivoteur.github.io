@@ -83,8 +83,8 @@ jobs:
       - name: protocol URL and paths to dapps
         run: |
           echo "PIVOT_URL=$GIT_RAW_URL/$PROTOCOL" >> $GITHUB_ENV
-          echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz08/b_wyrd/$TARGET_DIR" >> $GITHUB_PATH
-          echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz08/c_appender/$TARGET_DIR" >> $GITHUB_PATH
+          echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz08/b_wyrd/target/release" >> $GITHUB_PATH
+          echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz08/c_appender/target/release" >> $GITHUB_PATH
 
       - name: Build wyrd
         if: steps.wyrd-cache.outputs.cache-hit != 'true'
