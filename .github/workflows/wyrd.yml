@@ -40,14 +40,14 @@ jobs:
         id: wyrd-cache
         uses: actions/cache@v3
         with:
-          path: protocol/quizzes/src/quiz08/b_wyrd/target/release/wyrd
+          path: protocol/quizzes/src/quiz08/b_wyrd/target/release/b_wyrd
           key: wyrd-binary-${{ hashFiles('protocol/quizzes/src/quiz08/b_wyrd/**/*.rs', 'protocol/quizzes/src/quiz08/b_wyrd/Cargo.toml') }}
 
       - name: Cache appender binary
         id: appender-cache
         uses: actions/cache@v3
         with:
-          path: protocol/quizzes/src/quiz08/c_appender/target/release/appender
+          path: protocol/quizzes/src/quiz08/c_appender/target/release/c_appender
           key: appender-binary-${{ hashFiles('protocol/quizzes/src/quiz08/c_appender/**/*.rs', 'protocol/quizzes/src/quiz08/c_appender/Cargo.toml') }}
 
       - name: Install Rust toolchain
@@ -90,18 +90,18 @@ jobs:
         if: steps.wyrd-cache.outputs.cache-hit != 'true'
         run: |
           cargo build --manifest-path protocol/quizzes/src/quiz08/b_wyrd/Cargo.toml \
-            --bin wyrd --release
+            --bin b_wyrd --release
 
       - name: Build appender
         if: steps.appender-cache.outputs.cache-hit != 'true'
         run: |
           cargo build --manifest-path protocol/quizzes/src/quiz08/c_appender/Cargo.toml \
-            --bin appender --release
+            --bin c_appender --release
 
       - name: Run wyrd and append to close pivot table
         run: |
-          wyrd pivot data/pivots/close/raw "${{inputs.ix}}" \
-          "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" | appender
+          b_wyrd pivot data/pivots/close/raw "${{inputs.ix}}" \
+          "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" | c_appender
 
       - name: Commit and push results
         env:
