@@ -42,7 +42,7 @@ jobs:
         id: binary-cache
         uses: actions/cache@v3
         with:
-          path: protocol/quizzes/src/quiz08/d_convcls/target/debug/convcls
+          path: protocol/quizzes/src/quiz08/d_convcls/target/debug/d_convcls
           key: convcls-binary-${{ hashFiles('protocol/quizzes/src/quiz08/d_convcls/**/*.rs', 'protocol/quizzes/src/quiz08/d_convcls/Cargo.toml') }}
 
       - name: Set up Rust
@@ -65,16 +65,16 @@ jobs:
       - name: Build convcls
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/quizzes/src/quiz08/d_convcls/Cargo.toml --bin convcls
+          cargo build --manifest-path protocol/quizzes/src/quiz08/d_convcls/Cargo.toml --bin d_convcls
 
       - name: Add convcls to PATH
         run: echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz08/d_convcls/target/debug" >> $GITHUB_PATH
 
       - name: Run convcls
         run: |
-          convcls data/pivots/open/raw/${{ inputs.pool }}.tsv \
-                  data/pivots/close/raw/${{ inputs.pool }}.tsv \
-                  > /tmp/convcls_out.tsv
+          d_convcls data/pivots/open/raw/${{ inputs.pool }}.tsv \
+                    data/pivots/close/raw/${{ inputs.pool }}.tsv \
+                    > /tmp/convcls_out.tsv
           if [ "${{ inputs.dry_run }}" = "false" ]; then
             mv /tmp/convcls_out.tsv data/pivots/close/raw/${{ inputs.pool }}.tsv
           else
