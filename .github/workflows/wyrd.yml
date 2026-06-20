@@ -100,8 +100,8 @@ jobs:
 
       - name: Run wyrd and append to close pivot table
         run: |
-          wyrd pivot data/pivots/close/raw "${{inputs.ix}}" \
-          "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" | appender
+          b_wyrd pivot data/pivots/close/raw "${{inputs.ix}}" \
+          "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" | c_appender
 
       - name: Commit and push results
         env:
