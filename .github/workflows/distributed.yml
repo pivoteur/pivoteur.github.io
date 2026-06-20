@@ -51,7 +51,7 @@ jobs:
         id: binary-cache
         uses: actions/cache@v3
         with:
-          path: protocol/quizzes/src/quiz11/b_distributed/target/debug/distributed
+          path: protocol/quizzes/src/quiz11/b_distributed/target/debug/b_distributed
           key: distributed-binary-${{ hashFiles('protocol/quizzes/src/quiz11/b_distributed/**/*.rs', 'protocol/quizzes/src/quiz11/b_distributed/Cargo.toml') }}
 
       - name: Set up Rust
@@ -78,7 +78,7 @@ jobs:
       - name: Build distributed
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/quizzes/src/quiz11/b_distributed/Cargo.toml --bin distributed
+          cargo build --manifest-path protocol/quizzes/src/quiz11/b_distributed/Cargo.toml --bin b_distributed
 
       - name: Add distributed to PATH
         run: echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz11/b_distributed/target/debug" >> $GITHUB_PATH
@@ -87,9 +87,9 @@ jobs:
         env:
           REINVESTED_BOT: ${{ secrets.REINVESTED_BOT }}
         run: |
-          distributed "${{ inputs.token_a }}"  \
-                      "${{ inputs.token_b }}"  \
-                      "${{ inputs.amount }}"   \
-                      "${{ inputs.tweet_url }}" \
-                      "${{ inputs.tx_url }}"    \
-                      "${{ inputs.send }}"
+          b_distributed "${{ inputs.token_a }}"  \
+                        "${{ inputs.token_b }}"  \
+                        "${{ inputs.amount }}"   \
+                        "${{ inputs.tweet_url }}" \
+                        "${{ inputs.tx_url }}"    \
+                        "${{ inputs.send }}"
