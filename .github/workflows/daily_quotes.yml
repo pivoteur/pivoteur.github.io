@@ -1,0 +1,65 @@
+name: daily_quotes
+
+on:
+  workflow_dispatch:
+  # schedule:
+  #   # runs 1 hour after quotes.yml (02:37 UTC) in crypto-n-rust
+  #   - cron: "37 03 * * *"
+
+permissions:
+  contents: write
+
+jobs:
+  quotes-to-json:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pivoteur.github.io
+        uses: actions/checkout@v4
+
+      - name: Checkout crypto-n-rust
+        uses: actions/checkout@v4
+        with:
+          repository: logicalgraphs/crypto-n-rust
+          path: crypto-n-rust
+
+      - name: Grab latest quotes line and convert to JSON
+        run: |
+          QUOTES_CSV="crypto-n-rust/data-files/csv/quotes.csv"
+
+          # Row 1: coingecko IDs (skip)
+          # Row 2: ticker symbols (use as keys)
+          # Last row: most recent date's prices
+          HEADERS=$(sed -n '2p' "$QUOTES_CSV")
+          LATEST=$(tail -n 1 "$QUOTES_CSV")
+
+          python3 - <<EOF
+          import csv, json
+
+          headers = "$HEADERS".split(',')
+          values  = "$LATEST".split(',')
+
+          row = dict(zip(headers, values))
+
+          # promote date to top-level, cast everything else to float
+          date = row.pop('date')
+          prices = {k: float(v) for k, v in row.items()}
+
+          output = {"date": date, **prices}
+
+          with open("data/quotes.json", "w") as f:
+              json.dump(output, f, indent=2)
+
+          print(f"Wrote quotes.json for {date}")
+          EOF
+
+      - name: Commit and push quotes.json
+        env:
+          USER0_NAME: ${{ vars.USER0_NAME }}
+          USER0_EMAIL: ${{ secrets.USER0_EMAIL }}
+        run: |
+          git config --local user.email "$USER0_EMAIL"
+          git config --local user.name "$USER0_NAME"
+          git add data/quotes.json
+          git commit -m "Daily quotes JSON for $(tail -n 1 crypto-n-rust/data-files/csv/quotes.csv | cut -d',' -f1)"
+          git push
+          
