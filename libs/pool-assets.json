@@ -1,0 +1,32 @@
+{
+  "assets": [
+    [
+      "BTC",
+      "ETH"
+    ],
+    [
+      "BTC",
+      "AVAX"
+    ],
+    [
+      "BTC",
+      "USDC"
+    ],
+    [
+      "BTC",
+      "UNDEAD"
+    ],
+    [
+      "ETH",
+      "UNDEAD"
+    ],
+    [
+      "UNDEAD",
+      "USDC"
+    ],
+    [
+      "AVAX",
+      "UNDEAD"
+    ]
+  ]
+}

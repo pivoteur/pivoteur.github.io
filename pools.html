@@ -43,6 +43,10 @@
 
    <!-- data for treasure and echo pool inserted here -->
 
+   <tr><th>quotes:</th>
+       <td>BTC</td><td id='btc'>btc</td>
+       <td>ETH</td><td id='eth'>eth</td>
+   </tr>
   </table>
 
   <p style="vertical-align:bottom">
@@ -56,13 +60,62 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
 about amplified staking.
   </p>
 
+<div id="crypto-table-container"></div>
+
+<script type="module">
+  // 1. Import both JSON files using the working syntax
+  import quoteData from "./libs/quotes.json" with { type: 'json' };
+  import poolData from "./libs/pool-assets.json" with { type: 'json' };
+
+  // 2. Extract the data structures
+  const quotes = quoteData.quotes;
+  const pools = poolData.assets;
+
+  // 3. Flatten the pool pairs into a unique Set of allowed tokens
+  // This turns [["BTC", "ETH"], ["BTC", "AVAX"]] into a clean list: {'BTC', 'ETH', 'AVAX'}
+  const allowedTokens = new Set(pools.flat());
+
+  // 4. Start building the table HTML string
+  let tableHTML = `
+    <table border="1" style="border-collapse: collapse; width: 100%; text-align: left;">
+      <thead>
+        <tr style="background-color: #f2f2f2;">
+          <th style="padding: 8px;">Asset</th>
+          <th style="padding: 8px;">Price (USD)</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  // 5. Loop through quotes and only include tokens present in our Set
+  for (const [asset, price] of Object.entries(quotes)) {
+    if (allowedTokens.has(asset)) {
+      tableHTML += `
+        <tr>
+          <td style="padding: 8px; font-weight: bold;">${asset}</td>
+          <td style="padding: 8px;">$${price.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 8 })}</td>
+        </tr>
+      `;
+    }
+  }
+
+  tableHTML += `
+      </tbody>
+    </table>
+  `;
+
+  // 6. Inject the filtered table into your HTML container
+  document.getElementById('crypto-table-container').innerHTML = tableHTML;
+</script>
     <script src="libs/table.js"></script>
     <script src='libs/usd.js'></script>
     <script src='libs/tokens.js'></script>
     <script src='https://benfred.github.io/venn.js/venn.js'></script>
     <script src='libs/charts/venn.js'></script>
     <script src='libs/dom.js'></script>
-    <script>indexPools();</script>
+    <script>
+     indexPools();
+    </script>
 
 </body>
 </html>
