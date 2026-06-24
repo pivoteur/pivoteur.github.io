@@ -40,15 +40,15 @@ jobs:
         id: wyrd-cache
         uses: actions/cache@v3
         with:
-          path: protocol/quizzes/src/quiz08/b_wyrd/target/release/b_wyrd
-          key: wyrd-binary-${{ hashFiles('protocol/quizzes/src/quiz08/b_wyrd/**/*.rs', 'protocol/quizzes/src/quiz08/b_wyrd/Cargo.toml') }}
+          path: protocol/dapps/wyrd/target/release/wyrd
+          key: wyrd-binary-${{ hashFiles('protocol/quizzes/src/quiz08/b_wyrd/**/*.rs', 'protocol/dapps/wyrd/Cargo.toml', 'protocol/dapps/wyrd/Cargo.lock') }}
 
       - name: Cache appender binary
         id: appender-cache
         uses: actions/cache@v3
         with:
-          path: protocol/quizzes/src/quiz08/c_appender/target/release/c_appender
-          key: appender-binary-${{ hashFiles('protocol/quizzes/src/quiz08/c_appender/**/*.rs', 'protocol/quizzes/src/quiz08/c_appender/Cargo.toml') }}
+          path: protocol/dapps/appender/target/release/appender
+          key: appender-binary-${{ hashFiles('protocol/quizzes/src/quiz08/c_appender/**/*.rs', 'protocol/dapps/appender/Cargo.toml', 'protocol/dapps/appender/Cargo.lock') }}
 
       - name: Install Rust toolchain
         if: steps.wyrd-cache.outputs.cache-hit != 'true' || steps.appender-cache.outputs.cache-hit != 'true'
@@ -83,25 +83,25 @@ jobs:
       - name: protocol URL and paths to dapps
         run: |
           echo "PIVOT_URL=$GIT_RAW_URL/$PROTOCOL" >> $GITHUB_ENV
-          echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz08/b_wyrd/target/release" >> $GITHUB_PATH
-          echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz08/c_appender/target/release" >> $GITHUB_PATH
+          echo "$GITHUB_WORKSPACE/protocol/dapps/wyrd/target/release" >> $GITHUB_PATH
+          echo "$GITHUB_WORKSPACE/protocol/dapps/appender/target/release" >> $GITHUB_PATH
 
       - name: Build wyrd
         if: steps.wyrd-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/quizzes/src/quiz08/b_wyrd/Cargo.toml \
-            --bin b_wyrd --release
+          cargo build --manifest-path protocol/dapps/wyrd/Cargo.toml \
+            --bin wyrd --release
 
       - name: Build appender
         if: steps.appender-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/quizzes/src/quiz08/c_appender/Cargo.toml \
-            --bin c_appender --release
+          cargo build --manifest-path protocol/dapps/appender/Cargo.toml \
+            --bin appender --release
 
       - name: Run wyrd and append to close pivot table
         run: |
-          b_wyrd pivot data/pivots/close/raw "${{inputs.ix}}" \
-          "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" | c_appender
+          wyrd pivot data/pivots/close/raw "${{inputs.ix}}" \
+          "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" | appender
 
       - name: Commit and push results
         env:
