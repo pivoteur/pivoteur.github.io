@@ -26,8 +26,8 @@ jobs:
         id: binary-cache
         uses: actions/cache@v3
         with:
-          path: protocol/quizzes/src/quiz07/b_virtual/target/release/b_virtual
-          key: virtsz-binary-${{ hashFiles('protocol/quizzes/src/quiz07/b_virtual/**/*.rs', 'protocol/quizzes/src/quiz07/b_virtual/Cargo.toml') }}
+          path: protocol/dapps/virtsz/target/release/virtsz
+          key: virtsz-binary-${{ hashFiles('protocol/quizzes/src/quiz07/b_virtual/**/*.rs', 'protocol/dapps/virtsz/Cargo.toml', 'protocol/dapps/virtsz/Cargo.lock') }}
 
       - name: Install Rust toolchain
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -45,12 +45,12 @@ jobs:
       - name: Build virtsz
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/quizzes/src/quiz07/b_virtual/Cargo.toml \
-            --bin b_virtual \
+          cargo build --manifest-path protocol/dapps/virtsz/Cargo.toml \
+            --bin virtsz \
             --release
 
       - name: Add virtsz to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz07/b_virtual/target/release" >> $GITHUB_PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/dapps/virtsz/target/release" >> $GITHUB_PATH
 
       - name: Set date and pivot_url
         run: |
@@ -62,7 +62,7 @@ jobs:
           echo "Current directory contents:"
           ls -l
           echo "Looking for virtsz binary:"
-          find . -name b_virtual -type f
+          find . -name virtsz -type f
 
           sh ./protocol/scripts/auto-virtsz.sh pivot data/pivots/open/raw
 
