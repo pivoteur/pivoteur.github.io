@@ -53,7 +53,7 @@ jobs:
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Run quotes
-        run: quotes > libs/quotes.json
+        run: quotes $LE_DATE > libs/quotes.json
 
       - name: Commit and push quotes.json
         env:
