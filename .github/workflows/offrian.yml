@@ -11,8 +11,8 @@ on:
         description: 'Call index being countered (e.g. 1)'
         required: true
         type: string
-      part:
-        description: 'Fraction of the call being countered (e.g. 9 for 1/9th)'
+      target:
+        description: 'target volume of the new pivot (e.g. 1000)'
         required: true
         type: string
       debug:
@@ -42,15 +42,15 @@ jobs:
           echo "=== Running offrian with manual inputs ==="
           echo "protocol: ${{ inputs.protocol }}"
           echo "ix:       ${{ inputs.ix }}"
-          echo "part:     ${{ inputs.part }}"
+          echo "target:   ${{ inputs.target }}"
           echo "debug:    ${{ inputs.debug }}"
 
       - name: Cache offrian binary
         id: binary-cache
         uses: actions/cache@v3
         with:
-          path: protocol/quizzes/src/quiz08/e_offrian/target/release/offrian
-          key: offrian-binary-${{ hashFiles('protocol/quizzes/src/quiz08/e_offrian/**/*.rs', 'protocol/quizzes/src/quiz08/e_offrian/Cargo.toml',) }}
+          path: protocol/dapps/offrian/target/release/offrian
+          key: offrian-binary-${{ hashFiles('protocol/quizzes/src/quiz08/e_offrian/**/*.rs', 'protocol/dapps/offrian/Cargo.toml', 'protocol/dapps/offrian/Cargo.lock') }}
 
       - name: Install Rust toolchain
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -68,12 +68,12 @@ jobs:
       - name: Build offrian
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/quizzes/src/quiz08/e_offrian/Cargo.toml \
+          cargo build --manifest-path protocol/dapps/offrian/Cargo.toml \
             --bin offrian \
             --release
 
       - name: Add offrian to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz08/e_offrian/target/release" >> $GITHUB_PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/dapps/offrian/target/release" >> $GITHUB_PATH
 
       - name: Set PIVOT_URL
         run: |
@@ -84,5 +84,5 @@ jobs:
           offrian ${{ inputs.debug && '--debug' || '' }} \
                   "${{ inputs.protocol }}" \
                   "${{ inputs.ix }}" \
-                  "${{ inputs.part }}"
+                  "${{ inputs.target }}"
                   
