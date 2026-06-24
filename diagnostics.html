@@ -376,6 +376,43 @@
          </div>`;
        });
        document.getElementById('graph-legend').innerHTML = legendHtml;
+
+       // ---- Quotes of the Day ------------------------------------------------------------------
+       const SHOW_TOKENS = ['BTC', 'ETH', 'AVAX', 'USDC', 'UNDEAD'];
+
+       fetch('libs/quotes.json')
+         .then(r => { if (!r.ok) throw new Error('quotes.json not found'); return r.json(); })
+         .then(qdata => {
+           const quotes = qdata.quotes || {};
+           const date   = qdata.date   || '';
+           let qHtml = `
+             <div class="legend-divider" style="margin:14px 0 10px"></div>
+             <div class="legend-heading">Quotes of the Day
+               <span class="quotes-date">${date}</span>
+             </div>`;
+           SHOW_TOKENS
+             .filter(token => token in quotes)
+             .forEach(token => {
+               const price = quotes[token];
+               const fmt = price < 0.01
+                 ? price.toFixed(8)
+                 : price < 1
+                 ? price.toFixed(6)
+                 : price >= 1000
+                 ? price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+                 : price.toFixed(2);
+               qHtml += `<div class="quote-row">
+                 <span class="quote-token">${token}</span>
+                 <span class="quote-price">$${fmt}</span>
+               </div>`;
+             });
+           document.getElementById('graph-legend').insertAdjacentHTML('beforeend', qHtml);
+         })
+         .catch(() => {
+           document.getElementById('graph-legend').insertAdjacentHTML('beforeend',
+             `<div class="legend-divider" style="margin:14px 0 10px"></div>
+              <div class="quotes-unavailable">Quotes unavailable</div>`);
+         });
      })
      .catch(err => {
        document.getElementById('stamp').textContent = '';
