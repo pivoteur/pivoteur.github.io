@@ -1,0 +1,38 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: transparent;
+    color: white;
+    margin: 0;
+    padding: 16px;
+}
+canvas {
+    background-color: black;
+}
+h2 {
+    text-align: center !important;
+    font-size: 1.2rem;
+    font-weight: bold !important;
+    margin-bottom: 4px;
+    color: #ffffff;
+}
+#summary {
+    text-align: center !important;
+    font-size: 0.85rem;
+    color: #aeaeae;
+    margin-bottom: 16px;
+}
+#chartContainer {
+    position: relative;
+    width: 100%;
+    max-width: 900px;
+    margin: 0 auto;
+}
+#distChart {
+    width: 100% !important;
+}
+#error {
+    color: red;
+    text-align: center;
+    padding: 20px;
+    display: none !important;
+}
