@@ -51,8 +51,8 @@ jobs:
         id: binary-cache
         uses: actions/cache@v3
         with:
-          path: protocol/quizzes/src/quiz11/b_distributed/target/debug/b_distributed
-          key: distributed-binary-${{ hashFiles('protocol/quizzes/src/quiz11/b_distributed/**/*.rs', 'protocol/quizzes/src/quiz11/b_distributed/Cargo.toml') }}
+          path: protocol/dapps/distributed/target/debug/distributed
+          key: distributed-binary-${{ hashFiles('protocol/quizzes/src/quiz11/b_distributed/**/*.rs', 'protocol/dapps/distributed/Cargo.toml', 'protocol/dapps/distributed/Cargo.lock') }}
 
       - name: Set up Rust
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -78,16 +78,16 @@ jobs:
       - name: Build distributed
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/quizzes/src/quiz11/b_distributed/Cargo.toml --bin b_distributed
+          cargo build --manifest-path protocol/dapps/distributed/Cargo.toml --bin distributed
 
       - name: Add distributed to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/quizzes/src/quiz11/b_distributed/target/debug" >> $GITHUB_PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/dapps/distributed/target/debug" >> $GITHUB_PATH
 
       - name: Run distributed
         env:
           REINVESTED_BOT: ${{ secrets.REINVESTED_BOT }}
         run: |
-          b_distributed "${{ inputs.token_a }}"  \
+          distributed "${{ inputs.token_a }}"  \
                         "${{ inputs.token_b }}"  \
                         "${{ inputs.amount }}"   \
                         "${{ inputs.tweet_url }}" \
