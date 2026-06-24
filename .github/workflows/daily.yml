@@ -2,9 +2,8 @@ name: daily
 
 on:
   workflow_dispatch:
-  # schedule:
-  #   # runs 1 hour after quotes.yml (02:37 UTC) in crypto-n-rust
-  #   - cron: "37 03 * * *"
+  schedule:
+    - cron: "04 02 * * *" 
 
 permissions:
   contents: write
@@ -53,7 +52,7 @@ jobs:
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Run quotes
-        run: quotes > libs/quotes.json
+        run: quotes $LE_DATE > libs/quotes.json
 
       - name: Commit and push quotes.json
         env:
