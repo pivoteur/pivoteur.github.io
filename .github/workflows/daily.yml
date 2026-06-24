@@ -1,4 +1,4 @@
-name: daily_quotes
+name: daily
 
 on:
   workflow_dispatch:
