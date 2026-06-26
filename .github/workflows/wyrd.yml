@@ -32,25 +32,36 @@ jobs:
 
       - name: Checkout protocol
         uses: actions/checkout@v4
-        with: 
+        with:
           repository: pivoteur/protocol
           path: protocol
-          
-      - name: Checkout crypto-n-rust
-        uses: actions/checkout@v4
+
+      - name: Cache wyrd binary
+        id: wyrd-cache
+        uses: actions/cache@v3
         with:
-          repository: logicalgraphs/crypto-n-rust
-          path: crypto-n-rust
+          path: protocol/dapps/wyrd/target/release/wyrd
+          key: wyrd-binary-${{ hashFiles('protocol/quizzes/src/quiz08/b_wyrd/**/*.rs', 'protocol/dapps/wyrd/Cargo.toml', 'protocol/dapps/wyrd/Cargo.lock') }}
+
+      - name: Cache appender binary
+        id: appender-cache
+        uses: actions/cache@v3
+        with:
+          path: protocol/dapps/appender/target/release/appender
+          key: appender-binary-${{ hashFiles('protocol/quizzes/src/quiz08/c_appender/**/*.rs', 'protocol/dapps/appender/Cargo.toml', 'protocol/dapps/appender/Cargo.lock') }}
 
       - name: Install Rust toolchain
+        if: steps.wyrd-cache.outputs.cache-hit != 'true' || steps.appender-cache.outputs.cache-hit != 'true'
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
 
-      - name: Cache Rust
-        uses: Swatinem/rust-cache@v2
+      - name: Checkout crypto-n-rust
+        if: steps.wyrd-cache.outputs.cache-hit != 'true' || steps.appender-cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v4
         with:
-          workspaces: protocol/dapps
+          repository: logicalgraphs/crypto-n-rust
+          path: crypto-n-rust
 
       - name: Show input parameters
         run: |
@@ -61,33 +72,31 @@ jobs:
 
       - name: Base variables
         run: |
-          echo "DAPP=wyrd" >> $GITHUB_ENV
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
           echo "PGI=pivoteur.github.io" >> $GITHUB_ENV
-          echo "DAPPS_DIR=protocol/dapps" >> $GITHUB_ENV
-          echo "TARGET_DIR=target/release" >> $GITHUB_ENV
           echo "GIT_RAW_URL=https://raw.githubusercontent.com" >> $GITHUB_ENV
 
       - name: Establish pathing to dapps
         run: |
           echo "PROTOCOL=pivoteur/$PGI" >> $GITHUB_ENV
-          echo "GIT_DAPPS_DIR=$GITHUB_WORKSPACE/$DAPPS_DIR" >> $GITHUB_ENV
 
       - name: protocol URL and paths to dapps
         run: |
           echo "PIVOT_URL=$GIT_RAW_URL/$PROTOCOL" >> $GITHUB_ENV
-          echo "$GIT_DAPPS_DIR/$DAPP/$TARGET_DIR" >> $GITHUB_PATH
-          echo "$GIT_DAPPS_DIR/appender/$TARGET_DIR" >> $GITHUB_PATH
+          echo "$GITHUB_WORKSPACE/protocol/dapps/wyrd/target/release" >> $GITHUB_PATH
+          echo "$GITHUB_WORKSPACE/protocol/dapps/appender/target/release" >> $GITHUB_PATH
 
       - name: Build wyrd
+        if: steps.wyrd-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path $DAPPS_DIR/wyrd/Cargo.toml \
-          --bin wyrd --release
+          cargo build --manifest-path protocol/dapps/wyrd/Cargo.toml \
+            --bin wyrd --release
 
       - name: Build appender
+        if: steps.appender-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path $DAPPS_DIR/appender/Cargo.toml \
-          --bin appender --release
+          cargo build --manifest-path protocol/dapps/appender/Cargo.toml \
+            --bin appender --release
 
       - name: Run wyrd and append to close pivot table
         run: |
@@ -95,7 +104,7 @@ jobs:
           "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" | appender
 
       - name: Commit and push results
-        env: 
+        env:
           USER0_NAME: ${{ vars.USER0_NAME }}
           USER0_EMAIL: ${{ secrets.USER0_EMAIL }}
         run: |
@@ -110,4 +119,3 @@ jobs:
 
           git commit -m "wyrd $LE_DATE"
           git push
-
