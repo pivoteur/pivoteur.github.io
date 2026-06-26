@@ -42,7 +42,7 @@ jobs:
         id: binary-cache
         uses: actions/cache@v3
         with:
-          path: protocol/dapps/convcls/target/debug/convcls
+          path: protocol/dapps/convcls/target/release/convcls
           key: convcls-binary-${{ hashFiles('protocol/quizzes/src/quiz08/d_convcls/**/*.rs', 'protocol/dapps/convcls/Cargo.toml', 'protocol/dapps/convcls/Cargo.lock') }}
 
       - name: Set up Rust
@@ -68,7 +68,7 @@ jobs:
           cargo build --manifest-path protocol/dapps/convcls/Cargo.toml --bin convcls
 
       - name: Add convcls to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/convcls/target/debug" >> $GITHUB_PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/dapps/convcls/target/release" >> $GITHUB_PATH
 
       - name: Run convcls
         run: |

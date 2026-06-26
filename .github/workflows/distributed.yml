@@ -51,7 +51,7 @@ jobs:
         id: binary-cache
         uses: actions/cache@v3
         with:
-          path: protocol/dapps/distributed/target/debug/distributed
+          path: protocol/dapps/distributed/target/release/distributed
           key: distributed-binary-${{ hashFiles('protocol/quizzes/src/quiz11/b_distributed/**/*.rs', 'protocol/dapps/distributed/Cargo.toml', 'protocol/dapps/distributed/Cargo.lock') }}
 
       - name: Set up Rust
@@ -81,7 +81,7 @@ jobs:
           cargo build --manifest-path protocol/dapps/distributed/Cargo.toml --bin distributed
 
       - name: Add distributed to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/distributed/target/debug" >> $GITHUB_PATH
+        run: echo "$GITHUB_WORKSPACE/protocol/dapps/distributed/target/release" >> $GITHUB_PATH
 
       - name: Run distributed
         env:
