@@ -7,7 +7,7 @@ on:
     - cron: "57 04 * * *" # this is 12:57 AM Eastern Standard Time
 
 env:
-   DAPP=assets
+   DAPP: assets
 
 permissions:
   contents: write
@@ -38,13 +38,15 @@ jobs:
 
       - name: Cache assets binary
         id: binary-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: protocol/dapps/assets/target/release/assets
-          key: assets-binary-${{ hashFiles(
-               format("{0}/quiz06/c_assets/**/*.rs", env.QUIZZES_SRC), 
-               format("{0}/Cargo.toml", env.DAPP_DIR),
-               format("{0}/Cargo.lock", env.DAPP_DIR)) }}
+          key: >-
+            assets-binary-
+            ${{ hashFiles( format("{0}/quiz06/c_assets/**/*.rs",
+                                  env.QUIZZES_SRC)) }}-
+            ${{ hashFiles( format("{0}/Cargo.toml", env.DAPP_DIR)) }}-
+            ${{ hashFiles( format("{0}/Cargo.lock", env.DAPP_DIR)) }}
 
       - name: Install Rust toolchain
         if: steps.binary-cache.outputs.cache-hit != 'true'
