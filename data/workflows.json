@@ -3,36 +3,36 @@
     "name": "Quotes",
     "repo": "logicalgraphs/crypto-n-rust",
     "status": "success",
-    "ran_at": "2026-06-27T06:10:22Z"
+    "ran_at": "2026-06-28T06:45:59Z"
   },
   {
     "name": "Assets",
     "repo": "pivoteur/pivoteur.github.io",
     "status": "success",
-    "ran_at": "2026-06-27T07:49:34Z"
+    "ran_at": "2026-06-28T08:19:55Z"
   },
   {
     "name": "Virtsz",
     "repo": "pivoteur/pivoteur.github.io",
     "status": "success",
-    "ran_at": "2026-06-27T06:45:29Z"
+    "ran_at": "2026-06-28T07:40:35Z"
   },
   {
     "name": "Dusk",
     "repo": "pivoteur/pivoteur.github.io",
     "status": "success",
-    "ran_at": "2026-06-26T11:15:35Z"
+    "ran_at": "2026-06-27T10:22:36Z"
   },
   {
     "name": "Hwaet",
     "repo": "pivoteur/pivoteur.github.io",
-    "status": "success",
-    "ran_at": "2026-06-26T11:33:38Z"
+    "status": "failure",
+    "ran_at": "2026-06-27T10:37:08Z"
   },
   {
     "name": "R.A.T.",
     "repo": "pivoteur/protocol",
     "status": "success",
-    "ran_at": "2026-06-27T05:15:23Z"
+    "ran_at": "2026-06-28T05:52:04Z"
   }
 ]
