@@ -1,0 +1,15 @@
+PROTOCOL_ALIAS: pivot
+RAW_URL: https://raw.githubusercontent.com
+DAPPS_DIR: protocol/dapps
+QUIZZES_SRC: protocol/quizzes/src
+
+# env you need to run the dapps from pivoteur/protocol:
+
+# ${{ var.USER0_NAME }}
+# ${{ sec.USER0_EMAIL }}
+
+# the YML files should use the following context expressions from github:
+
+# ${{ github.repository_owner }}
+# ${{ github.event.repository.name }}
+# ${{ github.repository }}
