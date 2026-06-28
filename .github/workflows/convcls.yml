@@ -23,6 +23,7 @@ on:
 
 env:
   DAPP: convcls
+  PIVOT_DIR: data/pivots
 
 permissions:
   contents: write
@@ -84,15 +85,15 @@ jobs:
           cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
 
       - name: Add convcls to PATH
-        run: echo "$DAPP_DIR/target/release" >> $GITHUB_PATH
+        run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
 
       - name: Run convcls
         run: |
-          $DAPP data/pivots/open/raw/${{ inputs.pool }}.tsv \
-                    data/pivots/close/raw/${{ inputs.pool }}.tsv \
+          $DAPP $PIVOT_DIR/open/raw/${{ inputs.pool }}.tsv \
+                $PIVOT_DIR/close/raw/${{ inputs.pool }}.tsv \
                     > /tmp/convcls_out.tsv
           if [ "${{ inputs.dry_run }}" = "false" ]; then
-            mv /tmp/convcls_out.tsv data/pivots/close/raw/${{ inputs.pool }}.tsv
+            mv /tmp/convcls_out.tsv $PIVOT_DIR/close/raw/${{ inputs.pool }}.tsv
           else
             cat /tmp/convcls_out.tsv
           fi
@@ -109,7 +110,7 @@ jobs:
         run: |
           git config user.name "$USER0_NAME"
           git config user.email "$USER0_EMAIL"
-          git add data/pivots/close/raw/${{ inputs.pool }}.tsv
+          git add $PIVOT_DIR/close/raw/${{ inputs.pool }}.tsv
 
           if git diff --staged --quiet; then
             echo "Nothing to commit, skipping push"
