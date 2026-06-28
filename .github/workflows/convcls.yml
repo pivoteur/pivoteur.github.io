@@ -81,7 +81,7 @@ jobs:
       - name: Build convcls
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP
+          cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
 
       - name: Add convcls to PATH
         run: echo "$DAPP_DIR/target/release" >> $GITHUB_PATH
