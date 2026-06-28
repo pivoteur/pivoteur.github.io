@@ -1,6 +1,6 @@
 PROTOCOL_ALIAS: pivot
 RAW_URL: https://raw.githubusercontent.com
-LE_DATE: `date +'%Y-%m-%d'`
+DATE_FMT: "%Y-%m-%"
 
 # env you need to run the dapps from pivoteur/protocol:
 
@@ -12,4 +12,3 @@ LE_DATE: `date +'%Y-%m-%d'`
 # ${{ github.repository_owner }}
 # ${{ github.event.repository.name }}
 # ${{ github.repository }}
-
