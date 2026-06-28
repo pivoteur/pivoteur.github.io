@@ -1,6 +1,7 @@
 PROTOCOL_ALIAS: pivot
 RAW_URL: https://raw.githubusercontent.com
-DATE_FMT: "%Y-%m-%"
+DAPPS_DIR: protocol/dapps
+QUIZZES_SRC: protocol/quizzes/src
 
 # env you need to run the dapps from pivoteur/protocol:
 
