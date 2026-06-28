@@ -1,0 +1,7 @@
+PROTOCOL_ALIAS: pivot
+USER0_NAME: ${{ var.USER0_NAME }}
+RAW_URL: https://raw.githubusercontent.com
+LE_DATE: $(date +'%Y-%m-%d')
+OWNER: ${{ github.repository_owner }}
+REPOSITORY_NAME: ${{ github.event.repository.name }}
+REPOSITORY: ${{ github.repository }}
