@@ -33,7 +33,7 @@ jobs:
         with:
           path: protocol/dapps/assets/target/release/assets
           key: assets-binary-${{ hashFiles(
-               format("{0}/quiz06/c_assets/**/*.rs", env.QUIZZES_SIR), 
+               format("{0}/quiz06/c_assets/**/*.rs", env.QUIZZES_SRC), 
                format("{0}/Cargo.toml", env.DAPP_DIR),
                format("{0}/Cargo.lock", env.DAPP_DIR)) }}
 
