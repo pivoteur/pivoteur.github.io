@@ -43,10 +43,10 @@ jobs:
           path: protocol/dapps/assets/target/release/assets
           key: >-
             assets-binary-
-            ${{ hashFiles( format("{0}/quiz06/c_assets/**/*.rs",
+            ${{ hashFiles( format('{0}/quiz06/c_assets/**/*.rs',
                                   env.QUIZZES_SRC)) }}-
-            ${{ hashFiles( format("{0}/Cargo.toml", env.DAPP_DIR)) }}-
-            ${{ hashFiles( format("{0}/Cargo.lock", env.DAPP_DIR)) }}
+            ${{ hashFiles( format('{0}/Cargo.toml', env.DAPP_DIR)) }}-
+            ${{ hashFiles( format('{0}/Cargo.lock', env.DAPP_DIR)) }}
 
       - name: Install Rust toolchain
         if: steps.binary-cache.outputs.cache-hit != 'true'
