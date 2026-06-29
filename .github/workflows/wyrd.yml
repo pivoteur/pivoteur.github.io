@@ -52,7 +52,7 @@ jobs:
 
       - name: Cache wyrd binary
         id: wyrd-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: protocol/dapps/wyrd/target/release/wyrd
           key: >-
@@ -63,7 +63,7 @@ jobs:
 
       - name: Cache appender binary
         id: appender-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: protocol/dapps/appender/target/release/appender
           key: appender-binary-${{ hashFiles('protocol/quizzes/src/quiz08/c_appender/**/*.rs', 'protocol/dapps/appender/Cargo.toml', 'protocol/dapps/appender/Cargo.lock') }}
