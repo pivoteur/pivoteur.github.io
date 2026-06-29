@@ -45,9 +45,6 @@ on:
 env:
   DAPP: distributed
 
-permissions:
-  contents: write
-
 jobs:
   run-distributed:
     runs-on: ubuntu-latest
@@ -115,7 +112,7 @@ jobs:
 
       - name: Run distributed
         env:
-          REINVESTED_BOT:    ${{ secrets.REINVESTED_BOT }}
+          REINVESTED_BOT:    ${{ secrets.PIVOT_PROTOCOL_ROBBIE }}
           INVESTOR_CHAT_IDS: ${{ secrets.INVESTOR_CHAT_IDS }}
         run: |
           $DAPP "${{ inputs.investor }}"  \
