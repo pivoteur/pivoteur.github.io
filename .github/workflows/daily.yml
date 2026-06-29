@@ -50,7 +50,7 @@ jobs:
            quotes-binary-
            ${{ hashFiles(format('{0}/quiz10/d_quotes/**/*.rs',
                                 env.QUIZZES_SRC)) }}-
-           ${{ hashFiles(format('{0}/Cargo.toml' env.DAPP_DIR)) }}-
+           ${{ hashFiles(format('{0}/Cargo.toml', env.DAPP_DIR)) }}-
            ${{ hashFiles(format('{0}/Cargo.lock', env.DAPP_DIR)) }}
 
       - name: Install Rust toolchain
