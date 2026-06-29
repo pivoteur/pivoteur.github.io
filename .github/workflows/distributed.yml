@@ -3,6 +3,17 @@ name: distributed
 on:
   workflow_dispatch:
     inputs:
+      investor:
+        description: 'Investor name / Telegram chat'
+        required: true
+        type: choice
+        options:
+          - Pivot_Internal_Bot
+          - alpha
+          - phi
+          - psi
+          - pi
+          - tau
       token_a:
         description: 'Distributed token, left side of pool (e.g. USDC)'
         required: true
@@ -44,22 +55,22 @@ jobs:
       - name: Checkout pivoteur.github.io
         uses: actions/checkout@v4
 
-      - name: Load Shared Environment Variables
-        uses: doughepi/yaml-env-action@v1.0.0
-        with:
-          files: .github/config/protocol-env.yml
-          
-      - name: Establish app path
-        run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
-
-      - name: Establish git path
-        run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
-
       - name: Checkout protocol
         uses: actions/checkout@v4
         with:
           repository: pivoteur/protocol
           path: protocol
+
+      - name: Load Shared Environment Variables
+        uses: doughepi/yaml-env-action@v1.0.0
+        with:
+          files: .github/config/protocol-env.yml
+
+      - name: Establish app path
+        run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
+
+      - name: Establish git path
+        run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
 
       - name: Cache distributed binary
         id: binary-cache
@@ -86,6 +97,7 @@ jobs:
       - name: Show input parameters
         run: |
           echo "=== Running distributed with manual inputs ==="
+          echo "investor:  ${{ inputs.investor }}"
           echo "token_a:   ${{ inputs.token_a }}"
           echo "token_b:   ${{ inputs.token_b }}"
           echo "amount:    ${{ inputs.amount }}"
@@ -103,11 +115,14 @@ jobs:
 
       - name: Run distributed
         env:
-          REINVESTED_BOT: ${{ secrets.REINVESTED_BOT }}
+          REINVESTED_BOT:    ${{ secrets.REINVESTED_BOT }}
+          INVESTOR_CHAT_IDS: ${{ secrets.INVESTOR_CHAT_IDS }}
         run: |
-          $DAPP "${{ inputs.token_a }}"  \
-                        "${{ inputs.token_b }}"  \
-                        "${{ inputs.amount }}"   \
-                        "${{ inputs.tweet_url }}" \
-                        "${{ inputs.tx_url }}"    \
-                        "${{ inputs.send }}"
+          $DAPP "${{ inputs.investor }}"  \
+                "${{ inputs.token_a }}"   \
+                "${{ inputs.token_b }}"   \
+                "${{ inputs.amount }}"    \
+                "${{ inputs.tweet_url }}" \
+                "${{ inputs.tx_url }}"    \
+                "${{ inputs.send }}"
+                
