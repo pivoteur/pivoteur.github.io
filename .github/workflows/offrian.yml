@@ -21,6 +21,9 @@ on:
         type: boolean
         default: false
 
+env:
+  DAPP: offrian
+
 permissions:
   contents: write
 
@@ -37,6 +40,17 @@ jobs:
           repository: pivoteur/protocol
           path: protocol
 
+      - name: Load Shared Environment Variables
+        uses: doughepi/yaml-env-action@v1.0.0
+        with:
+          files: .github/config/protocol-env.yml
+          
+      - name: Establish app path
+        run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
+
+      - name: Establish git path
+        run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
+
       - name: Show input parameters
         run: |
           echo "=== Running offrian with manual inputs ==="
@@ -47,10 +61,14 @@ jobs:
 
       - name: Cache offrian binary
         id: binary-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: protocol/dapps/offrian/target/release/offrian
-          key: offrian-binary-${{ hashFiles('protocol/quizzes/src/quiz08/e_offrian/**/*.rs', 'protocol/dapps/offrian/Cargo.toml', 'protocol/dapps/offrian/Cargo.lock') }}
+          path: $DAPP_DIR/target/release/$DAPP
+          key: >-
+            offrian-binary-
+            ${{ hashFiles(format('{0}/quiz08/e_offrian/**/*.rs', env.QUIZZES_SRC)) }}-
+            ${{ hashFiles(format('{0}/Cargo.toml', env.DAPP_DIR)) }}-
+            ${{ hashFiles(format('{0}/Cargo.lock', env.DAPP_DIR)) }}
 
       - name: Install Rust toolchain
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -68,12 +86,10 @@ jobs:
       - name: Build offrian
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/dapps/offrian/Cargo.toml \
-            --bin offrian \
-            --release
+          cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
 
       - name: Add offrian to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/offrian/target/release" >> $GITHUB_PATH
+        run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
 
       - name: Set PIVOT_URL
         run: |
@@ -81,7 +97,7 @@ jobs:
 
       - name: Run offrian
         run: |
-          offrian ${{ inputs.debug && '--debug' || '' }} \
+          $DAPP ${{ inputs.debug && '--debug' || '' }} \
                   "${{ inputs.protocol }}" \
                   "${{ inputs.ix }}" \
                   "${{ inputs.target }}"

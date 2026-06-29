@@ -48,8 +48,7 @@ jobs:
           path: protocol/dapps/quotes/target/release/quotes
           key: >-
            quotes-binary-
-           ${{ hashFiles(format('{0}/quiz10/d_quotes/**/*.rs',
-                                env.QUIZZES_SRC)) }}-
+           ${{ hashFiles(format('{0}/quiz10/d_quotes/**/*.rs', env.QUIZZES_SRC)) }}-
            ${{ hashFiles(format('{0}/Cargo.toml', env.DAPP_DIR)) }}-
            ${{ hashFiles(format('{0}/Cargo.lock', env.DAPP_DIR)) }}
 
@@ -66,7 +65,7 @@ jobs:
 
       - name: Add quotes and date to PATH
         run: |
-          echo "$DAPP_DIR/target/release" >> $GITHUB_PATH
+          echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Run quotes
