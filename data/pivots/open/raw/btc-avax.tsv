@@ -31,5 +31,5 @@ opened	open	close	tx_id	updated	from	from_blockchain	amount1	virtual	quote1	val1
 2026-04-02	30	8	virtual_swap	2026-06-20	BTC	Avalanche	0	0.021604558	$63676.00	$1375.69	0.023765014	AVAX	Avalanche	229.66476	0	$5.99	$1375.69
 2026-04-24	31	8	virtual_swap	2026-06-20	BTC	Avalanche	0	0.1124	$63676.00	$7157.18	0.12364001	AVAX	Avalanche	1195	0	$5.99	$7158.05
 2026-04-24	32	9	virtual_swap	2026-05-11	AVAX	Avalanche	0	462.04	$10.18	$4703.57	508.24402	BTC	Avalanche	0.058	0	$81096.00	$4703.57
-2026-06-29	33	0	virtual_swap	n/a	AVAX	Avalanche	0	921.9385	$6.50	$5992.60	1014.1323	BTC	Avalanche	0.1	0	$59926.00	$5992.60
+2026-06-29	33	0	virtual_swap	2026-06-30	AVAX	Avalanche	0	902.47345	$6.59	$5947.30	992.7208	BTC	Avalanche	0.1	0	$59473.00	$5947.30
 2026-06-29	34	0	https://snowtrace.io/tx/0x38da395226834a5faf41fb2cfcd8c57b1affa5fcedd8bdf334ecd5d39aa66be3	n/a	BTC	Avalanche	0.05	0	$59926.00	$2996.30	0.055000003	AVAX	Avalanche	451.6341	0	$6.50	$2935.62
