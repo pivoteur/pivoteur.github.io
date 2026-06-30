@@ -6,6 +6,9 @@ on:
     # test the cron ("Min Hour Day Month DayofWeek" in UTC) at scheduled time 
     - cron: "14 08 * * *" # this is 12:14 AM Eastern Standard Time
 
+env: 
+  DAPP: dusk
+
 permissions:
   contents: write
 
@@ -22,12 +25,27 @@ jobs:
           repository: pivoteur/protocol
           path: protocol
 
+      - name: Load Shared Environment Variables
+        uses: doughepi/yaml-env-action@v1.0.0
+        with:
+          files: .github/config/protocol-env.yml
+          
+      - name: Establish app path
+        run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
+
+      - name: Establish git path
+        run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
+          
       - name: Cache dusk binary
         id: binary-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: protocol/dapps/dusk/target/release/dusk
-          key: dusk-binary-${{ hashFiles('protocol/quizzes/src/quiz05/b_dusk_min/**/*.rs', 'protocol/dapps/dusk/Cargo.toml', 'protocol/dapps/dusk/Cargo.lock') }}
+          key: >-
+            dusk-binary-
+            ${{ hashFiles(format('{0}/quiz05/b_dusk_min/**/*.rs', env.QUIZZES_SRC)) }}-
+            ${{ hashFiles(format('{0}/Cargo.toml', env.DAPP_DIR)) }}-
+            ${{ hashFiles(format('{0}/Cargo.lock', env.DAPP_DIR)) }}
 
       - name: Install Rust toolchain
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -45,12 +63,10 @@ jobs:
       - name: Build dusk
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/dapps/dusk/Cargo.toml \
-            --bin dusk \
-            --release
+          cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
 
       - name: Add dusk to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/dusk/target/release" >> $GITHUB_PATH
+        run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
 
       - name: Setting date and URL
         run: |
@@ -58,7 +74,7 @@ jobs:
           echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
 
       - name: Run dusk and log output
-        run: dusk --min pivot $LE_DATE > data/pivots/calls.csv
+        run: $DAPP --min $PROTOCOL_ALIAS $LE_DATE > data/pivots/calls.csv
 
       - name: Commit and push results
         env:

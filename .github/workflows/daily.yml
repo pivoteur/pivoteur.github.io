@@ -5,6 +5,9 @@ on:
   schedule:
     - cron: "04 02 * * *" 
 
+env:
+  DAPP: quotes
+
 permissions:
   contents: write
 
@@ -14,6 +17,17 @@ jobs:
     steps:
       - name: Checkout pivoteur.github.io
         uses: actions/checkout@v4
+
+      - name: Load Shared Environment Variables
+        uses: doughepi/yaml-env-action@v1.0.0
+        with:
+          files: .github/config/protocol-env.yml
+
+      - name: Establish app path
+        run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
+
+      - name: Establish git path
+        run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
 
       - name: Checkout protocol
         uses: actions/checkout@v4
@@ -29,10 +43,14 @@ jobs:
 
       - name: Cache quotes binary
         id: quotes-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: protocol/dapps/quotes/target/release/quotes
-          key: quotes-binary-${{ hashFiles('protocol/quizzes/src/quiz10/d_quotes/**/*.rs', 'protocol/dapps/quotes/Cargo.toml', 'protocol/dapps/quotes/Cargo.lock') }}
+          key: >-
+           quotes-binary-
+           ${{ hashFiles(format('{0}/quiz10/d_quotes/**/*.rs', env.QUIZZES_SRC)) }}-
+           ${{ hashFiles(format('{0}/Cargo.toml', env.DAPP_DIR)) }}-
+           ${{ hashFiles(format('{0}/Cargo.lock', env.DAPP_DIR)) }}
 
       - name: Install Rust toolchain
         if: steps.quotes-cache.outputs.cache-hit != 'true'
@@ -43,16 +61,15 @@ jobs:
       - name: Build quotes
         if: steps.quotes-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/dapps/quotes/Cargo.toml \
-            --bin quotes --release
+          cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
 
       - name: Add quotes and date to PATH
         run: |
-          echo "$GITHUB_WORKSPACE/protocol/dapps/quotes/target/release" >> $GITHUB_PATH
+          echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
       - name: Run quotes
-        run: quotes $LE_DATE > libs/quotes.json
+        run: $DAPP $LE_DATE > libs/quotes.json
 
       - name: Commit and push quotes.json
         env:
@@ -64,4 +81,3 @@ jobs:
           git add libs/quotes.json
           git commit -m "Daily quotes JSON for $LE_DATE"
           git push
-          
