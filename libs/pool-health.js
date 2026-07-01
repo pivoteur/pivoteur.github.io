@@ -1,12 +1,12 @@
 const poolHealth = {
-   generated: '2026-06-30',
+   generated: '2026-07-01',
    pools = [
-      { pool: "BTC+USDC", available: '$16.95' }
-      { pool: "BTC+UNDEAD", available: '$52.26' }
-      { pool: "BTC+AVAX", available: '$112.31' }
-      { pool: "UNDEAD+USDC", available: '$161.72' }
-      { pool: "BTC+ETH", available: '$242.97' }
-      { pool: "ETH+UNDEAD", available: '$1343.59' }
-      { pool: "AVAX+UNDEAD", available: '$1547.41' }
+      { pool: "BTC+USDC", available: '$16.94' }
+      { pool: "BTC+UNDEAD", available: '$52.57' }
+      { pool: "BTC+AVAX", available: '$111.32' }
+      { pool: "UNDEAD+USDC", available: '$161.73' }
+      { pool: "BTC+ETH", available: '$240.11' }
+      { pool: "ETH+UNDEAD", available: '$873.63' }
+      { pool: "AVAX+UNDEAD", available: '$1560.04' }
    ]
 };
