@@ -3,7 +3,8 @@ name: daily
 on:
   workflow_dispatch:
   schedule:
-    - cron: "04 02 * * *" 
+    # cron ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time 
+    - cron: "37 04 * * *" 
 
 env:
   DAPP: quotes
