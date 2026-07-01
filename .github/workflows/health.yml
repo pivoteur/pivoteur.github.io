@@ -3,8 +3,8 @@ name: health
 on:
   workflow_dispatch:
   schedule:
-    # test the cron ("Min Hour Day Month DayofWeek" in UTC) at scheduled time 
-    - cron: "33 07 * * *" # this is 3:33 AM Eastern Standard Time
+    # cron ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time 
+    - cron: "45 06 * * *" 
 
 permissions:
   contents: write
@@ -51,6 +51,8 @@ jobs:
             fetch_status "pivoteur/pivoteur.github.io" "dusk.yml"    "Dusk"
             echo ','
             fetch_status "pivoteur/pivoteur.github.io" "hwaet.yml"   "Hwaet"
+            echo ','
+            fetch_status "pivoteur/pivoteur.github.io" "daily.yml"  "Daily"
             echo ','
             fetch_status "pivoteur/protocol"           "rat.yml"     "R.A.T."
             echo ']'

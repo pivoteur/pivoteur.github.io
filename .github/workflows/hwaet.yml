@@ -3,8 +3,8 @@ name: hwaet
 on:
   workflow_dispatch:
   schedule:
-    # test the cron ("Min Hour Day Month DayofWeek" in UTC) at scheduled time 
-    - cron: "45 08 * * *" # this is 4:45 AM Eastern Standard Time
+    # cron ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time 
+    - cron: "45 05 * * *" 
 
 env: 
   DAPP: hwaet
