@@ -52,6 +52,8 @@ jobs:
             echo ','
             fetch_status "pivoteur/pivoteur.github.io" "hwaet.yml"   "Hwaet"
             echo ','
+            fetch_status "pivoteur/pivoteur.github.io" "daily.yml"  "Daily"
+            echo ','
             fetch_status "pivoteur/protocol"           "rat.yml"     "R.A.T."
             echo ']'
           )" '$entries')
