@@ -3,7 +3,7 @@ name: distributed
 on:
   workflow_dispatch:
     inputs:
-      csv_path:
+      tsv_path:
         description: 'Path to the shared investors TSV file'
         required: true
         type: string
@@ -62,7 +62,7 @@ jobs:
       - name: Show input parameters
         run: |
           echo "=== Running distributed ==="
-          echo "csv_path: ${{ inputs.csv_path }}"
+          echo "tsv_path: ${{ inputs.tsv_path }}"
           echo "send:     ${{ inputs.send }}"
 
       - name: Build distributed
@@ -78,5 +78,5 @@ jobs:
           REINVESTED_BOT:    ${{ secrets.PIVOT_PROTOCOL_ROBBIE }}
           INVESTOR_CHAT_IDS: ${{ secrets.INVESTOR_CHAT_IDS }}
         run: |
-          $DAPP "${{ inputs.csv_path }}" "${{ inputs.send }}"
+          $DAPP "${{ inputs.tsv_path }}" "${{ inputs.send }}"
           
