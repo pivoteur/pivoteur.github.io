@@ -42,7 +42,7 @@ opened	open	close	tx_id	updated	from	from_blockchain	amount1	virtual	quote1	val1
 2026-04-29	41	25	virtual_swap	2026-06-05	UNDEAD	Avalanche	0	1558196	$0.001339	$2086.42	1714015.6	ETH	Avalanche	1.26	0	$1656.30	$2086.94
 2026-04-29	42	0	virtual_swap	2026-06-20	ETH	Avalanche	0	0.9	$1724.43	$1551.99	0.99	UNDEAD	Avalanche	1820000	0	$0.000849	$1545.18
 2026-05-20	43	0	https://snowtrace.io/tx/0x1b5ace8db45ae135f95f5b72a9e15a3b3a1a033111cada7f7f1186af14dcf141	n/a	UNDEAD	Avalanche	800000	0	$0.001338	$1070.40	880000	ETH	Avalanche	0.44789	0	$2129.94	$953.98
-2026-05-20	44	0	virtual_swap	2026-06-29	ETH	Avalanche	0	6.0387	$1576.93	$9522.61	6.6425705	UNDEAD	Avalanche	11350000	0	$0.000839	$9522.65
+2026-05-20	44	0	virtual_swap	2026-07-02	ETH	Avalanche	0	6.004529	$1624.68	$9755.44	6.604982	UNDEAD	Avalanche	11350000	0	$0.000860	$9755.44
 2026-05-20	45	25	virtual_swap	2026-06-05	UNDEAD	Avalanche	0	519399	$0.001339	$695.48	571338.94	ETH	Avalanche	0.42	0	$1656.30	$695.65
 2026-06-09	46	0	https://snowscan.xyz/tx/0xe8593345aab4efa3673e0fd341d45d16b9a773e5fcb7d5e0d64def6994eec029	n/a	UNDEAD	Avalanche	1000000	0	$0.001180	$1180.00	1100000	ETH	Avalanche	0.594139	0	$1688.62	$1003.27
 2026-06-10	47	0	https://snowtrace.io/tx/0xf6bf2a1b9be44fc957493692561326a53b6f92d7095ac053b8c3a2521fd61411	n/a	UNDEAD	Avalanche	1000000	0	$0.000960	$960.00	1100000	ETH	Avalanche	0.49795747	0	$1630.16	$811.75
@@ -51,4 +51,4 @@ opened	open	close	tx_id	updated	from	from_blockchain	amount1	virtual	quote1	val1
 2026-06-26	50	0	https://snowtrace.io/tx/0xf1e7c8c0885f6937589f0944bdd805dfed61835477d042af93037ac0e4d6614b	n/a	UNDEAD	Avalanche	1000000	0	$0.000831	$831.00	1100000	ETH	Avalanche	0.53009456	0	$1559.10	$826.47
 2026-06-26	51	0	virtual_swap	n/a	ETH	Avalanche	0	0.3	$1559.10	$467.73	0.33	UNDEAD	Avalanche	576800	0	$0.000831	$479.32
 2026-06-26	52	0	virtual_swap	2026-06-27	UNDEAD	Avalanche	0	1524615	$0.000859	$1309.64	1677076.5	ETH	Avalanche	0.84	0	$1559.10	$1309.64
-2026-06-30	53	0	https://snowtrace.io/tx/0xb648a00b5fbca2767dd641e1ecf1f18a12d75478dadee778bac313e40fe56fb1	n/a	UNDEAD	Avalanche	1000000	0	$0.000869	$869.30	1100000	ETH	Avalanche	0.55123526	0	$1646.41	$907.56
+2026-06-30	53	0	https://snowtrace.io/tx/0xb648a00b5fbca2767dd641e1ecf1f18a12d75478dadee778bac313e40fe56fb1	n/a	UNDEAD	Avalanche	1000000	0	$0.000869	$869.00	1100000	ETH	Avalanche	0.55123526	0	$1646.41	$907.56
