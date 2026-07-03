@@ -32,7 +32,7 @@
     el.innerHTML = `
       <div class="topnav">
         <div class="brand">
-          <img class="brand-mark" src="imgs/cropped-pivot-logo.png" alt="Pivot Technologies">
+          <img class="brand-mark" src="imgs/pivot-logo-sillo.png" alt="Pivot Technologies">
           <span class="brand-name">Pivot Technologies, LLC</span>
         </div>
         <nav class="links">${links}</nav>

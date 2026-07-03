@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol</title>
-    <link rel="stylesheet" href="tokens.css?version=1">
-    <link rel="stylesheet" href="chrome.css?version=1">
+    <link rel="stylesheet" href="tokens.css?version=4">
+    <link rel="stylesheet" href="chrome.css?version=2">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -16,22 +16,38 @@
   <main>
     <div class="page-head">
       <h1>Dashboard</h1>
+      <div class="header-dapps-bar" id="headerDappsBar">
+        <div class="segbar" id="dappsSegbar"></div>
+        <div class="segbar-caption sub" id="dappsSegCaption">Loading…</div>
+      </div>
       <div class="sub">Protocol NAV&nbsp; <span class="num tvl" style="color:var(--text-bright);font-size:15px;">$0.00</span></div>
     </div>
 
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:24px;">
-      <div class="panel" style="margin-bottom:0;">
-        <div class="panel-head">Tokens</div>
-        <div style="padding:16px; max-width:420px; margin:0 auto;">
-          <canvas id="tokensChart" width="400" height="200"></canvas>
+    <!-- Pool Assets carousel / 24h Change / Active Pools — parked for now, not deleted. -->
+    <div class="stat-row" style="display:none;">
+      <div class="stat" id="tokenCycleCard">
+        <div class="label">
+          Pool Assets — Today <span id="tokenCycleDate" class="sub"></span>
+          <img id="cycleLogoTrigger" class="cycle-logo-trigger" src="imgs/logo-mark.png" alt="View all assets">
         </div>
+        <div class="token-cycle">
+          <button class="cycle-arrow" id="cyclePrev" aria-label="Previous asset">‹</button>
+          <div class="token-cycle-content">
+            <div class="token-cycle-name" id="cycleTokenName">—</div>
+            <div class="token-cycle-value num" id="cycleTokenValue">—</div>
+          </div>
+          <button class="cycle-arrow" id="cycleNext" aria-label="Next asset">›</button>
+        </div>
+        <div class="token-cycle-dots" id="cycleDots"></div>
       </div>
+      <div class="stat"><div class="label">24h Change</div><div class="value num" id="statDelta">Loading…</div></div>
+      <div class="stat"><div class="label">Active Pools</div><div class="value num" id="statPools">Loading…</div></div>
+    </div>
 
-      <div class="panel" style="margin-bottom:0;">
-        <div class="panel-head">dapps</div>
-        <div style="padding:16px; max-width:420px; margin:0 auto;">
-          <canvas id="dappsChart" width="400" height="200"></canvas>
-        </div>
+    <div class="panel">
+      <div class="panel-head">Tokens <span id="tokensTotal" class="sub"></span></div>
+      <div style="padding:16px; max-width:420px; margin:0 auto;">
+        <canvas id="tokensChart" width="400" height="200"></canvas>
       </div>
     </div>
 
@@ -40,14 +56,27 @@
       <div style="padding:20px; max-width:700px; margin:0 auto;">
         <canvas id="barChart" width="400" height="200"></canvas>
       </div>
+      <div id="navSummary" class="sub" style="padding:0 20px 18px; font-size:12px;">Loading…</div>
     </div>
+
+    <section class="panel">
+      <div class="panel-head">Pools</div>
+      <table>
+        <thead><tr><th>Pool</th><th>Incept</th><th>TVL</th><th>ROI</th><th>APR</th><th></th></tr></thead>
+        <tbody id="poolTableBody">
+          <tr><td colspan="6" class="sub" style="padding:20px;">Loading pools…</td></tr>
+        </tbody>
+      </table>
+    </section>
 
     <p style="margin-top:8px;">
       <a href="#" onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md";'>
-        Learn more <img src="imgs/leave-site.png" width="16"/></a>
+        Learn more <img src="imgs/leave-site-2.png" width="16"/></a>
       about the Pivot Protocol.
     </p>
   </main>
+
+  <div id="allAssetsPill" class="all-assets-pill"></div>
 
     <script src="libs/copy-addy.js"></script>
     <script src="libs/table.js"></script>
@@ -63,13 +92,162 @@
     <script>
        fetch('data/assets.csv')
             .then(result => result.text())
-            .then(data => tvlChart(data));
+            .then(data => {
+   tvlChart(data);
+
+   try {
+      // Always-visible NAV summary + stat cards — no hover required.
+      // Reuses the same helpers bar.js already calls (sortedTable, orderedIndices, parseUSD).
+      let [assets, idx] = sortedTable(data, ',');
+      let labels = orderedIndices(idx).slice(1); // skip 'date'
+
+      // Guard against blank/malformed trailing rows (assets.csv has a few).
+      const validRows = assets.filter(r => r && r[idx['date']] && r[idx['date']].trim() !== '');
+
+      const rowTotal = r => labels.reduce((sum, [name, i]) => sum + parseUSD(r[i]), 0);
+      const latest = validRows[validRows.length - 1];
+      const prev = validRows[validRows.length - 2];
+      const latestTotal = rowTotal(latest);
+      const prevTotal = prev ? rowTotal(prev) : latestTotal;
+      const delta = latestTotal - prevTotal;
+      const deltaPct = prevTotal ? (delta / prevTotal) * 100 : 0;
+      const usd = n => '$' + n.toLocaleString('en-US', {minimumFractionDigits:2, maximumFractionDigits:2});
+
+      const deltaEl = document.getElementById('statDelta');
+      deltaEl.textContent = (delta >= 0 ? '+' : '-') + usd(Math.abs(delta)) + ' (' + (deltaPct >= 0 ? '+' : '') + deltaPct.toFixed(2) + '%)';
+      deltaEl.classList.add(delta >= 0 ? 'pos' : 'neg');
+
+      document.getElementById('navSummary').textContent =
+         'Latest date: ' + latest[idx['date']] + '  |  Total: ' + usd(latestTotal);
+
+      // --- Token carousel: cycles through today's row, pool-relevant assets only ---
+      // Pool tokens per pivot pools (BTC+ETH, BTC+USDC, BTC+UNDEAD, ETH+UNDEAD,
+      // UNDEAD+USDC, BTC+AVAX, AVAX+UNDEAD). assets.csv has no literal USDC column —
+      // "stable" is used as the closest available stand-in.
+      const POOL_TOKENS = ['BTC', 'ETH', 'AVAX', 'stable', 'UNDEAD'];
+      document.getElementById('tokenCycleDate').textContent = latest[idx['date']];
+      const allItems = labels.map(([name, i]) => ({ label: name, value: parseUSD(latest[i]) }));
+      const cycleItems = allItems.filter(item => POOL_TOKENS.includes(item.label));
+      let cycleIx = 0;
+      const nameEl = document.getElementById('cycleTokenName');
+      const valEl = document.getElementById('cycleTokenValue');
+      const dotsEl = document.getElementById('cycleDots');
+      dotsEl.innerHTML = cycleItems.map((_, i) => '<span class="dot" data-ix="' + i + '"></span>').join('');
+      const dots = dotsEl.querySelectorAll('.dot');
+
+      function showCycle(i) {
+         cycleIx = (i + cycleItems.length) % cycleItems.length;
+         const item = cycleItems[cycleIx];
+         nameEl.textContent = item.label;
+         valEl.textContent = usd(item.value);
+         dots.forEach((d, di) => d.classList.toggle('active', di === cycleIx));
+      }
+      showCycle(0);
+
+      // Counter direction (decrementing), matching the ticker's leftward motion. Slower pace.
+      let cycleTimer = setInterval(() => showCycle(cycleIx - 1), 4500);
+      const cycleCard = document.getElementById('tokenCycleCard');
+      cycleCard.addEventListener('mouseenter', () => clearInterval(cycleTimer));
+      cycleCard.addEventListener('mouseleave', () => { cycleTimer = setInterval(() => showCycle(cycleIx - 1), 4500); });
+
+      document.getElementById('cyclePrev').onclick = () => showCycle(cycleIx - 1);
+      document.getElementById('cycleNext').onclick = () => showCycle(cycleIx + 1);
+      dots.forEach(d => d.onclick = () => showCycle(parseInt(d.dataset.ix, 10)));
+
+      // --- Hover logo: shows every asset for today in a pill that follows the mouse ---
+      const pill = document.getElementById('allAssetsPill');
+      const logoTrigger = document.getElementById('cycleLogoTrigger');
+      pill.innerHTML = '<div class="pill-title">All Assets — ' + latest[idx['date']] + '</div>' +
+         allItems.map(item =>
+            '<div class="pill-row"><span class="pill-name">' + item.label + '</span><span class="pill-value">' + usd(item.value) + '</span></div>'
+         ).join('');
+
+      logoTrigger.addEventListener('mouseenter', () => pill.classList.add('visible'));
+      logoTrigger.addEventListener('mouseleave', () => pill.classList.remove('visible'));
+      logoTrigger.addEventListener('mousemove', e => {
+         pill.style.left = (e.clientX + 16) + 'px';
+         pill.style.top = (e.clientY + 16) + 'px';
+      });
+   } catch (err) {
+      console.error('NAV summary failed:', err);
+      document.getElementById('cycleTokenName').textContent = 'Error';
+      document.getElementById('cycleTokenValue').textContent = '—';
+      document.getElementById('statDelta').textContent = 'Error';
+      document.getElementById('navSummary').textContent = 'Could not compute NAV summary: ' + err.message;
+      document.getElementById('navSummary').classList.add('neg');
+   }
+});
        fetch('data/wallets.tsv')
             .then(result => result.text())
             .then(data => {
    let [wallets, idx] = table(data);
-   pieChart(wallets, idx, 'dappsChart', 'dapp', true);
-   replaceText('tvl', tokenChart(wallets, idx, 'tokensChart'));
+   const tokensTotal = tokenChart(wallets, idx, 'tokensChart');
+   replaceText('tvl', tokensTotal);
+   document.getElementById('tokensTotal').textContent = '· ' + tokensTotal;
+
+   // --- dapps breakdown, rendered as a segmented bar in the header (not a pie) ---
+   // Limited to pools/reserves/operations — these are the categories with clean
+   // positive TVL that a proportional-width bar can represent honestly.
+   // (treasury currently nets negative and is excluded; see below.)
+   let dappTvl = {};
+   row(wallets, idx, 'dapp').forEach((label, ix) => {
+      const amt = parseUSD(wallets[ix][idx['TVL']]);
+      dappTvl[label] = (dappTvl[label] || 0) + amt;
+   });
+   const BAR_CATEGORIES = ['pools', 'reserves', 'operations'];
+   const dappEntries = BAR_CATEGORIES
+      .filter(label => dappTvl[label] !== undefined)
+      .map(label => [label, dappTvl[label]])
+      .sort((a, b) => b[1] - a[1]);
+   const dappTotal = dappEntries.reduce((sum, [, v]) => sum + v, 0);
+
+   // Explicit, guaranteed-distinct colors — colorOf()'s hash-based palette
+   // put pools/reserves/operations too close together to tell apart at a glance.
+   const CATEGORY_COLOR = { pools: 'var(--teal)', reserves: 'var(--chrome)', operations: 'var(--gold)' };
+
+   // Minimum visual width so a tiny share (e.g. operations at 0.03%) still
+   // renders as a real, visible sliver instead of disappearing at sub-pixel width.
+   const MIN_PCT = 6;
+   const rawPcts = dappEntries.map(([, v]) => dappTotal ? (v / dappTotal) * 100 : 0);
+   const floored = rawPcts.map(p => Math.max(p, MIN_PCT));
+   const flooredTotal = floored.reduce((a, b) => a + b, 0);
+   const displayPcts = floored.map(p => (p / flooredTotal) * 100);
+
+   const segbar = document.getElementById('dappsSegbar');
+   segbar.innerHTML = dappEntries.map(([label], i) => {
+      const displayPct = displayPcts[i];
+      const color = CATEGORY_COLOR[label] || colorOf(label);
+      return '<div class="seg" style="width:' + displayPct.toFixed(2) + '%;background:' + color + '" title="' + label + ': ' + showUsd(dappEntries[i][1]) + '"></div>';
+   }).join('');
+
+   document.getElementById('dappsSegCaption').textContent =
+      dappEntries.map(([label, val]) => label + ' ' + (dappTotal ? (val / dappTotal * 100).toFixed(0) : 0) + '%').join(' · ');
+
+   // Real pool rows, filtered to dapp === 'pools'. Link target comes straight
+   // from the TSV's own href column — no invented routing.
+   const poolRows = wallets.filter(r => r[idx['dapp']] === 'pools');
+   document.getElementById('statPools').textContent = poolRows.length;
+
+   const tbody = document.getElementById('poolTableBody');
+   tbody.innerHTML = poolRows.map(r => {
+      const name  = r[idx['pool']];
+      const p1    = r[idx['p1']];
+      const p2    = r[idx['p2']];
+      const incept = r[idx['incept']];
+      const tvl   = r[idx['TVL']];
+      const roi   = r[idx['ROI']];
+      const apr   = r[idx['APR']];
+      const href  = r[idx['href']] || 'pools.html';
+      const roiCls = roi.trim().startsWith('-') ? 'neg' : 'pos';
+      const aprCls = apr.trim().startsWith('-') ? 'neg' : 'pos';
+      return '<tr class="clickable" onclick="location.href=\'' + href + '\'">' +
+         '<td class="name-cell">' + name + ' <span class="sub">(' + p1 + '+' + p2 + ')</span></td>' +
+         '<td class="num">' + incept + '</td>' +
+         '<td class="num">' + tvl + '</td>' +
+         '<td class="num ' + roiCls + '">' + roi + '</td>' +
+         '<td class="num ' + aprCls + '">' + apr + '</td>' +
+         '<td class="chevron">›</td></tr>';
+   }).join('');
 });
     </script>
 </body>
