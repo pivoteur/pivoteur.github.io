@@ -1,0 +1,61 @@
+/* ==========================================================================
+   Pivot Protocol — Chrome (top ticker + nav bar)
+   ========================================================================== */
+
+.ticker-wrap{
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 7px 0;
+}
+.ticker-track{
+  display: inline-block;
+  animation: pivot-scroll 32s linear infinite;
+}
+.ticker-wrap:hover .ticker-track{ animation-play-state: paused; }
+.ticker-item{
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 22px;
+  font-size: 12px;
+}
+.ticker-item .sym{ color: var(--text-dim); letter-spacing: 0.04em; }
+.ticker-item .price{ color: var(--text-bright); }
+@keyframes pivot-scroll{
+  from{ transform: translateX(0); }
+  to{ transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce){
+  .ticker-track{ animation: none; }
+}
+
+.topnav{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 32px;
+  border-bottom: 1px solid var(--border);
+}
+.brand{ display: flex; align-items: center; gap: 10px; }
+.brand-mark{
+  width: 28px; height: 28px;
+  object-fit: contain;
+}
+.brand-name{ color: var(--text-bright); font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+
+nav.links{ display: flex; gap: 26px; flex-wrap: wrap; }
+nav.links a{
+  color: var(--text-dim); text-decoration: none; font-size: 13px; font-weight: 500;
+  padding: 6px 0; border-bottom: 2px solid transparent;
+}
+nav.links a.active{ color: var(--text-bright); border-bottom-color: var(--teal); }
+nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
+
+.nav-right{ display: flex; align-items: center; gap: 14px; }
+.nav-cta{
+  background: var(--teal-dim); color: var(--teal); border: 1px solid var(--teal-border);
+  padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.nav-cta:hover{ background: rgba(79,217,190,0.18); }
+
+@media (max-width: 860px){
+  nav.links{ display: none; } /* mobile nav pattern to be addressed in a follow-up pass */
+}

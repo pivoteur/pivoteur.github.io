@@ -1,130 +1,76 @@
-<html>
- <head>
-  <title>Pivot Protocol</title>
-  <link rel='stylesheet' href='styles.css?version=19'></link>
- <script>
-  const version=19;   // MAKE SURE THIS MATCHES THE VERSION VALUE (above)
-  let frames = ['undead', 'dash', 'pools', 'prof', 'diy', 'treas', 'diag', 'dist'];
-  const switchFrame = frame => {
-     const i = f => 'iframe_' + f;
-     frames.forEach(fram =>  {
-        document.getElementById(i(fram)).style.display = 'none';
-     });
-     let elframe = document.getElementById(i(frame));
-     elframe.frameBorder = "0";
-     elframe.allowTransparency="true";
-     elframe.height = "750";
-     elframe.width = "100%";
-     elframe.style.backgroundColor="transparent"
-     elframe.style.display = 'block';
-  };
- </script>
- </head>
- <body>
-  <center>
-   <h1>Pivot Protocol</h1>
-   <table border="1" width="85%">
-    <tr>
-     <td style='vertical-align:top' width='20%'>
-      <table border='0'>
-       <tr>
-        <td><a href="#" onclick="switchFrame('dash')">Dashboard</a></td>
-       </tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('dist')">Distributions</a></td>
-       </tr>
-       <tr><td><hr/></td></tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('pools')">Pools</a></td>
-       </tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('treas')">Treasury</a></td>
-       </tr>
-       <tr><td><hr/></td></tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('diy')">DIY Charts++</a></td>
-       </tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('undead')">$UNDEAD</a></td>
-       </tr>
-       <tr><td><hr/></td></tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('prof')">Profile</a></td>
-       </tr>
-       <tr><td><hr/></td></tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('diag')">Diagnostics</a></td>
-       </tr>
-       <tr><td><hr/></td></tr>
-       <tr><td>Docs</td></tr>
-       <tr>
-        <td>
-         <ul>
-          <li><a href='docs/dear-investors.pdf'>Dear α-investors <img src='imgs/leave-site.png' width='16'/></a></li>
-          <li><a href='https://github.com/pivoteur/biz/blob/main/README.md'>Whitepaper</a></li>
-          <li><a href='https://github.com/pivoteur/biz/blob/main/articles/README.md'>Articles</a></li>
-          <li><a href='https://github.com/pivoteur/biz/blob/main/blog/README.md'>BLOG</a></li>
-         </ul>
-        </td>
-       </tr>
-       <tr><td><hr/></td></tr>
-       <tr><td><a href="https://x.com/pivocateur">Contact us</a></td></tr>
-       <tr><td><hr/></td></tr>
-       <tr><td><em>pre-release α, revision: <span class='version'>1.0</span><em></td></tr>
-       <tr><td><hr/></td></tr>
-      </table>
-     </td>
-     <td width='80%'>
-      <iframe src="dashboard.html" 
-              name="iframe_dash" 
-              id="iframe_dash" 
-              title="Dashboard"
-              height="750"
-              width="100%"
-              style="display:block"></iframe>
-      <iframe src="pools.html"
-              name="iframe_pools"
-              id="iframe_pools"
-              title="Pools"
-              style="display:none"></iframe>
-      <iframe src="login.html"
-              name="iframe_prof"
-              id="iframe_prof"
-              title="Profile"
-              style="display:none"></iframe>
-      <iframe src="diy.html?t1=BTC&t2=ETH"
-              name="iframe_diy"
-              id="iframe_diy"
-              title="Do It Yourself"
-              style="display:none"></iframe>
-      <iframe src="treasury.html"
-              name="iframe_treas"
-              id="iframe_treas"
-              title="Treasury"
-              style="display:none"></iframe>
-      <iframe src="undead.html?last=15&analysis=2025-07-17"
-              name="iframe_undead"
-              id="iframe_undead"
-              title="$UNDEAD"
-              style="display:none"></iframe>
-      <iframe src="diagnostics.html"
-              name="iframe_diag"
-              id="iframe_diag"
-              title="Diagnostics"
-              style="display:none"></iframe>
-      <iframe src="distributions.html"
-              name="iframe_dist"
-              id="iframe_dist"
-              title="Distributions"
-              style="display:none"></iframe>
-     </td>
-    </tr>
-   </table>
-  </center>
-    <script src='libs/dom.js'></script>
-    <script>
-     replaceText('version', version);
-    </script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pivot Protocol</title>
+    <link rel="stylesheet" href="tokens.css?version=1">
+    <link rel="stylesheet" href="chrome.css?version=1">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
 
- </body>
+  <div id="app-ticker"></div>
+  <div id="app-nav"></div>
+
+  <main>
+    <div class="page-head">
+      <h1>Dashboard</h1>
+      <div class="sub">Protocol NAV&nbsp; <span class="num tvl" style="color:var(--text-bright);font-size:15px;">$0.00</span></div>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:24px;">
+      <div class="panel" style="margin-bottom:0;">
+        <div class="panel-head">Tokens</div>
+        <div style="padding:16px; max-width:420px; margin:0 auto;">
+          <canvas id="tokensChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:0;">
+        <div class="panel-head">dapps</div>
+        <div style="padding:16px; max-width:420px; margin:0 auto;">
+          <canvas id="dappsChart" width="400" height="200"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">NAV</div>
+      <div style="padding:20px; max-width:700px; margin:0 auto;">
+        <canvas id="barChart" width="400" height="200"></canvas>
+      </div>
+    </div>
+
+    <p style="margin-top:8px;">
+      <a href="#" onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md";'>
+        Learn more <img src="imgs/leave-site.png" width="16"/></a>
+      about the Pivot Protocol.
+    </p>
+  </main>
+
+    <script src="libs/copy-addy.js"></script>
+    <script src="libs/table.js"></script>
+    <script src="libs/canvas-bg.js"></script>
+    <script src="libs/colors.js"></script>
+    <script src="libs/usd.js"></script>
+    <script src="libs/tokens.js"></script>
+    <script src="libs/charts/bar.js"></script>
+    <script src="libs/charts/pie.js"></script>
+    <script src="libs/indicators.js"></script>
+    <script src="libs/dom.js"></script>
+    <script src="libs/chrome.js"></script>
+    <script>
+       fetch('data/assets.csv')
+            .then(result => result.text())
+            .then(data => tvlChart(data));
+       fetch('data/wallets.tsv')
+            .then(result => result.text())
+            .then(data => {
+   let [wallets, idx] = table(data);
+   pieChart(wallets, idx, 'dappsChart', 'dapp', true);
+   replaceText('tvl', tokenChart(wallets, idx, 'tokensChart'));
+});
+    </script>
+</body>
 </html>
