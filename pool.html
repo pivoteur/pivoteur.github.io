@@ -5,52 +5,58 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol <span class='title'>BTC+BNB Pivot</span> Pool</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="styles.css"></link>
+    <link rel="stylesheet" href="tokens.css?version=7">
+    <link rel="stylesheet" href="chrome.css?version=2">
 </head>
 <body>
-    <center>
-    <h1>Pivot Protocol</h1>
-     <h3>[STAKE] $UNDEAD into <span class='title'>BTC+BNB Pivot</span> pool<br/>
-     <span class='addy'>0x557bEf910E0F90aA88E03e0247FDE93B88d01953</span>
-     <input type="image" id="clipboard" onClick="copyAddy1()"
-            src="imgs/clipboard.png" height="32" width="32"/>
-     </h3>  
 
-   <table border='1' width='85%'>
-    <tr>
-     <td colspan='2'>
-      <h2><span class='title'>BTC+BNB Pivot</span> Pool,
-       TVL: <span class='tvl'>$0.00</span>
-      </h2>
-     </td>
-    </tr>
-    <tr>
-     <td colspan='2'>
-      <canvas id="radarChart" width="800" height="400"></canvas>
-     </td>
-    </tr>
-    <tr>
-     <td colspan='2'>
-      <canvas id="barChart" width="800" height="400"></canvas>
-     </td>
-    </tr>
-    <tr><td colspan='2'><hr/></td></tr>
-    <tr>
-     <td>See 
-       <a href="detail.html?p1=ETH&p2=UNDEAD" id='detail'>
-        <span class='title'>Echo</span> Pool details</a></td>
-     <td>See <a href="diy.html?t1=BTC&t2=BNB" id='screens'>
-        <span class='title'>BTC+BNB</span> Pool screens</a></td>
-    </tr>
-   </table>
-</center>
+  <div id="app-ticker"></div>
+  <div id="app-nav"></div>
 
-  <p style="vertical-align:bottom">
-   <a href='#'
-      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#1-the-pivot-pools";'>
-Learn more <img src='imgs/leave-site.png' width='16'/></a>
-   about the pivot pools.
-  </p>
+  <main>
+    <div class="page-head">
+      <h1><span class="title">BTC+BNB Pivot</span> Pool</h1>
+      <div class="sub">TVL&nbsp; <span class="num tvl" style="color:var(--text-bright);font-size:15px;">$0.00</span></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">Stake Address</div>
+      <div style="padding:16px 20px; display:flex; align-items:center; gap:10px;">
+        [STAKE] $UNDEAD into <span class="title">BTC+BNB Pivot</span> pool —
+        <span id="z" class="addy num" style="color:var(--text-bright);">0x557bEf910E0F90aA88E03e0247FDE93B88d01953</span>
+        <input type="image" id="clipboard" onClick="copyAddy1()" src="imgs/clipboard.png" height="20" width="20" style="cursor:pointer;">
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">Radar</div>
+      <div style="padding:20px; max-width:700px; margin:0 auto;">
+        <canvas id="radarChart" width="800" height="400"></canvas>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">Apportionment</div>
+      <div style="padding:20px; max-width:700px; margin:0 auto;">
+        <canvas id="barChart" width="800" height="400"></canvas>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">Related</div>
+      <div style="padding:16px 20px; display:flex; gap:32px;">
+        <div>See <a href="detail.html?p1=ETH&p2=UNDEAD" id="detail"><span class="title">Echo</span> Pool details</a></div>
+        <div>See <a href="diy.html?t1=BTC&t2=BNB" id="screens"><span class="title">BTC+BNB</span> Pool screens</a></div>
+      </div>
+    </div>
+
+    <p style="margin-top:8px;">
+      <a href='#'
+         onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#1-the-pivot-pools";'>
+Learn more <img src='imgs/leave-site-2.png' width='16'/></a>
+about the pivot pools.
+    </p>
+  </main>
 
     <script src="libs/indicators.js"></script>
     <script src="libs/table.js"></script>
@@ -64,6 +70,7 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
     <script src="libs/charts/radar.js"></script>
     <script src="libs/charts/pool.js"></script>
     <script src='libs/dom.js'></script>
+    <script src='libs/chrome.js'></script>
     <script>populatePivotPoolUX(barChart, true);</script>
 
 </body>

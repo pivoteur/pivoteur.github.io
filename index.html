@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol</title>
-    <link rel="stylesheet" href="tokens.css?version=4">
+    <link rel="stylesheet" href="tokens.css?version=5">
     <link rel="stylesheet" href="chrome.css?version=2">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -17,6 +17,7 @@
     <div class="page-head">
       <h1>Dashboard</h1>
       <div class="header-dapps-bar" id="headerDappsBar">
+        <div class="section-label" style="text-align:center; margin-bottom:4px;">TVL</div>
         <div class="segbar" id="dappsSegbar"></div>
         <div class="segbar-caption sub" id="dappsSegCaption">Loading…</div>
       </div>
@@ -46,14 +47,16 @@
 
     <div class="panel">
       <div class="panel-head">Tokens <span id="tokensTotal" class="sub"></span></div>
-      <div style="padding:16px; max-width:420px; margin:0 auto;">
-        <canvas id="tokensChart" width="400" height="200"></canvas>
+      <div style="padding:20px 20px 8px;">
+        <div class="section-label">Token Breakdown</div>
+        <div class="segbar" id="tokensSegbar"></div>
+        <div class="segbar-caption sub" id="tokensSegCaption">Loading…</div>
       </div>
-    </div>
 
-    <div class="panel">
-      <div class="panel-head">NAV</div>
-      <div style="padding:20px; max-width:700px; margin:0 auto;">
+      <div class="panel-divider"></div>
+
+      <div class="panel-head" style="border-bottom:none;">NAV</div>
+      <div style="padding:0 20px 20px; max-width:700px; margin:0 auto;">
         <canvas id="barChart" width="400" height="200"></canvas>
       </div>
       <div id="navSummary" class="sub" style="padding:0 20px 18px; font-size:12px;">Loading…</div>
@@ -181,9 +184,38 @@
             .then(result => result.text())
             .then(data => {
    let [wallets, idx] = table(data);
-   const tokensTotal = tokenChart(wallets, idx, 'tokensChart');
+
+   // --- Token breakdown, rendered as a segmented bar (not a donut). Computed once
+   // here and reused for both the header total and the bar, so the two numbers
+   // can never disagree the way the old donut-center-total vs. header-total did.
+   let tokenAmounts = [];
+   let tokenLabels = usdLabels(idx).map(([lab, ix]) => {
+      tokenAmounts.push(total(wallets.map(r => r[ix])));
+      return lab;
+   });
+   const tokenEntriesAll = tokenLabels.map((lab, i) => [lab, tokenAmounts[i]]);
+   const tokensGrandTotal = tokenEntriesAll.reduce((s, [, v]) => s + v, 0);
+   const tokensTotal = showUsd(tokensGrandTotal);
    replaceText('tvl', tokensTotal);
    document.getElementById('tokensTotal').textContent = '· ' + tokensTotal;
+
+   // Bar only shows positive-value tokens — a negative-value token would break
+   // proportional width the same way dapps' negative treasury figure did.
+   const tokenEntries = tokenEntriesAll.filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+   const tokenPosTotal = tokenEntries.reduce((s, [, v]) => s + v, 0);
+   const TOKEN_MIN_PCT = 5;
+   const tokenRawPcts = tokenEntries.map(([, v]) => tokenPosTotal ? (v / tokenPosTotal) * 100 : 0);
+   const tokenFloored = tokenRawPcts.map(p => Math.max(p, TOKEN_MIN_PCT));
+   const tokenFlooredTotal = tokenFloored.reduce((a, b) => a + b, 0);
+   const tokenDisplayPcts = tokenFloored.map(p => (p / tokenFlooredTotal) * 100);
+
+   const tokensSegbar = document.getElementById('tokensSegbar');
+   tokensSegbar.innerHTML = tokenEntries.map(([label, val], i) => {
+      return '<div class="seg" style="width:' + tokenDisplayPcts[i].toFixed(2) + '%;background:' + colorOf(label) + '" title="' + label + ': ' + showUsd(val) + '"></div>';
+   }).join('');
+
+   document.getElementById('tokensSegCaption').textContent =
+      tokenEntries.map(([label, val]) => label + ' ' + (tokenPosTotal ? (val / tokenPosTotal * 100).toFixed(0) : 0) + '%').join(' · ');
 
    // --- dapps breakdown, rendered as a segmented bar in the header (not a pie) ---
    // Limited to pools/reserves/operations — these are the categories with clean

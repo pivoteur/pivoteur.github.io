@@ -94,8 +94,20 @@ tbody tr.clickable:hover .name-cell{ color: var(--teal); }
 .sub{ color: var(--text-dim); font-weight: 400; }
 .chevron{ color: var(--text-dim); text-align: right; }
 
-main{ padding: 32px; max-width: 1180px; margin: 0 auto; }
+main{ padding: 32px; max-width: 1180px; margin: 0 auto; position: relative; z-index: 1; }
 .page-head{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px; }
+
+/* --- Shared background watermark logo (used on login.html, profile.html, etc.) --- */
+.bg-watermark{
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(70vw, 700px);
+  opacity: 0.08;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
 
 .stat-row{ display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 32px; }
 .stat{ background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
@@ -174,3 +186,31 @@ main{ padding: 32px; max-width: 1180px; margin: 0 auto; }
   font-size: 11px; text-align: center; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
 }
+
+/* --- Divider + sub-labels for merged multi-section panels (Tokens + NAV) --- */
+.panel-divider{ height: 1px; background: var(--border-strong); margin: 4px 20px 0; }
+.section-label{
+  font-size: 10px; color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-bottom: 10px;
+}
+
+/* --- Form controls (selects, buttons, text/date inputs) — shared across pages --- */
+select.styled-select, input[type="text"], input[type="date"]{
+  background: var(--surface-hover);
+  border: 1px solid var(--border-strong);
+  color: var(--text-bright);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-family: Inter, -apple-system, system-ui, sans-serif;
+  font-size: 13px;
+}
+select.styled-select:focus, input[type="text"]:focus, input[type="date"]:focus{
+  outline:none; border-color: var(--teal-border);
+}
+.btn-primary{
+  background: var(--teal); color:#06201c; border:none;
+  padding:9px 18px; border-radius:var(--radius-sm);
+  font-weight:600; font-size:13px; cursor:pointer;
+}
+.btn-primary:hover{ background:#3fc9ae; }
+.control-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:13px; color:var(--text-dim); }
