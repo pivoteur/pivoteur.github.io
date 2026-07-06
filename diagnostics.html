@@ -1,10 +1,15 @@
 <html>
  <head>
   <title>Protocol Health</title>
-  <link rel='stylesheet' href='styles.css?version=16'></link>
-  <link rel='stylesheet' href='diag_styles.css?version=1'></link>
+  <link rel='stylesheet' href='tokens.css?version=7'>
+  <link rel='stylesheet' href='chrome.css?version=2'>
+  <link rel='stylesheet' href='diag_styles.css?version=1'>
   <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap'>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <style>
+    body{ padding: 0; }
+    main.diag-main{ padding: 32px 24px; max-width: none; }
+  </style>
   <script>
     const covColor = d3.scaleLinear()
       .domain([0, 40, 60, 75, 90, 100])
@@ -13,6 +18,11 @@
   </script>
  </head>
  <body>
+
+  <div id="app-ticker"></div>
+  <div id="app-nav"></div>
+
+  <main class="diag-main">
   <div id="header">
    <h2>Protocol Health</h2>
    <div id="stamp">Loading...</div>
@@ -28,6 +38,7 @@
       <div id="task-list"></div>
     </div>
   </div>
+  </main>
 
   <script>
      function timeAgo(isoStr) {
@@ -413,6 +424,31 @@
              `<div class="legend-divider" style="margin:14px 0 10px"></div>
               <div class="quotes-unavailable">Quotes unavailable</div>`);
          });
+
+       // ---- GitHub Issues Closed (Today) ------------------------------------------------------
+       fetch('libs/github-issues.json')
+         .then(r => { if (!r.ok) throw new Error('github-issues.json not found'); return r.json(); })
+         .then(gdata => {
+           const repos = gdata.repos || {};
+           const date  = gdata.date  || '';
+           let gHtml = `
+             <div class="legend-divider" style="margin:14px 0 10px"></div>
+             <div class="legend-heading">Issues Closed — Today
+               <span class="quotes-date">${date}</span>
+             </div>`;
+           Object.keys(repos).forEach(repo => {
+             gHtml += `<div class="quote-row">
+               <span class="quote-token">${repo}</span>
+               <span class="quote-price">${repos[repo]}</span>
+             </div>`;
+           });
+           document.getElementById('graph-legend').insertAdjacentHTML('beforeend', gHtml);
+         })
+         .catch(() => {
+           document.getElementById('graph-legend').insertAdjacentHTML('beforeend',
+             `<div class="legend-divider" style="margin:14px 0 10px"></div>
+              <div class="quotes-unavailable">Issue data unavailable</div>`);
+         });
      })
      .catch(err => {
        document.getElementById('stamp').textContent = '';
@@ -420,5 +456,6 @@
          `<div class="diag-fail-banner">Could not load data: ${err.message}</div>`;
      });
   </script>
+  <script src='libs/chrome.js'></script>
  </body>
 </html>

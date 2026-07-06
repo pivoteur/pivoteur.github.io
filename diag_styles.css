@@ -2,7 +2,7 @@
 
 body {
   background: transparent;
-  font-family: Arial, sans-serif;
+  font-family: Inter, -apple-system, system-ui, sans-serif;
   color: #c8d8e8;
   padding: 32px 0px 32px 24px;
 }
@@ -250,14 +250,14 @@ hr.diag-divider {
 }
 .chart-axis text {
   fill: rgba(200,216,232,0.45);
-  font-family: Arial, sans-serif;
+  font-family: Inter, -apple-system, system-ui, sans-serif;
   font-size: 10px;
 }
 .chart-axis-right text {
   fill: rgba(200,216,232,0.35);
 }
 .bar-label {
-  font-family: Arial, sans-serif;
+  font-family: Inter, -apple-system, system-ui, sans-serif;
   font-size: 10px;
   text-anchor: middle;
   pointer-events: none;
@@ -404,14 +404,14 @@ hr.diag-divider {
 
 .quote-token {
   font-size: 11px;
-  font-family: Arial, sans-serif;
+  font-family: Inter, -apple-system, system-ui, sans-serif;
   color: rgba(200,216,232,0.55);
   letter-spacing: 0.04em;
 }
 
 .quote-price {
   font-size: 11px;
-  font-family: Arial, sans-serif;
+  font-family: Inter, -apple-system, system-ui, sans-serif;
   color: rgba(200,216,232,0.75);
   text-align: right;
   white-space: nowrap;

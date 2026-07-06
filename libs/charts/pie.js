@@ -51,6 +51,8 @@ const doughnutChartTbl = (labels, amounts, canvasName, randomizeColors = false,
    if(others > 0) { amts.push(others); kinds.push('others'); }
    let slices = randomizeColors ? undefined : kinds.map(colorOf);
 
+   const total = amts.reduce((a, b) => a + b, 0);
+
    new Chart(ctx, {
       type: chartType,
       data: {
@@ -73,10 +75,21 @@ layout: {
     },
          responsive: true,
          plugins: {
-            legend: { position: position, align: 'start',
-                      labels: { color: 'white' }
-            }
+            legend: {
+               position: position, align: 'start',
+               labels: {
+                  color: 'rgba(184,196,212,0.85)',
+                  font: { family: "Inter, -apple-system, system-ui, sans-serif", size: 12 },
+                  usePointStyle: true,
+                  pointStyle: 'circle',
+                  boxWidth: 8,
+                  boxHeight: 8,
+                  padding: 14
+               }
+            },
+            centerText: { enabled: chartType === 'doughnut', total: total }
          }
-      } 
+      },
+      plugins: [centerTextPlugin]
    });
 };

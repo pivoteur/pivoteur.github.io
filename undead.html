@@ -3,101 +3,115 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pivot Protocol DIY Chart++</title>
+    <title>$UNDEAD Metrics</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="styles.css"></link>
+    <link rel="stylesheet" href="tokens.css?version=6">
+    <link rel="stylesheet" href="chrome.css?version=2">
+    <style>
+      .metric-table th, .metric-table td{ text-align:left; }
+      .metric-table th:not(:first-child), .metric-table td:not(:first-child){ text-align:right; }
+    </style>
 </head>
 <body>
-    <center>
-    <h1>$UNDEAD metrics</h1>
 
-<table border="0" width="75%">
-   <tr>
-    <td align="center"><h3>Rank</h3><br/>
-     <canvas id="rankChart" width="400" height="200"></canvas>
-    </td>
-    <td align="center"><h3>Price</h3><br/>
-     <canvas id="quoteChart" width="400" height="200"></canvas>
-    </td>
-   </tr>
-   <tr> 
-    <td align="center"><h3>Market Capitalization</h3><br/>
-     <canvas id="capChart" width="400" height="200"></canvas>
-    </td>
-    <td align="center"><h3>24-hour Volume</h3><br/>
-     <canvas id="volChart" width="400" height="200"></canvas>
-    </td>
-   </tr>
-   <tr>
-    <td colspan="2">Show last
-     <input type='text' id='last' value='100'></input> days.
-     <button type='button' onClick="go();">Submit</button>
-    </td>
-   </tr>
+  <div id="app-ticker"></div>
+  <div id="app-nav"></div>
 
-   <tr><th colspan='2' align='center'>$UNDEAD Analysis</th></tr>
-   <tr>
-    <td colspan='2'>$UNDEAD performance analysis, 
-     <span class='today'>2025-09-18</span>
-    </td>
-   </tr>
-   <tr>
-    <td colspan='2'>
-     <ul>
-      <li>"δ" indicates change since <span class='basis'>2025-07-17</span></li>
-      <li>"α" is annualized since <span class='basis'>2025-07-17</span></li>
-     </ul>
-    </td>
-   </tr>
-   <tr>
-    <td colspan='2'>
-     <table>
-      <tr bgcolor='cyan' style='color:black;'>
-       <th>Metric</th>
-       <th>Value</th>
-       <th><span class='basis'>2025-07-17</span></th>
-       <th style='text-align:center;'>δ</th>
-       <th style='text-align:center;'>α</th>
-      </tr>
-      <tr>
-       <th bgcolor='lime' style='color:black;'>Rank</th>
-       <td><span class='rankValue'>8991</span></td>
-       <td><span class='rankBase'>8480</span></td>
-       <td><span class='rankDelta'>-6.03</span>%</td>
-       <td><span class='rankAlpha'>34.91</span>%</td>
-      </tr>
-      <tr>
-       <th bgcolor='lime' style='color:black;'>Quote</th>
-       <td>$<span class='quoteValue'>0.002993</span></td>
-       <td>$<span class='quoteBase'>0.002211</span></td>
-       <td><span class='quoteDelta'>35.37</span>%</td>
-       <td><span class='quoteAlpha'>204.91</span>%</td>
-      </tr>
-      <tr>
-       <th bgcolor='lime' style='color:black;'>Market Cap</th>
-       <td>$<span class='capValue'>45127</span></td>
-       <td>$<span class='capBase'>33187</span></td>
-       <td><span class='capDelta'>35.98</span>%</td>
-       <td><span class='capAlpha'>208.45</span>%</td>
-      </tr>
-      <tr>
-       <th bgcolor='lime' style='color:black;'>24-hour Volume</th>
-       <td>$<span class='volValue'>89518</span></td>
-       <td>$<span class='volBase'>94618</span></td>
-       <td><span class='volDelta'>-5.39</span>%</td>
-       <td><span class='volAlpha'>-31.23</span>%</td>
-      </tr>
-     </table>
-    </td>
-   <tr>
-   <tr>
-    <td colspan='2'>
-     $UNDEAD analysis-basis from date:
-     <input type='date' value='2024-11-21' id='anal' onChange='go();'></input>
-    </td>
-   </tr>
-  </table>
-</center>
+  <main>
+    <div class="page-head">
+      <h1>$UNDEAD Metrics</h1>
+    </div>
+
+    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:24px;">
+      <div class="panel" style="margin-bottom:0;">
+        <div class="panel-head">Rank</div>
+        <div style="padding:16px;"><canvas id="rankChart" width="400" height="200"></canvas></div>
+      </div>
+      <div class="panel" style="margin-bottom:0;">
+        <div class="panel-head">Price</div>
+        <div style="padding:16px;"><canvas id="quoteChart" width="400" height="200"></canvas></div>
+      </div>
+      <div class="panel" style="margin-bottom:0;">
+        <div class="panel-head">Market Capitalization</div>
+        <div style="padding:16px;"><canvas id="capChart" width="400" height="200"></canvas></div>
+      </div>
+      <div class="panel" style="margin-bottom:0;">
+        <div class="panel-head">24-hour Volume</div>
+        <div style="padding:16px;"><canvas id="volChart" width="400" height="200"></canvas></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">Chart Range</div>
+      <div style="padding:20px;">
+        <div class="control-row">
+          Show last <input type="text" id="last" value="100" style="width:70px;"> days.
+          <button type="button" class="btn-primary" onClick="go();">Submit</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">$UNDEAD Analysis</div>
+      <div style="padding:20px;">
+        <p class="sub" style="margin:0 0 12px; font-size:13px;">
+          $UNDEAD performance analysis, <span class="today" style="color:var(--text-bright);">2025-09-18</span>
+        </p>
+        <ul class="sub" style="margin:0 0 18px; font-size:12px; padding-left:20px;">
+          <li>"δ" indicates change since <span class="basis">2025-07-17</span></li>
+          <li>"α" is annualized since <span class="basis">2025-07-17</span></li>
+        </ul>
+
+        <table class="metric-table">
+          <thead>
+            <tr>
+              <th>Metric</th>
+              <th>Value</th>
+              <th><span class="basis">2025-07-17</span></th>
+              <th>δ</th>
+              <th>α</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <th>Rank</th>
+              <td class="num"><span class="rankValue">8991</span></td>
+              <td class="num"><span class="rankBase">8480</span></td>
+              <td class="num"><span class="rankDelta">-6.03</span>%</td>
+              <td class="num"><span class="rankAlpha">34.91</span>%</td>
+            </tr>
+            <tr>
+              <th>Quote</th>
+              <td class="num">$<span class="quoteValue">0.002993</span></td>
+              <td class="num">$<span class="quoteBase">0.002211</span></td>
+              <td class="num"><span class="quoteDelta">35.37</span>%</td>
+              <td class="num"><span class="quoteAlpha">204.91</span>%</td>
+            </tr>
+            <tr>
+              <th>Market Cap</th>
+              <td class="num">$<span class="capValue">45127</span></td>
+              <td class="num">$<span class="capBase">33187</span></td>
+              <td class="num"><span class="capDelta">35.98</span>%</td>
+              <td class="num"><span class="capAlpha">208.45</span>%</td>
+            </tr>
+            <tr>
+              <th>24-hour Volume</th>
+              <td class="num">$<span class="volValue">89518</span></td>
+              <td class="num">$<span class="volBase">94618</span></td>
+              <td class="num"><span class="volDelta">-5.39</span>%</td>
+              <td class="num"><span class="volAlpha">-31.23</span>%</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="control-row" style="margin-top:18px;">
+          $UNDEAD analysis-basis from date:
+          <input type="date" value="2024-11-21" id="anal" onChange="go();">
+        </div>
+      </div>
+    </div>
+  </main>
+
     <script src="libs/table.js"></script>
     <script src="libs/canvas-bg.js"></script>
     <script src='libs/usd.js'></script>
@@ -107,6 +121,8 @@
     <script src='libs/dom.js'></script>
     <script>
    let [last, anal] = Object.values(params());
+   if (!last || last === 'undefined') { last = '30'; }
+   if (!anal || anal === 'undefined') { anal = '2024-11-21'; }
 
    window.onload = () => {
       let lastElt = document.getElementById('last');
@@ -123,7 +139,10 @@
       location.href = "undead.html?last=" + last + "&anal=" + analysisDate;
    };
 
-   fetch('data/undead.tsv').then(result => result.text()).then(data => {
+   fetch('data/undead.tsv').then(result => {
+      if (!result.ok) throw new Error('HTTP ' + result.status + ' loading data/undead.tsv');
+      return result.text();
+   }).then(data => {
       let [tabl, idx] = sortedTable(data);
       const dates = row(tabl, idx, 'date').slice(-last);
 
@@ -169,7 +188,15 @@
       const vols = row(tabl, idx, '24-hr volume').slice(-last).map(parseUSD);
       simpleBar(dates, vols, '24-hour Volume', 'volChart');
       updateRow('vol', parseUSD, 4);
+   }).catch(err => {
+      console.error('undead.html render failed:', err);
+      document.querySelectorAll('.panel-head').forEach(el => {
+         if (['Rank','Price','Market Capitalization','24-hour Volume'].includes(el.textContent)) {
+            el.insertAdjacentHTML('afterend', '<div class="neg" style="padding:12px 16px;font-size:12px;">Error: ' + err.message + '</div>');
+         }
+      });
    });
 </script>
+    <script src='libs/chrome.js'></script>
 </body>
 </html>
