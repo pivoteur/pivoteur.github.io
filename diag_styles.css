@@ -179,7 +179,6 @@ hr.diag-divider {
   padding: 18px;
 }
 .health-box-coverage { width: 300px; flex-shrink: 0; }
-.health-box-tests { width: 420px; flex-shrink: 0; }
 .health-box-tasks { flex: 1; min-width: 0; }
 
 #graph-legend {
@@ -252,52 +251,6 @@ hr.diag-divider {
 
 @keyframes fadeUp {
   to { opacity: 1; transform: translateY(0); }
-}
-
-#test-chart-wrap {
-  margin-bottom: 7px;
-}
-#test-chart-wrap svg {
-  overflow: visible;
-}
-.chart-axis line, .chart-axis path {
-  stroke: rgba(255,255,255,0.08);
-}
-.chart-axis text {
-  fill: rgba(200,216,232,0.45);
-  font-family: Arial, sans-serif;
-  font-size: 10px;
-}
-.chart-axis-right text {
-  fill: rgba(200,216,232,0.35);
-}
-.bar-label {
-  font-family: Arial, sans-serif;
-  font-size: 10px;
-  text-anchor: middle;
-  pointer-events: none;
-}
-.chart-legend-row {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  margin-top: 10px;
-  margin-left: 40px;
-  flex-wrap: wrap;
-}
-.chart-legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 10px;
-  color: rgba(200,216,232,0.45);
-  letter-spacing: 0.05em;
-}
-.chart-legend-swatch {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-  flex-shrink: 0;
 }
 
 .task-row {

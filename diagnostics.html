@@ -35,9 +35,6 @@
       <div id="coverage-bar-wrap"></div>
       <div id="graph-legend"></div>
     </div>
-    <div class="health-box health-box-tests">
-      <div id="report-left"></div>
-    </div>
     <div class="health-box health-box-tasks">
       <div class="diag-section-heading" style="margin-top:0;">Automated Tasks</div>
       <div id="task-list"></div>
@@ -148,25 +145,8 @@
       });
       if (cur) entries.push(cur);
        // ----- Render -----------------------------------------------------------------------------
-       const crateEntries = entries.filter(e => e.crate !== 'dapps');
        const dappsEntry = entries.find(e => e.crate === 'dapps');
-       // ----- Left column: grouped-bar chart -----------------------------------------------------
-       let leftHtml = '';
-       if (crateEntries.length > 0) {
-        leftHtml += '<div class="diag-section-heading">Number of Tests</div>';
-        leftHtml += '<div id="test-chart-wrap"></div>';
-      }
-      // Exact failing test names only — no debug info, no fix suggestions.
-      // Reuses .diag-failures, which already existed in diag_styles.css but was never wired up.
-      const failedCrates = crateEntries.filter(e => e.failures && e.failures.length > 0);
-      if (failedCrates.length > 0) {
-        leftHtml += '<div class="diag-section-heading" style="margin-top:16px;">Failed Tests</div>';
-        failedCrates.forEach(e => {
-          leftHtml += `<div class="diag-failures">[${e.crate}]<br>${e.failures.join('<br>')}</div>`;
-        });
-      }
-      document.getElementById('report-left').innerHTML = leftHtml;
-       // ----- Right column: automated tasks ------------------------------------------------------
+       // ----- Automated tasks ------------------------------------------------------
        let taskHtml  = '';
        let delay = 0;
 
@@ -201,114 +181,6 @@
 
        document.getElementById('task-list').innerHTML = taskHtml;
        document.getElementById('stamp').textContent = stamp ? 'Last run: ' + stamp : '';
-       // ---- Grouped bar chart (book / libs / quizzes) -----------------------------------------------
-       if (crateEntries.length > 0 && document.getElementById('test-chart-wrap')) {
-         requestAnimationFrame(() => {
-         const chartData = [];
-
-         ['book', 'libs', 'quizzes'].forEach(k => {
-           const covEntry    = crateEntries.find(e => e.crate === k && e.coverage !== null);
-           const flowEntry   = crateEntries.find(e => e.crate === k && e.coverage === null && e.sublabel !== 'coverage');
-           const passedCount = k === 'quizzes'
-             ? (flowEntry?.passed ?? covEntry?.passed ?? 0)
-             : (covEntry?.passed ?? 0);
-           const cov = covEntry?.coverage ?? null;
-           if (passedCount !== null || cov !== null) {
-             const failCount = crateEntries
-               .filter(e => e.crate === k)
-               .reduce((sum, e) => sum + (e.failed || 0), 0);
-             chartData.push({ crate: k, passed: passedCount, coverage: cov, failed: failCount });
-           }
-         });
-
-         if (chartData.length === 0) return;
-
-         const margin = { top: 20, right: 16, bottom: 30, left: 40 };
-         const totalW = 380;
-         const W      = totalW - margin.left - margin.right;
-         const H      = 150;
-
-         const svg = d3.select('#test-chart-wrap')
-           .append('svg')
-             .attr('width',  totalW)
-             .attr('height', H + margin.top + margin.bottom)
-           .append('g')
-             .attr('transform', `translate(${margin.left},${margin.top})`);
-
-         const crateNames = chartData.map(d => d.crate);
-         const subgroups  = ['passed', 'failed'];
-         const x0 = d3.scaleBand().domain(crateNames).range([0, W]).paddingInner(0.28).paddingOuter(0.18);
-         const x1 = d3.scaleBand().domain(subgroups).range([0, x0.bandwidth()]).padding(0.08);
-         const maxPassed = d3.max(chartData, d => d.passed) || 1;
-         const yLeft     = d3.scaleLinear().domain([0, maxPassed * 1.15]).range([H, 0]);
-
-         // axes
-         svg.append('g').attr('class', 'chart-axis')
-           .attr('transform', `translate(0,${H})`)
-           .call(d3.axisBottom(x0).tickSize(0))
-           .call(g => g.select('.domain').remove());
-         svg.selectAll('.chart-axis text').style('fill', 'rgba(200,216,232,0.55)').style('font-size', '11px');
-         svg.append('g').attr('class', 'chart-axis')
-           .call(d3.axisLeft(yLeft).ticks(4).tickSize(-W))
-           .call(g => g.select('.domain').remove())
-           .call(g => g.selectAll('.tick line').attr('stroke', 'rgba(255,255,255,0.05)'));
-
-         // bars
-         const groups = svg.selectAll('.bar-group')
-           .data(chartData)
-           .join('g')
-             .attr('class', 'bar-group')
-             .attr('transform', d => `translate(${x0(d.crate)},0)`);
-
-         // passed bars — always green
-         groups.append('rect')
-           .attr('x',      x1('passed'))
-           .attr('y',      d => yLeft(d.passed))
-           .attr('width',  x1.bandwidth())
-           .attr('height', d => H - yLeft(d.passed))
-           .attr('fill',   () => '#5FD9A8')
-           .attr('rx', 2);
-         // value labels on passed bars — always green
-         groups.append('text')
-           .attr('class', 'bar-label')
-           .attr('x', d => x1('passed') + x1.bandwidth() / 2)
-           .attr('y', d => yLeft(d.passed) - 5)
-           .attr('fill', () => '#5FD9A8')
-           .text(d => d.passed);
-
-         // bar-chart's legend --------------------------------------------------------------
-         const anyFailed = chartData.some(d => d.failed > 0);
-         d3.select('#test-chart-wrap').append('div')
-           .attr('class', 'chart-legend-row')
-           .html(`
-             <div class="chart-legend-item">
-               <div class="chart-legend-swatch" style="background:#5FD9A8"></div>
-               TESTS PASSED
-             </div>
-             ${anyFailed ? `<div class="chart-legend-item">
-               <div class="chart-legend-swatch" style="background:#ff6b6b"></div>
-               TESTS FAILED
-             </div>` : ''}
-           `);
-           
-         // failed bars — only rendered when failed > 0, always red
-         groups.filter(d => d.failed > 0)
-           .append('rect')
-             .attr('x',      x1('failed'))
-             .attr('y',      d => yLeft(d.failed))
-             .attr('width',  x1.bandwidth())
-             .attr('height', d => H - yLeft(d.failed))
-             .attr('fill',   '#ff6b6b')
-             .attr('rx', 2);
-         groups.filter(d => d.failed > 0)
-           .append('text')
-             .attr('class', 'bar-label')
-             .attr('x', d => x1('failed') + x1.bandwidth() / 2)
-             .attr('y', d => yLeft(d.failed) - 5)
-             .attr('fill', '#ff6b6b')
-             .text(d => d.failed);
-         });
-       }
 
        // ---- Coverage segmented bar --------------------------------
        const chartCrates = ['book', 'libs', 'quizzes'];
@@ -435,8 +307,8 @@
          });
      })
      .catch(err => {
-       document.getElementById('stamp').textContent = '';
-       document.getElementById('report-left').innerHTML =
+       document.getElementById('stamp').textContent = 'Error loading diagnostics data';
+       document.getElementById('graph-legend').innerHTML =
          `<div class="diag-fail-banner">Could not load data: ${err.message}</div>`;
      });
   </script>
