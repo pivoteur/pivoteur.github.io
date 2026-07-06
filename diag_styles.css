@@ -2,7 +2,7 @@
 
 body {
   background: transparent;
-  font-family: Inter, -apple-system, system-ui, sans-serif;
+  font-family: Arial, sans-serif;
   color: #c8d8e8;
   padding: 32px 0px 32px 24px;
 }
@@ -65,7 +65,7 @@ body {
   border-radius: 50%;
   flex-shrink: 0;
 }
-.dot-pass { background: #00e5a0; box-shadow: 0 0 6px #00e5a088; }
+.dot-pass { background: #5FD9A8; box-shadow: 0 0 6px #5FD9A888; }
 .dot-fail { background: #ff6b6b; box-shadow: 0 0 6px #ff6b6b88; }
 
 .diag-label {
@@ -166,29 +166,43 @@ hr.diag-divider {
   margin: 18px 0;
 }
 
-#graph-area {
+.health-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
   margin-top: 24px;
-  padding: 20px 24px;
+}
+.health-box {
+  background: rgba(255,255,255,0.02);
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 8px;
-  background: rgba(255,255,255,0.02);
-  display: flex;
-  gap: 32px;
-  min-height: 400px;
+  padding: 18px;
 }
-
-#graph-canvas-wrap {
-  flex-shrink: 0;
-  width: 480px;
-  height: 480px;
-}
+.health-box-coverage { flex: 1; }
+.health-box-tasks { flex: 1; min-width: 0; }
 
 #graph-legend {
-  flex: 1;
   display: flex;
   flex-direction: column;
   gap: 9px;
+  margin-top: 14px;
 }
+
+/* --- Compact pass-row (only fails get the heavier .task-row card) --- */
+.task-compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeUp 0.4s ease forwards;
+}
+.task-compact:hover { background: rgba(255,255,255,0.04); }
+.task-compact-left { display: flex; align-items: center; gap: 8px; }
 
 .legend-heading {
   font-size: 10px;
@@ -239,69 +253,6 @@ hr.diag-divider {
   to { opacity: 1; transform: translateY(0); }
 }
 
-#test-chart-wrap {
-  margin-bottom: 7px;
-}
-#test-chart-wrap svg {
-  overflow: visible;
-}
-.chart-axis line, .chart-axis path {
-  stroke: rgba(255,255,255,0.08);
-}
-.chart-axis text {
-  fill: rgba(200,216,232,0.45);
-  font-family: Inter, -apple-system, system-ui, sans-serif;
-  font-size: 10px;
-}
-.chart-axis-right text {
-  fill: rgba(200,216,232,0.35);
-}
-.bar-label {
-  font-family: Inter, -apple-system, system-ui, sans-serif;
-  font-size: 10px;
-  text-anchor: middle;
-  pointer-events: none;
-}
-.chart-legend-row {
-  display: flex;
-  align-items: center;
-  gap: 20px;
-  margin-top: 10px;
-  margin-left: 48px;
-}
-.chart-legend-item {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 10px;
-  color: rgba(200,216,232,0.45);
-  letter-spacing: 0.05em;
-}
-.chart-legend-swatch {
-  width: 10px;
-  height: 10px;
-  border-radius: 2px;
-  flex-shrink: 0;
-}
-
-#report-columns {
-  display: flex;
-  gap: 6px;
-  align-items: flex-start;
-  margin-top: 4px;
-}
-
-#report-left {
-  flex-shrink: 0;
-  width: 530px;
-}
-
-#report-right {
-  flex: 1;
-  min-width: 0;
-  padding-right: 16px;
-}
-
 .task-row {
   padding: 11px 14px;
   border-radius: 8px;
@@ -314,8 +265,8 @@ hr.diag-divider {
 }
 
 .task-row-pass {
-  background: rgba(0,229,160,0.04);
-  border-left-color: #00e5a0;
+  background: rgba(95,217,168,0.04);
+  border-left-color: #5FD9A8;
 }
 
 .task-row-fail {
@@ -358,8 +309,8 @@ hr.diag-divider {
 }
 
 .task-pill-pass {
-  background: rgba(0,229,160,0.15);
-  color: #00e5a0;
+  background: rgba(95,217,168,0.15);
+  color: #5FD9A8;
 }
 
 .task-pill-fail {
@@ -404,14 +355,14 @@ hr.diag-divider {
 
 .quote-token {
   font-size: 11px;
-  font-family: Inter, -apple-system, system-ui, sans-serif;
+  font-family: Arial, sans-serif;
   color: rgba(200,216,232,0.55);
   letter-spacing: 0.04em;
 }
 
 .quote-price {
   font-size: 11px;
-  font-family: Inter, -apple-system, system-ui, sans-serif;
+  font-family: Arial, sans-serif;
   color: rgba(200,216,232,0.75);
   text-align: right;
   white-space: nowrap;
@@ -421,4 +372,22 @@ hr.diag-divider {
   font-size: 11px;
   color: rgba(200,216,232,0.2);
   font-style: italic;
+}
+
+/* --- Clickable-to-copy quote rows (Quotes of the Day) --- */
+.quote-row.copyable{
+  cursor: pointer;
+  padding: 5px 8px;
+  margin: 0 -8px;
+  border-radius: 6px;
+  transition: background 0.12s ease;
+}
+.quote-row.copyable:hover{
+  background: rgba(255,255,255,0.05);
+}
+.quote-row.copyable.copied{
+  background: rgba(95,217,168,0.12);
+}
+.quote-row.copyable.copied .quote-price{
+  color: #5FD9A8;
 }

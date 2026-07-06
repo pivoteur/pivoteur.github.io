@@ -8,18 +8,35 @@
     <link rel="stylesheet" href="tokens.css?version=7">
     <link rel="stylesheet" href="chrome.css?version=2">
     <style>
-      .field-group{ margin-bottom:14px; }
-      .field-group label{
-        display:block; color:var(--text-dim); font-size:11px; text-transform:uppercase;
-        letter-spacing:0.05em; margin-bottom:5px;
-      }
       .value-display{ color:var(--text-bright); font-family: var(--font-mono); font-size:14px; }
-      .field-group input[type="text"]{ width:100%; box-sizing:border-box; }
       .rotate-btn{
         background: var(--teal-dim); color:var(--teal); border:1px solid var(--teal-border);
-        padding:8px 16px; border-radius:var(--radius-sm); cursor:pointer; font-size:13px; margin-top:8px;
+        padding:6px 12px; border-radius:var(--radius-sm); cursor:pointer; font-size:12px;
       }
       .rotate-btn:hover{ background: rgba(79,217,190,0.18); }
+
+      .control-strip{
+        display:flex; align-items:center; gap:20px; padding:12px 20px;
+        flex-wrap:wrap; margin-bottom:16px;
+      }
+      .strip-group{ display:flex; align-items:center; gap:8px; }
+      .strip-label{
+        font-size:11px; color:var(--text-dim); text-transform:uppercase;
+        letter-spacing:0.05em; white-space:nowrap;
+      }
+      .strip-divider{ width:1px; height:28px; background:var(--border-strong); }
+      #field1{ width:80px; }
+
+      .range-row{ display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+      .range-btn{
+        background:var(--surface-hover); border:1px solid var(--border-strong); color:var(--text-dim);
+        padding:6px 12px; border-radius:var(--radius-sm); cursor:pointer; font-size:12px;
+      }
+      .range-btn:hover{ color:var(--text-bright); }
+      .range-btn.active{ background:var(--teal-dim); border-color:var(--teal-border); color:var(--teal); font-weight:600; }
+
+      .chart-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+      @media (max-width: 900px){ .chart-row{ grid-template-columns:1fr; } }
     </style>
 </head>
 <body>
@@ -36,61 +53,60 @@
       <a href="https://x.com/pivocateur">@pivocateur</a>
     </p>
 
-    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:16px; margin-bottom:24px; align-items:stretch;">
-      <div style="display:flex; flex-direction:column; gap:16px;">
-        <div class="panel" style="margin-bottom:0;">
-          <div class="panel-head">Select Pair</div>
-          <div style="padding:12px 20px;">
-            <div class="control-row">
-              <select id="token1" class="styled-select" onchange="selected(this)"></select>
-              <select id="token2" class="styled-select"></select>
-              <button class="btn-primary" onclick="go()">DIY</button>
-            </div>
-          </div>
-        </div>
+    <div class="panel control-strip">
+      <div class="strip-group">
+        <span class="strip-label">Pair</span>
+        <select id="token1" class="styled-select" onchange="selected(this)"></select>
+        <select id="token2" class="styled-select"></select>
+        <button class="btn-primary" onclick="go()">DIY</button>
+      </div>
 
-        <div class="panel" style="margin-bottom:0; flex:1;">
-          <div class="panel-head">Call</div>
-          <div style="padding:12px 20px;">
-            <p id="recommendation" style="margin:0; color:var(--text-bright); font-size:14px;"></p>
-          </div>
+      <div class="strip-group">
+        <span class="strip-label">Call</span>
+        <span id="recommendation" style="color:var(--text-bright); font-size:13px;"></span>
+      </div>
+
+      <div class="strip-divider"></div>
+
+      <div class="strip-group">
+        <span class="strip-label" style="font-weight:700; color:var(--text-bright);">Pivot Swap</span>
+        <span class="strip-label" id="label1">Label A</span>
+        <input type="text" id="field1" value="Value 1" onChange="recompute()">
+        <span id="amount1" class="sub" style="font-size:12px;">$1000.00</span>
+        <span class="strip-label" id="label2">Label B</span>
+        <span id="field2" class="value-display">Value 2</span>
+        <button id="rotateBtn" class="rotate-btn" onclick="swapValues()">🔄 Flip</button>
+      </div>
+    </div>
+
+    <div class="range-row">
+      <span class="strip-label">Range</span>
+      <button class="range-btn" data-days="30">1M</button>
+      <button class="range-btn" data-days="90">3M</button>
+      <button class="range-btn active" data-days="180">6M</button>
+      <button class="range-btn" data-days="270">9M</button>
+      <button class="range-btn" data-days="365">1Y</button>
+      <button class="range-btn" data-days="730">2Y</button>
+      <button class="range-btn" data-days="0">MAX</button>
+    </div>
+
+    <div class="chart-row">
+      <div class="panel" style="margin-bottom:0;">
+        <div class="panel-head">Pivot Chart</div>
+        <div style="padding:20px;">
+          <canvas id="pivotChart" width="800" height="400"></canvas>
         </div>
       </div>
 
       <div class="panel" style="margin-bottom:0;">
-        <div class="panel-head">Pivot Swap</div>
+        <div class="panel-head">Delta</div>
         <div style="padding:20px;">
-          <div class="field-group">
-            <label id="label1">Label A</label>
-            <input type="text" id="field1" value="Value 1" onChange="recompute()">
-            <div id="amount1" class="sub" style="margin-top:6px; font-size:12px;">$1000.00</div>
-          </div>
-          <div class="field-group">
-            <label id="label2">Label B</label>
-            <div id="field2" class="value-display">Value 2</div>
-          </div>
-          <center>
-            <button id="rotateBtn" class="rotate-btn" onclick="swapValues()">🔄 &nbsp; Flip</button>
-          </center>
+          <canvas id="deltaChart" width="800" height="400"></canvas>
         </div>
       </div>
     </div>
 
-    <div class="panel">
-      <div class="panel-head">Pivot Chart</div>
-      <div style="padding:20px;">
-        <canvas id="pivotChart" width="800" height="400"></canvas>
-      </div>
-    </div>
-
-    <div class="panel">
-      <div class="panel-head">Delta</div>
-      <div style="padding:20px;">
-        <canvas id="deltaChart" width="800" height="400"></canvas>
-      </div>
-    </div>
-
-    <p style="margin-top:8px;">
+    <p style="margin-top:16px;">
       <a href='#'
          onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#pivot-arbitrage";'>
 Learn more <img src='imgs/leave-site-2.png' width='16'/></a>
@@ -142,6 +158,9 @@ const go = () => {
 };
 
 let prices = {};
+let currentTable = null;
+let currentIdx = null;
+let currentDays = 180; // matches the "6M" button marked active by default
 let [t1, t2] = Object.values(params());
 if (!t1 || t1 === 'undefined') { t1 = 'BTC'; }
 if (!t2 || t2 === 'undefined') { t2 = 'ETH'; }
@@ -156,6 +175,8 @@ if (!t2 || t2 === 'undefined') { t2 = 'ETH'; }
            return response.text();
         }).then(data => {
    let [table, idx] = pivotTable(data);
+   currentTable = table;
+   currentIdx = idx;
    let currentPrices = table[table.length - 1];
    let tag1 = document.getElementById('token1');
    let tag2 = document.getElementById('token2');
@@ -166,7 +187,7 @@ if (!t2 || t2 === 'undefined') { t2 = 'ETH'; }
          prices[tok] = currentPrices[idx[tok]];
       }
    }
-   let rev = pivotChartsTbl(t1, t2, table, idx);
+   let rev = pivotChartsTbl(t1, t2, table, idx, currentDays);
    tag1.value = t1;
    refreshOptions(t1);
    tag2.value = t2;
@@ -197,6 +218,26 @@ const round = amount => {
    } else if(amount > 1000) { fix = 0; }
    return amount.toFixed(fix);
 };
+
+// --- Range selector: re-renders both charts using the already-fetched table,
+// no re-fetch needed. Existing Chart.js instances must be destroyed first —
+// Chart.js throws if you try to reuse a canvas that already has a live chart.
+document.querySelectorAll('.range-btn').forEach(btn => {
+   btn.addEventListener('click', () => {
+      if (!currentTable) return; // data hasn't loaded yet
+      document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const days = parseInt(btn.dataset.days, 10);
+      currentDays = days === 0 ? currentTable.length : days; // 0 = MAX = every row available
+
+      const existingPivot = Chart.getChart('pivotChart');
+      const existingDelta = Chart.getChart('deltaChart');
+      if (existingPivot) existingPivot.destroy();
+      if (existingDelta) existingDelta.destroy();
+
+      pivotChartsTbl(t1, t2, currentTable, currentIdx, currentDays);
+   });
+});
 
     </script>
     <script src='libs/chrome.js'></script>
