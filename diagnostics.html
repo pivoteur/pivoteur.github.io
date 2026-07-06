@@ -13,7 +13,7 @@
   <script>
     const covColor = d3.scaleLinear()
       .domain([0, 40, 60, 75, 90, 100])
-      .range(['#ff6b6b', '#c45f10', '#f0c040', '#9be87a', '#00e5a0', '#00e5a0'])
+      .range(['#ff6b6b', '#c45f10', '#f0c040', '#9be87a', '#5FD9A8', '#5FD9A8'])
       .clamp(true);
   </script>
  </head>
@@ -22,19 +22,24 @@
   <div id="app-ticker"></div>
   <div id="app-nav"></div>
 
+  <img class="bg-watermark" src="imgs/pivot-logo-sillo-nior.png" alt="">
+
   <main class="diag-main">
   <div id="header">
    <h2>Protocol Health</h2>
    <div id="stamp">Loading...</div>
   </div>
-  <div id="graph-area"> 
-    <div id="graph-canvas-wrap"><canvas id="pie-canvas" width="480" height="480" style="width:480px;height:480px"></canvas></div>
-    <div id="graph-legend"></div>
-  </div>
-  <div id="report-columns">
-    <div id="report-left"></div>
-    <div id="report-right">
-      <div class="diag-section-heading">Automated Tasks</div>
+  <div class="health-row">
+    <div class="health-box health-box-coverage">
+      <div class="diag-section-heading" style="margin-top:0;">Code Coverage</div>
+      <div id="coverage-bar-wrap"></div>
+      <div id="graph-legend"></div>
+    </div>
+    <div class="health-box health-box-tests">
+      <div id="report-left"></div>
+    </div>
+    <div class="health-box health-box-tasks">
+      <div class="diag-section-heading" style="margin-top:0;">Automated Tasks</div>
       <div id="task-list"></div>
     </div>
   </div>
@@ -69,8 +74,14 @@
     }
 
     function renderTaskRow(name, isPass, pillLabel, countHtml, ranAt, delay) {
-      const cls     = isPass ? 'pass' : (pillLabel === 'UNKNOWN' ? 'unknown' : 'fail');
-      const pillCls = isPass ? 'pass' : (pillLabel === 'UNKNOWN' ? 'unknown' : 'fail');
+      if (isPass) {
+        const timeHtml = ranAt && ranAt !== 'unknown' ? `<span class="task-time">${timeAgo(ranAt)}</span>` : '';
+        return `<div class="task-compact" style="animation-delay:${delay}ms">
+          <div class="task-compact-left"><span class="dot dot-pass"></span><span class="task-name">${name}</span></div>
+          ${countHtml}${timeHtml}
+        </div>`;
+      }
+      const cls     = pillLabel === 'UNKNOWN' ? 'unknown' : 'fail';
       const timeHtml = ranAt && ranAt !== 'unknown'
         ? `<div class="task-time">${timeAgo(ranAt)}<br>${fmtDate(ranAt)}</div>`
         : `<div class="task-time">—</div>`;
@@ -79,7 +90,7 @@
           <span class="task-name">${name}</span>
           <div class="task-right">
             ${countHtml}
-            <span class="task-pill task-pill-${pillCls}">${pillLabel}</span>
+            <span class="task-pill task-pill-${cls}">${pillLabel}</span>
             ${timeHtml}
           </div>
         </div>
@@ -145,6 +156,15 @@
         leftHtml += '<div class="diag-section-heading">Number of Tests</div>';
         leftHtml += '<div id="test-chart-wrap"></div>';
       }
+      // Exact failing test names only — no debug info, no fix suggestions.
+      // Reuses .diag-failures, which already existed in diag_styles.css but was never wired up.
+      const failedCrates = crateEntries.filter(e => e.failures && e.failures.length > 0);
+      if (failedCrates.length > 0) {
+        leftHtml += '<div class="diag-section-heading" style="margin-top:16px;">Failed Tests</div>';
+        failedCrates.forEach(e => {
+          leftHtml += `<div class="diag-failures">[${e.crate}]<br>${e.failures.join('<br>')}</div>`;
+        });
+      }
       document.getElementById('report-left').innerHTML = leftHtml;
        // ----- Right column: automated tasks ------------------------------------------------------
        let taskHtml  = '';
@@ -162,18 +182,21 @@
          const pct       = dappsEntry.totalOf ? (dappsEntry.total / dappsEntry.totalOf) * 100 : 100;
          const isPass    = pct === 100;
          const color     = covColor(pct);
-         const cls       = isPass ? 'pass' : 'fail';
-         const pillCls   = isPass ? 'pass' : 'fail';
-         const pillLabel = isPass ? 'SUCCESS' : 'FAILURE';
-         taskHtml += `<div class="task-row task-row-${cls}" style="animation-delay:${delay}ms">
-           <div class="task-row-top">
-             <span class="task-name">ITR</span>
-             <span class="task-pill task-pill-${pillCls}">${pillLabel}</span>
-             <div class="task-right">
-               <span class="task-count" style="color:${color}">${dappsEntry.total}/${dappsEntry.totalOf}</span>
+         const countHtml = `<span class="task-count" style="color:${color}">${dappsEntry.total}/${dappsEntry.totalOf}</span>`;
+         if (isPass) {
+           taskHtml += `<div class="task-compact" style="animation-delay:${delay}ms">
+             <div class="task-compact-left"><span class="dot dot-pass"></span><span class="task-name">ITR</span></div>
+             ${countHtml}
+           </div>`;
+         } else {
+           taskHtml += `<div class="task-row task-row-fail" style="animation-delay:${delay}ms">
+             <div class="task-row-top">
+               <span class="task-name">ITR</span>
+               <span class="task-pill task-pill-fail">FAILURE</span>
+               <div class="task-right">${countHtml}</div>
              </div>
-           </div>
-         </div>`;
+           </div>`;
+         }
         }
 
        document.getElementById('task-list').innerHTML = taskHtml;
@@ -200,10 +223,10 @@
 
          if (chartData.length === 0) return;
 
-         const margin = { top: 24, right: 52, bottom: 32, left: 48 };
-         const totalW = 530;
+         const margin = { top: 20, right: 16, bottom: 30, left: 40 };
+         const totalW = 380;
          const W      = totalW - margin.left - margin.right;
-         const H      = 180;
+         const H      = 150;
 
          const svg = d3.select('#test-chart-wrap')
            .append('svg')
@@ -213,12 +236,11 @@
              .attr('transform', `translate(${margin.left},${margin.top})`);
 
          const crateNames = chartData.map(d => d.crate);
-         const subgroups  = ['passed', 'coverage', 'failed'];
+         const subgroups  = ['passed', 'failed'];
          const x0 = d3.scaleBand().domain(crateNames).range([0, W]).paddingInner(0.28).paddingOuter(0.18);
          const x1 = d3.scaleBand().domain(subgroups).range([0, x0.bandwidth()]).padding(0.08);
          const maxPassed = d3.max(chartData, d => d.passed) || 1;
          const yLeft     = d3.scaleLinear().domain([0, maxPassed * 1.15]).range([H, 0]);
-         const yRight    = d3.scaleLinear().domain([0, 100]).range([H, 0]);
 
          // axes
          svg.append('g').attr('class', 'chart-axis')
@@ -230,10 +252,6 @@
            .call(d3.axisLeft(yLeft).ticks(4).tickSize(-W))
            .call(g => g.select('.domain').remove())
            .call(g => g.selectAll('.tick line').attr('stroke', 'rgba(255,255,255,0.05)'));
-         svg.append('g').attr('class', 'chart-axis chart-axis-right')
-           .attr('transform', `translate(${W},0)`)
-           .call(d3.axisRight(yRight).ticks(4).tickFormat(d => d + '%').tickSize(0))
-           .call(g => g.select('.domain').remove());
 
          // bars
          const groups = svg.selectAll('.bar-group')
@@ -248,35 +266,15 @@
            .attr('y',      d => yLeft(d.passed))
            .attr('width',  x1.bandwidth())
            .attr('height', d => H - yLeft(d.passed))
-           .attr('fill',   () => '#00e5a0')
+           .attr('fill',   () => '#5FD9A8')
            .attr('rx', 2);
          // value labels on passed bars — always green
          groups.append('text')
            .attr('class', 'bar-label')
            .attr('x', d => x1('passed') + x1.bandwidth() / 2)
            .attr('y', d => yLeft(d.passed) - 5)
-           .attr('fill', () => '#00e5a0')
+           .attr('fill', () => '#5FD9A8')
            .text(d => d.passed);
-
-         // coverage bars — interpolated fill + stroke
-         groups.filter(d => d.coverage !== null)
-           .append('rect')
-             .attr('x',      x1('coverage'))
-             .attr('y',      d => yRight(d.coverage))
-             .attr('width',  x1.bandwidth())
-             .attr('height', d => H - yRight(d.coverage))
-             .attr('fill',   d => covColor(d.coverage) + '55')
-             .attr('stroke', d => covColor(d.coverage))
-             .attr('stroke-width', 1)
-             .attr('rx', 2);
-         // value labels on coverage bars — interpolated
-         groups.filter(d => d.coverage !== null)
-           .append('text')
-             .attr('class', 'bar-label')
-             .attr('x', d => x1('coverage') + x1.bandwidth() / 2)
-             .attr('y', d => yRight(d.coverage) - 5)
-             .attr('fill', d => covColor(d.coverage))
-             .text(d => d.coverage.toFixed(1) + '%');
 
          // bar-chart's legend --------------------------------------------------------------
          const anyFailed = chartData.some(d => d.failed > 0);
@@ -284,16 +282,12 @@
            .attr('class', 'chart-legend-row')
            .html(`
              <div class="chart-legend-item">
-               <div class="chart-legend-swatch" style="background:#00e5a0"></div>
-               TESTS PASSED (left axis)
-             </div>
-             <div class="chart-legend-item">
-               <div class="chart-legend-swatch" style="background:rgba(200,216,232,0.15);border:1px solid rgba(200,216,232,0.3)"></div>
-               COVERAGE % (right axis)
+               <div class="chart-legend-swatch" style="background:#5FD9A8"></div>
+               TESTS PASSED
              </div>
              ${anyFailed ? `<div class="chart-legend-item">
                <div class="chart-legend-swatch" style="background:#ff6b6b"></div>
-               TESTS FAILED (left axis)
+               TESTS FAILED
              </div>` : ''}
            `);
            
@@ -316,7 +310,7 @@
          });
        }
 
-       // ---- Pie chart ----------------------------------------------------------------------
+       // ---- Coverage segmented bar --------------------------------
        const chartCrates = ['book', 'libs', 'quizzes'];
        const lineData = {};
        entries.forEach(e => {
@@ -334,54 +328,29 @@
        const totalLines     = chartCrates.reduce((s, k) => s + (lineData[k]?.t || 0), 0);
        const totalUncovered = totalLines - totalCovered;
 
-       // pie slices colored by each crate's coverage %
-       const slices = [];
-       chartCrates.forEach(k => {
-         const d = lineData[k];
-         if (d && d.c > 0) {
+       const covBarWrap = document.getElementById('coverage-bar-wrap');
+       if (covBarWrap && totalLines > 0) {
+         const overallPct   = (totalCovered / totalLines) * 100;
+         const overallColor = covColor(overallPct);
+
+         const segs = chartCrates.filter(k => lineData[k]).map(k => {
+           const d = lineData[k];
            const cratePct = d.pctOnly ? d.c : (d.c / d.t) * 100;
-           slices.push({ label: k, value: d.c, color: covColor(cratePct) });
-         }
-       });
-       slices.push({ label: 'uncovered', value: totalUncovered, color: '#ff6b6b22', strokeColor: '#ff6b6b' });
-
-       const canvas = document.getElementById('pie-canvas');
-       if (canvas && totalLines > 0) {
-         const ctx = canvas.getContext('2d');
-         const cx = 240, cy = 240, r = 200, inner = 95;
-         let angle = -Math.PI / 2;
-         slices.forEach(s => {
-           const sweep = (s.value / totalLines) * 2 * Math.PI;
-           ctx.beginPath(); ctx.moveTo(cx, cy);
-           ctx.arc(cx, cy, r, angle, angle + sweep); ctx.closePath();
-           ctx.fillStyle = s.color; ctx.fill();
-           if (s.strokeColor) { ctx.strokeStyle = s.strokeColor; ctx.lineWidth = 1.5; ctx.stroke(); }
-           const midAngle = angle + sweep / 2;
-           const lx = cx + (r * 0.68) * Math.cos(midAngle);
-           const ly = cy + (r * 0.68) * Math.sin(midAngle);
-           const pct = ((s.value / totalLines) * 100).toFixed(1);
-           if (sweep > 0.18) {
-             ctx.fillStyle    = s.label === 'uncovered' ? '#ff6b6b' : 'rgba(255,255,255,0.85)';
-             ctx.font         = 'bold 13px JetBrains Mono, monospace';
-             ctx.textAlign    = 'center'; ctx.textBaseline = 'middle';
-             ctx.fillText(pct + '%', lx, ly);
-           }
-           angle += sweep;
+           const share = (d.c / totalLines) * 100;
+           return { crate: k, share, cratePct, color: covColor(cratePct) };
          });
+         const uncoveredShare = (totalUncovered / totalLines) * 100;
 
-         // donut hole
-         ctx.globalCompositeOperation = 'destination-out';
-         ctx.beginPath(); ctx.arc(cx, cy, inner, 0, 2 * Math.PI);
-         ctx.fillStyle = 'rgba(0,0,0,1)'; ctx.fill();
-         ctx.globalCompositeOperation = 'source-over';
-         // center label - color driven by overall coverage
-         const overallPct    = totalLines > 0 ? (totalCovered / totalLines) * 100 : 0;
-         const overallColor  = covColor(overallPct);
-         ctx.fillStyle = overallColor; ctx.font = 'bold 22px JetBrains Mono, monospace';
-         ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-         ctx.fillText(overallPct.toFixed(1) + '%', cx, cy - 10);
-         ctx.fillStyle = 'rgba(200,216,232,0.35)'; ctx.font = '11px JetBrains Mono, monospace';
-         ctx.fillText('covered', cx, cy + 14);
+         let segHtml = segs.map(s =>
+           `<div class="seg" style="width:${s.share.toFixed(2)}%;background:${s.color}" title="${s.crate}: ${s.cratePct.toFixed(1)}%"></div>`
+         ).join('');
+         segHtml += `<div class="seg" style="width:${uncoveredShare.toFixed(2)}%;background:rgba(255,107,107,0.35)" title="uncovered"></div>`;
+
+         covBarWrap.innerHTML = `
+           <div class="num" style="font-size:22px;font-weight:700;color:${overallColor};margin-bottom:8px;">${overallPct.toFixed(1)}%</div>
+           <div class="segbar">${segHtml}</div>
+           <div class="segbar-caption sub">${segs.map(s => s.crate + ' ' + s.cratePct.toFixed(0) + '%').join(' · ')}</div>
+         `;
        }
 
        // ---- Legend ----------------------------------------------------------------------
