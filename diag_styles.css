@@ -65,7 +65,7 @@ body {
   border-radius: 50%;
   flex-shrink: 0;
 }
-.dot-pass { background: #00e5a0; box-shadow: 0 0 6px #00e5a088; }
+.dot-pass { background: #5FD9A8; box-shadow: 0 0 6px #5FD9A888; }
 .dot-fail { background: #ff6b6b; box-shadow: 0 0 6px #ff6b6b88; }
 
 .diag-label {
@@ -178,7 +178,7 @@ hr.diag-divider {
   border-radius: 8px;
   padding: 18px;
 }
-.health-box-coverage { width: 300px; flex-shrink: 0; }
+.health-box-coverage { flex: 1; }
 .health-box-tasks { flex: 1; min-width: 0; }
 
 #graph-legend {
@@ -386,7 +386,7 @@ hr.diag-divider {
   background: rgba(255,255,255,0.05);
 }
 .quote-row.copyable.copied{
-  background: rgba(0,229,160,0.12);
+  background: rgba(95,217,168,0.12);
 }
 .quote-row.copyable.copied .quote-price{
   color: #5FD9A8;

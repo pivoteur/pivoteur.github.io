@@ -182,7 +182,10 @@
        document.getElementById('task-list').innerHTML = taskHtml;
        document.getElementById('stamp').textContent = stamp ? 'Last run: ' + stamp : '';
 
-       // ---- Coverage segmented bar --------------------------------
+       // ---- Coverage segmented bar (replaces canvas pie chart) --------------------------------
+       // Same underlying numbers the old pie chart used (each crate's covered-line share of the
+       // grand total, plus an uncovered remainder) — just rendered as the same .segbar component
+       // the Dashboard's Token Breakdown / TVL bars already use, for real cross-page consistency.
        const chartCrates = ['book', 'libs', 'quizzes'];
        const lineData = {};
        entries.forEach(e => {
@@ -214,9 +217,9 @@
          const uncoveredShare = (totalUncovered / totalLines) * 100;
 
          let segHtml = segs.map(s =>
-           `<div class="seg" style="width:${s.share.toFixed(2)}%;background:${s.color}" title="${s.crate}: ${s.cratePct.toFixed(1)}%"></div>`
+           `<div class="seg" style="width:${s.share.toFixed(2)}%;background:${s.color}" title="${s.crate}: ${s.share.toFixed(1)}%/${overallPct.toFixed(1)}%"></div>`
          ).join('');
-         segHtml += `<div class="seg" style="width:${uncoveredShare.toFixed(2)}%;background:rgba(255,107,107,0.35)" title="uncovered"></div>`;
+         segHtml += `<div class="seg" style="width:${uncoveredShare.toFixed(2)}%;background:rgba(255,107,107,0.35)" title="uncovered: ${uncoveredShare.toFixed(1)}%/${overallPct.toFixed(1)}%"></div>`;
 
          covBarWrap.innerHTML = `
            <div class="num" style="font-size:22px;font-weight:700;color:${overallColor};margin-bottom:8px;">${overallPct.toFixed(1)}%</div>
