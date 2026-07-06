@@ -4,60 +4,40 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol - Cumulative Distributions</title>
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="tokens.css?version=7">
+    <link rel="stylesheet" href="chrome.css?version=2">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: "transparent";
-            margin: 0;
-            padding: 16px;
-        }
-        h2 {
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            margin-bottom: 4px;
-            color: #ffffff;
-        }
-        #summary {
-            text-align: center;
-            font-size: 0.85rem;
-            color: #aeaeae;
-            margin-bottom: 16px;
-        }
-        #chartContainer {
-            position: relative;
-            width: 100%;
-            max-width: 900px;
-            margin: 0 auto;
-        }
-        #distChart {
-            width: 100% !important;
-        }
-        #error {
-            color: red;
-            text-align: center;
-            padding: 20px;
-            display: none;
-        }
-    </style>
 </head>
 <body>
-    <h2>Cumulative Distributions</h2>
-    <div id="summary">Loading…</div>
-    <div id="error">Failed to load distributions data.</div>
-    <div id="chartContainer">
-        <canvas id="distChart"></canvas>
+
+  <div id="app-ticker"></div>
+  <div id="app-nav"></div>
+
+  <main>
+    <div class="page-head">
+      <h1>Distributions</h1>
     </div>
+
+    <div class="panel">
+      <div class="panel-head">Cumulative Distributions</div>
+      <div style="padding:20px;">
+        <div id="summary" class="sub" style="text-align:center; margin-bottom:16px; font-size:13px;">Loading…</div>
+        <div id="error" class="neg" style="text-align:center; padding:20px; display:none;">Failed to load distributions data.</div>
+        <div id="chartContainer" style="position:relative; width:100%; max-width:900px; margin:0 auto;">
+          <canvas id="distChart"></canvas>
+        </div>
+      </div>
+    </div>
+  </main>
+
     <script>
     // ----- Token config: label, TSV column prefix, bar color --------------------
     const TOKENS = [
-        { label: 'BTC $ total',    col: 'BTC $ total',    color: '#DE9E1F' },
-        { label: 'ETH $ total',    col: 'ETH $ total',    color: '#1F5FDE' },
-        { label: 'AVAX $ total',   col: 'AVAX $ total',   color: '#EB1E1E' },
-        { label: 'stable $ total', col: 'stable $ total', color: '#0B9999' },
-        { label: 'UNDEAD $ total', col: 'UNDEAD $ total', color: '#990B0B' },
+        { label: 'BTC $',    col: 'BTC $ total',    color: '#DE9E1F' },
+        { label: 'ETH $',    col: 'ETH $ total',    color: '#8B7FE8' },
+        { label: 'AVAX $',   col: 'AVAX $ total',   color: '#FF6B6B' },
+        { label: 'stable $', col: 'stable $ total', color: '#4FD9BE' },
+        { label: 'UNDEAD $', col: 'UNDEAD $ total', color: '#8B1E1E' },
     ];
     // ----- Parse TSV ------------------------------------------------------------
     function parseTSV(raw) {
@@ -104,7 +84,11 @@
                 plugins: {
                     legend: {
                         position: 'right',
-                        labels: { boxWidth: 14, font: { size: 11 } },
+                        labels: {
+                            boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'circle',
+                            color: 'rgba(184,196,212,0.85)',
+                            font: { family: "Inter, -apple-system, system-ui, sans-serif", size: 11 },
+                        },
                     },
                     tooltip: {
                         mode: 'index',
@@ -119,21 +103,26 @@
                 scales: {
                     x: {
                         stacked: true,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
                         ticks: {
                             maxRotation: 90,
                             minRotation: 45,
+                            color: 'rgba(184,196,212,0.5)',
                             font: { size: 9 },
                         },
                     },
                     y: {
                         stacked: true,
+                        grid: { color: 'rgba(255,255,255,0.05)' },
                         ticks: {
                             callback: v => '$' + v.toLocaleString(),
+                            color: 'rgba(184,196,212,0.5)',
                             font: { size: 10 },
                         },
                         title: {
                             display: true,
                             text: 'Distributed Value ($)',
+                            color: 'rgba(184,196,212,0.6)',
                             font: { size: 11 },
                         },
                     },
@@ -159,5 +148,6 @@
             el.style.display = 'block';
         });
     </script>
+    <script src="libs/chrome.js"></script>
 </body>
 </html>

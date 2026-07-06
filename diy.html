@@ -5,83 +5,115 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol DIY Chart++</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="styles.css"></link>
-    <link rel="stylesheet" href="aqua.css"></link>
+    <link rel="stylesheet" href="tokens.css?version=7">
+    <link rel="stylesheet" href="chrome.css?version=2">
+    <style>
+      .value-display{ color:var(--text-bright); font-family: var(--font-mono); font-size:14px; }
+      .rotate-btn{
+        background: var(--teal-dim); color:var(--teal); border:1px solid var(--teal-border);
+        padding:6px 12px; border-radius:var(--radius-sm); cursor:pointer; font-size:12px;
+      }
+      .rotate-btn:hover{ background: rgba(79,217,190,0.18); }
+
+      .control-strip{
+        display:flex; align-items:center; gap:20px; padding:12px 20px;
+        flex-wrap:wrap; margin-bottom:16px;
+      }
+      .strip-group{ display:flex; align-items:center; gap:8px; }
+      .strip-label{
+        font-size:11px; color:var(--text-dim); text-transform:uppercase;
+        letter-spacing:0.05em; white-space:nowrap;
+      }
+      .strip-divider{ width:1px; height:28px; background:var(--border-strong); }
+      #field1{ width:80px; }
+
+      .range-row{ display:flex; align-items:center; gap:8px; margin-bottom:12px; flex-wrap:wrap; }
+      .range-btn{
+        background:var(--surface-hover); border:1px solid var(--border-strong); color:var(--text-dim);
+        padding:6px 12px; border-radius:var(--radius-sm); cursor:pointer; font-size:12px;
+      }
+      .range-btn:hover{ color:var(--text-bright); }
+      .range-btn.active{ background:var(--teal-dim); border-color:var(--teal-border); color:var(--teal); font-weight:600; }
+
+      .chart-row{ display:grid; grid-template-columns:1fr 1fr; gap:16px; }
+      @media (max-width: 900px){ .chart-row{ grid-template-columns:1fr; } }
+    </style>
 </head>
 <body>
-    <center>
-    <h1>Pivot Playground</h1>
-     <h3>Select two assets to see if they are a good pivot pair!<br/>
-       If so, DM the protocol at 
-       <a href="https://x.com/pivocateur">@pivocateur</a>
-     </h3>  
 
-   <table border='1' width='85%'>
-    <tr>
-     <td colspan='3'>
-<div class="line-container">
-    <select id="token1" class="styled-select" onchange="selected(this)">
-    </select>
-    <select id="token2" class="styled-select"></select>
-    <button class="ok-btn" onclick="go()">DIY</button>
-</div>
-     </td>
-    </tr>
-    <tr>
-     <th width='15%'>Call:</th>
-     <td colspan='2'><p id='recommendation'></p>
-     </td>
-    </tr>
-    <tr>
-     <td colspan='2' width="75%">
-      <canvas id="pivotChart" width="800" height="400"></canvas>
-     </td>
-     <td width="25%">
-      <table border="0">
-       <tr><td>&nbsp;</td></tr>
-       <tr>
-<td>
-<div class="aqua-container">
-  <div class="field-group">
-    <label for="field1">Pivot Swap</label>
-  </div>
-  <div class="field-group">
-    <label for="field1" id="label1">Label A</label>
-    <input type="text" id="field1" value="Value 1" onChange="recompute()">
-    <label for="field1" id="amount1">$1000.00</label>
-  </div>
-  
-  <div class="field-group">
-    <label for="field1" id="label2">Label B</label>
-    <label for="field1" id="field2">Value 2</label>
-  </div>
-  
-  <center>
-   <button id="rotateBtn" onclick="swapValues()">🔄 &nbsp; Flip</button>
-  </center>
-</div>
- 
-       </td></tr>
-       <tr><td>&nbsp;</td></tr>
-      </table>
-     </td>
-    </tr>
-    <tr>
-     <td colspan='3'>
-      <canvas id="deltaChart" width="800" height="400"></canvas>
-     </td>
-    </tr>
-    </tr>
-   </table>
-</center>
+  <div id="app-ticker"></div>
+  <div id="app-nav"></div>
 
-  <p style="vertical-align:bottom">
-   <a href='#'
-      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#pivot-arbitrage";'>
-Learn more <img src='imgs/leave-site.png' width='16'/></a>
+  <main>
+    <div class="page-head">
+      <h1>Pivot Playground</h1>
+    </div>
+    <p class="sub" style="margin:-10px 0 22px; font-size:13px;">
+      Select two assets to see if they're a good pivot pair. If so, DM the protocol at
+      <a href="https://x.com/pivocateur">@pivocateur</a>
+    </p>
 
+    <div class="panel control-strip">
+      <div class="strip-group">
+        <span class="strip-label">Pair</span>
+        <select id="token1" class="styled-select" onchange="selected(this)"></select>
+        <select id="token2" class="styled-select"></select>
+        <button class="btn-primary" onclick="go()">DIY</button>
+      </div>
+
+      <div class="strip-group">
+        <span class="strip-label">Call</span>
+        <span id="recommendation" style="color:var(--text-bright); font-size:13px;"></span>
+      </div>
+
+      <div class="strip-divider"></div>
+
+      <div class="strip-group">
+        <span class="strip-label" style="font-weight:700; color:var(--text-bright);">Pivot Swap</span>
+        <span class="strip-label" id="label1">Label A</span>
+        <input type="text" id="field1" value="Value 1" onChange="recompute()">
+        <span id="amount1" class="sub" style="font-size:12px;">$1000.00</span>
+        <span class="strip-label" id="label2">Label B</span>
+        <span id="field2" class="value-display">Value 2</span>
+        <button id="rotateBtn" class="rotate-btn" onclick="swapValues()">🔄 Flip</button>
+      </div>
+    </div>
+
+    <div class="range-row">
+      <span class="strip-label">Range</span>
+      <button class="range-btn" data-days="30">1M</button>
+      <button class="range-btn" data-days="90">3M</button>
+      <button class="range-btn active" data-days="180">6M</button>
+      <button class="range-btn" data-days="270">9M</button>
+      <button class="range-btn" data-days="365">1Y</button>
+      <button class="range-btn" data-days="730">2Y</button>
+      <button class="range-btn" data-days="0">MAX</button>
+    </div>
+
+    <div class="chart-row">
+      <div class="panel" style="margin-bottom:0;">
+        <div class="panel-head">Pivot Chart</div>
+        <div style="padding:20px;">
+          <canvas id="pivotChart" width="800" height="400"></canvas>
+        </div>
+      </div>
+
+      <div class="panel" style="margin-bottom:0;">
+        <div class="panel-head">Delta</div>
+        <div style="padding:20px;">
+          <canvas id="deltaChart" width="800" height="400"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <p style="margin-top:16px;">
+      <a href='#'
+         onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#pivot-arbitrage";'>
+Learn more <img src='imgs/leave-site-2.png' width='16'/></a>
 about pivot arbitrage.
-</p>
+    </p>
+  </main>
+
     <script src="libs/usd.js"></script>
     <script src="libs/indicators.js"></script>
     <script src="libs/table.js"></script>
@@ -126,16 +158,25 @@ const go = () => {
 };
 
 let prices = {};
+let currentTable = null;
+let currentIdx = null;
+let currentDays = 180; // matches the "6M" button marked active by default
 let [t1, t2] = Object.values(params());
+if (!t1 || t1 === 'undefined') { t1 = 'BTC'; }
+if (!t2 || t2 === 'undefined') { t2 = 'ETH'; }
   const f1 = document.getElementById('field1');
   const f2 = document.getElementById('field2');
   const l1 = document.getElementById('label1');
   const l2 = document.getElementById('label2');
   const a1 = document.getElementById('amount1');
 
-        fetch(pivotsUrl).then(response => response.text())
-                        .then(data => {
+        fetch(pivotsUrl).then(response => {
+           if (!response.ok) throw new Error('HTTP ' + response.status + ' loading ' + pivotsUrl);
+           return response.text();
+        }).then(data => {
    let [table, idx] = pivotTable(data);
+   currentTable = table;
+   currentIdx = idx;
    let currentPrices = table[table.length - 1];
    let tag1 = document.getElementById('token1');
    let tag2 = document.getElementById('token2');
@@ -146,7 +187,7 @@ let [t1, t2] = Object.values(params());
          prices[tok] = currentPrices[idx[tok]];
       }
    }
-   let rev = pivotChartsTbl(t1, t2, table, idx);
+   let rev = pivotChartsTbl(t1, t2, table, idx, currentDays);
    tag1.value = t1;
    refreshOptions(t1);
    tag2.value = t2;
@@ -157,6 +198,10 @@ let [t1, t2] = Object.values(params());
    l2.innerText = b;
    f1.value = round(1000.0 / prices[a]);
    f2.innerText = round(1000.0 / prices[b]);
+}).catch(err => {
+   console.error('diy.html swap panel failed:', err);
+   const rec = document.getElementById('recommendation');
+   if (rec) rec.innerHTML = '<span class="neg">Error: ' + err.message + '</span>';
 });
 
 const recompute = () => {
@@ -174,6 +219,27 @@ const round = amount => {
    return amount.toFixed(fix);
 };
 
+// --- Range selector: re-renders both charts using the already-fetched table,
+// no re-fetch needed. Existing Chart.js instances must be destroyed first —
+// Chart.js throws if you try to reuse a canvas that already has a live chart.
+document.querySelectorAll('.range-btn').forEach(btn => {
+   btn.addEventListener('click', () => {
+      if (!currentTable) return; // data hasn't loaded yet
+      document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const days = parseInt(btn.dataset.days, 10);
+      currentDays = days === 0 ? currentTable.length : days; // 0 = MAX = every row available
+
+      const existingPivot = Chart.getChart('pivotChart');
+      const existingDelta = Chart.getChart('deltaChart');
+      if (existingPivot) existingPivot.destroy();
+      if (existingDelta) existingDelta.destroy();
+
+      pivotChartsTbl(t1, t2, currentTable, currentIdx, currentDays);
+   });
+});
+
     </script>
+    <script src='libs/chrome.js'></script>
 </body>
 </html>

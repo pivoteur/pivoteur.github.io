@@ -69,7 +69,7 @@ const barChartTbl = (labels, assets) => {
             responsive: true,
             plugins: {
                legend: { labels: { color: 'white' } },
-               customCanvasBackgroundColor: { color: 'black' }
+               customCanvasBackgroundColor: { color: '#0F1422' }
             },
             scales: { x: { stacked: true }, y: { stacked: true } }
         },
@@ -99,7 +99,7 @@ const simpleBar = (dates, bars, label, canvas = 'barChart') => {
          responsive: true,
          plugins: {
             legend: { labels: { color: 'white' } },
-            customCanvasBackgroundColor: { color: 'black' } },
+            customCanvasBackgroundColor: { color: '#0F1422' } },
          scales: { y: { beginAtZero: false } }
       },
       plugins: [plugin]

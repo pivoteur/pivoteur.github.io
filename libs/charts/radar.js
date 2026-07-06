@@ -54,11 +54,12 @@ const radarChartTbl = (wallets, idx, kind, offset=0) => {
          elements: { line: { borderWidth: 3 } },
          plugins: {
            legend: { labels: { color: 'white' } },
-           customCanvasBackgroundColor: { color: 'black' }
+           customCanvasBackgroundColor: { color: '#0F1422' }
          },
-         scales: { r: { angleLines: { display: true },
+         scales: { r: { angleLines: { display: true, color: 'rgba(255,255,255,0.08)' },
+                        grid: { color: 'rgba(255,255,255,0.08)' },
                         pointLabels: { color: "white" },
-                        backgroundColor: "DimGray" }},
+                        backgroundColor: "rgba(255,255,255,0.02)" }},
         },
         plugins: [plugin] });
 };

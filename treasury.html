@@ -4,27 +4,34 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol Treasury</title>
-    <link rel="stylesheet" href="styles.css"></link>
+    <link rel="stylesheet" href="tokens.css?version=5">
+    <link rel="stylesheet" href="chrome.css?version=2">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
-  <center>
-   <h1>Pivot Protocol Dashboard</h1>
-  <table border="0" width="75%">
-   <tr>
-    <td><h3>Treasury</h3><br/>
-     <canvas id="radarChart" width="400" height="200"></canvas>
-    </td>
-   </tr>
-  </table>
-  </center>
 
-  <p style="vertical-align:bottom">
-   <a href='#'
-      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#3-the-treasury-norge";'>
-Learn more <img src='imgs/leave-site.png' width='16'/></a>
-   about the Treasury.
-  </p>
+  <div id="app-ticker"></div>
+  <div id="app-nav"></div>
+
+  <main>
+    <div class="page-head">
+      <h1>Treasury</h1>
+    </div>
+
+    <div class="panel">
+      <div class="panel-head">Treasury</div>
+      <div style="padding:20px; max-width:600px; margin:0 auto;">
+        <canvas id="radarChart" width="400" height="200"></canvas>
+      </div>
+    </div>
+
+    <p style="margin-top:8px;">
+      <a href='#'
+         onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#3-the-treasury-norge";'>
+Learn more <img src='imgs/leave-site-2.png' width='16'/></a>
+about the Treasury.
+    </p>
+  </main>
 
     <script src="libs/table.js"></script>
     <script src='libs/canvas-bg.js'></script>
@@ -32,6 +39,7 @@ Learn more <img src='imgs/leave-site.png' width='16'/></a>
     <script src='libs/usd.js'></script>
     <script src="libs/charts/radar.js"></script>
     <script src='libs/tokens.js'></script>
+    <script src='libs/chrome.js'></script>
     <script>
        fetch('data/wallets.tsv')
             .then(result => result.text())

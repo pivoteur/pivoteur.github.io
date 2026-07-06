@@ -9,7 +9,7 @@ const drawLineChart = (dates, lines, canvas='lineChart', reversed=false) => {
          scales: { y: { reverse: reversed } },
          plugins: { 
             legend: { labels: { color: 'white' } },
-            customCanvasBackgroundColor: { color: 'black' } } },
+            customCanvasBackgroundColor: { color: '#0F1422' } } },
       plugins: [plugin]
    });
 };

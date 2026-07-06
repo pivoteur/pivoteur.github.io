@@ -3,6 +3,17 @@ name: distributed
 on:
   workflow_dispatch:
     inputs:
+      investor:
+        description: 'Investor name / Telegram chat'
+        required: true
+        type: choice
+        options:
+          - Pivot_Internal_Bot
+          - alpha
+          - phi
+          - psi
+          - pi
+          - tau
       token_a:
         description: 'Distributed token, left side of pool (e.g. USDC)'
         required: true
@@ -31,8 +42,8 @@ on:
         type: boolean
         default: true
 
-permissions:
-  contents: write
+env:
+  DAPP: distributed
 
 jobs:
   run-distributed:
@@ -47,12 +58,27 @@ jobs:
           repository: pivoteur/protocol
           path: protocol
 
+      - name: Load Shared Environment Variables
+        uses: doughepi/yaml-env-action@v1.0.0
+        with:
+          files: .github/config/protocol-env.yml
+
+      - name: Establish app path
+        run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
+
+      - name: Establish git path
+        run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
+
       - name: Cache distributed binary
         id: binary-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: protocol/dapps/distributed/target/debug/distributed
-          key: distributed-binary-${{ hashFiles('protocol/dapps/distributed/**/*.rs', 'protocol/dapps/distributed/Cargo.toml', 'protocol/dapps/distributed/Cargo.lock') }}
+          path: protocol/dapps/distributed/target/release/distributed
+          key: >-
+            distributed-binary-
+            ${{ hashFiles(format('{0}/quiz11/b_distributed/**/*.rs', env.QUIZZES_SRC)) }}-
+            ${{ hashFiles(format('{0}/Cargo.toml', env.DAPP_DIR)) }}-
+            ${{ hashFiles(format('{0}/Cargo.lock', env.DAPP_DIR)) }}
 
       - name: Set up Rust
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -68,6 +94,7 @@ jobs:
       - name: Show input parameters
         run: |
           echo "=== Running distributed with manual inputs ==="
+          echo "investor:  ${{ inputs.investor }}"
           echo "token_a:   ${{ inputs.token_a }}"
           echo "token_b:   ${{ inputs.token_b }}"
           echo "amount:    ${{ inputs.amount }}"
@@ -78,18 +105,21 @@ jobs:
       - name: Build distributed
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/dapps/distributed/Cargo.toml --bin distributed
+          cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
 
       - name: Add distributed to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/distributed/target/debug" >> $GITHUB_PATH
+        run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
 
       - name: Run distributed
         env:
-          REINVESTED_BOT: ${{ secrets.REINVESTED_BOT }}
+          REINVESTED_BOT:    ${{ secrets.PIVOT_PROTOCOL_ROBBIE }}
+          INVESTOR_CHAT_IDS: ${{ secrets.INVESTOR_CHAT_IDS }}
         run: |
-          distributed "${{ inputs.token_a }}"  \
-                      "${{ inputs.token_b }}"  \
-                      "${{ inputs.amount }}"   \
-                      "${{ inputs.tweet_url }}" \
-                      "${{ inputs.tx_url }}"   \
-                      "${{ inputs.send }}"
+          $DAPP "${{ inputs.investor }}"  \
+                "${{ inputs.token_a }}"   \
+                "${{ inputs.token_b }}"   \
+                "${{ inputs.amount }}"    \
+                "${{ inputs.tweet_url }}" \
+                "${{ inputs.tx_url }}"    \
+                "${{ inputs.send }}"
+                

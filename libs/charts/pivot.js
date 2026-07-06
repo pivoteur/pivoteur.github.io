@@ -1,24 +1,28 @@
 // assume EMA-20s chart is a canvas called 'pivotChart'
 // assume deltas chart is a canvas called 'deltaChart'
 
-const pivotCharts = (primary, secondary, data) => {
+const pivotCharts = (primary, secondary, data, days = 100) => {
    let [table, idx] = pivotTable(data);
-   pivotChartsTbl(primary, secondary, table, idx);
+   pivotChartsTbl(primary, secondary, table, idx, days);
 }
 
-const pivotChartsTbl = (primary, secondary, table, idx) => {
+// `days` controls the DISPLAY window only (how many trailing days are shown).
+// It does NOT change the SMA-100 or EMA-20 calculation periods — those are real
+// technical-indicator windows and stay fixed regardless of what's on screen;
+// only the post-calculation slice changes.
+const pivotChartsTbl = (primary, secondary, table, idx, days = 100) => {
    let prims = row(table, idx, primary);
    let secs = row(table, idx, secondary);
-   let dates = row(table, idx, 'date').slice(-100);
+   let dates = row(table, idx, 'date').slice(-days);
    let ratio0 = ratios(prims, secs);
    let ema20s0 = emas(ratio0, 20);
 
-   let [ds, mins, maxs] = deltas(ratio0, ema20s0, 100);
+   let [ds, mins, maxs] = deltas(ratio0, ema20s0, days);
 
    let title = primary + '/' + secondary;
-   const ratios1 = line(title, ratio0.slice(-100), 'dodgerblue');
-   const sma100s = line('SMA-100', smas(ratio0, 100).slice(-100), 'lime');
-   const ema20s = line('EMA-20', ema20s0.slice(-100), 'tomato');
+   const ratios1 = line(title, ratio0.slice(-days), 'dodgerblue');
+   const sma100s = line('SMA-100', smas(ratio0, 100).slice(-days), 'lime');
+   const ema20s = line('EMA-20', ema20s0.slice(-days), 'tomato');
 
    drawDeltas(dates, ds, mins, maxs);
    drawLineChart(dates, [ratios1, sma100s, ema20s], 'pivotChart');
@@ -33,7 +37,7 @@ const drawDeltas = (dates, ds, mins, maxs) => {
    const line = (label, d, r, g, b) => {
       return {
          label: label + ' δ',
-         data: d.slice(-100).slice(1),
+         data: d.slice(1),
          borderColor: rgba(r, g, b, '1'),
          backgroundColor: rgba(r, g, b, '0.2'),
          fill: false,
@@ -47,7 +51,7 @@ const drawDeltas = (dates, ds, mins, maxs) => {
          labels: dates,
          datasets: [ {
                label: 'δ',
-               data: ds.slice(-100),
+               data: ds,
                backgroundColor: 'rgba(255, 159, 64, 0.6)',
                type: 'bar'
             },
@@ -59,7 +63,7 @@ const drawDeltas = (dates, ds, mins, maxs) => {
          responsive: true,
          plugins: {
             legend: { labels: { color: 'white' } },
-            customCanvasBackgroundColor: { color: 'black' } },
+            customCanvasBackgroundColor: { color: '#0F1422' } },
          scales: { y: { beginAtZero: false } }
       },
       plugins: [plugin]

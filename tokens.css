@@ -1,0 +1,237 @@
+/* ==========================================================================
+   Pivot Protocol — Design Tokens
+   Single source of truth for color, type, spacing, radius across all pages.
+   ========================================================================== */
+
+:root{
+  /* --- Background --- */
+  --bg-grad: linear-gradient(45deg, #0A0E1A 0%, #0D1220 35%, #101830 65%, #14203A 100%);
+  --bg-solid: #0A0E1A;
+
+  /* --- Surfaces --- */
+  --surface: #0F1422;
+  --surface-hover: #141A2B;
+  --border: rgba(255,255,255,0.06);
+  --border-strong: rgba(255,255,255,0.10);
+
+  /* --- Text --- */
+  --text: #B8C4D4;
+  --text-bright: #F2F5F8;
+  --text-dim: rgba(184,196,212,0.42);
+
+  /* --- Accent (pulled from Pivot logo) --- */
+  --teal: #4FD9BE;
+  --teal-dim: rgba(79,217,190,0.10);
+  --teal-border: rgba(79,217,190,0.25);
+  --chrome: #8FA6C4; /* secondary metallic accent, logo gradient endpoint */
+  --gold: #DE9E1F;
+
+  /* --- Semantic --- */
+  --green: #5FD9A8;
+  --red: #FF6B6B;
+
+  /* --- Type --- */
+  --font-body: Inter, -apple-system, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* --- Radius / spacing --- */
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+*{ box-sizing: border-box; }
+
+html, body{
+  margin: 0;
+  padding: 0;
+  background: var(--bg-grad);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+a{ color: var(--teal); text-decoration: none; }
+a:hover{ text-decoration: underline; }
+
+h1, h2, h3{ color: var(--text-bright); margin: 0; letter-spacing: -0.01em; }
+
+.num{ font-family: var(--font-mono); }
+.pos{ color: var(--green); }
+.neg{ color: var(--red); }
+
+canvas{ background: transparent; }
+
+/* --- Shared panel / card primitive --- */
+.panel{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.panel-head{
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* --- Shared table primitive --- */
+table{ width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th{
+  text-align: left; padding: 12px 20px;
+  color: var(--text-dim); font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.06em; font-weight: 500;
+}
+tbody td{ padding: 14px 20px; border-top: 1px solid var(--border); }
+tbody tr.clickable{ cursor: pointer; transition: background 0.12s ease; }
+tbody tr.clickable:hover{ background: var(--surface-hover); }
+tbody tr.clickable:hover .name-cell{ color: var(--teal); }
+.name-cell{ color: var(--text-bright); font-weight: 600; transition: color 0.12s ease; }
+.sub{ color: var(--text-dim); font-weight: 400; }
+.chevron{ color: var(--text-dim); text-align: right; }
+
+main{ padding: 32px; max-width: 1180px; margin: 0 auto; position: relative; z-index: 1; }
+.page-head{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px; }
+
+/* --- Shared background watermark logo (used on login.html, profile.html, etc.) --- */
+.bg-watermark{
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(70vw, 700px);
+  opacity: 0.08;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.stat-row{ display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 32px; }
+.stat{ background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+.stat .label{ font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.stat .value{ font-size: 20px; color: var(--text-bright); }
+
+/* --- Auto-cycling token carousel (used in stat cards) --- */
+.token-cycle{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin-top: 4px;
+}
+.token-cycle-content{ text-align: center; flex: 1; min-width: 0; }
+.token-cycle-name{
+  font-size: 12px; color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 4px;
+}
+.token-cycle-value{ font-size: 20px; color: var(--text-bright); }
+.cycle-arrow{
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-dim); width: 26px; height: 26px; border-radius: 6px;
+  cursor: pointer; font-size: 14px; line-height: 1; flex-shrink: 0;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+.cycle-arrow:hover{ color: var(--teal); border-color: var(--teal-border); }
+.token-cycle-dots{
+  display: flex; justify-content: center; gap: 4px; margin-top: 10px; flex-wrap: wrap;
+}
+.token-cycle-dots .dot{
+  width: 5px; height: 5px; border-radius: 50%; background: var(--border-strong);
+  cursor: pointer; transition: background 0.15s ease;
+}
+.token-cycle-dots .dot.active{ background: var(--teal); }
+
+/* --- Tiny logo hover-trigger inside the token cycle card --- */
+.cycle-logo-trigger{
+  width: 14px; height: 14px; object-fit: contain;
+  margin-left: 5px; vertical-align: middle;
+  opacity: 0.55; cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.cycle-logo-trigger:hover{ opacity: 1; }
+
+/* --- Floating "all assets today" pill, follows the mouse --- */
+.all-assets-pill{
+  position: fixed;
+  z-index: 999;
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+  pointer-events: none;
+  max-width: 260px;
+}
+.all-assets-pill.visible{ display: block; }
+.all-assets-pill .pill-title{
+  font-size: 10px; color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 6px;
+}
+.all-assets-pill .pill-row{
+  display: flex; justify-content: space-between; gap: 14px;
+  font-size: 12px; padding: 2px 0;
+}
+.all-assets-pill .pill-row .pill-name{ color: var(--text-dim); }
+.all-assets-pill .pill-row .pill-value{ color: var(--text-bright); font-family: var(--font-mono); }
+
+/* --- dapps breakdown, shown as a compact segmented bar in the page header --- */
+.header-dapps-bar{ flex: 1; min-width: 160px; margin: 0 32px; }
+.segbar{
+  display: flex; width: 100%; height: 10px; border-radius: 5px;
+  overflow: visible; background: transparent; margin-bottom: 6px; gap: 3px;
+}
+.segbar .seg{ height: 100%; border-radius: 3px; }
+.segbar-caption{
+  font-size: 11px; text-align: center; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+
+/* --- Divider + sub-labels for merged multi-section panels (Tokens + NAV) --- */
+.panel-divider{ height: 1px; background: var(--border-strong); margin: 4px 20px 0; }
+.section-label{
+  font-size: 10px; color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-bottom: 10px;
+}
+
+/* --- Form controls (selects, buttons, text/date inputs) — shared across pages --- */
+select.styled-select, input[type="text"], input[type="date"]{
+  background: var(--surface-hover);
+  border: 1px solid var(--border-strong);
+  color: var(--text-bright);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-family: Inter, -apple-system, system-ui, sans-serif;
+  font-size: 13px;
+}
+select.styled-select:focus, input[type="text"]:focus, input[type="date"]:focus{
+  outline:none; border-color: var(--teal-border);
+}
+.btn-primary{
+  background: var(--teal); color:#06201c; border:none;
+  padding:9px 18px; border-radius:var(--radius-sm);
+  font-weight:600; font-size:13px; cursor:pointer;
+}
+.btn-primary:hover{ background:#3fc9ae; }
+.control-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:13px; color:var(--text-dim); }
+
+/* --- Custom scrollbar, matches theme --- */
+html{
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) var(--bg-solid);
+}
+::-webkit-scrollbar{
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track{
+  background: var(--bg-solid);
+}
+::-webkit-scrollbar-thumb{
+  background: var(--border-strong);
+  border-radius: 6px;
+  border: 2px solid var(--bg-solid);
+}
+::-webkit-scrollbar-thumb:hover{
+  background: var(--teal-border);
+}

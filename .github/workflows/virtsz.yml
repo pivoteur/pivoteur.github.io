@@ -6,6 +6,9 @@ on:
     # test the cron ("Min Hour Day Month DayofWeek" in UTC) at scheduled time 
     - cron: "47 03 * * *" # this is 11:47 AM Eastern Standard Time
 
+env: 
+  DAPP: virtsz
+
 permissions:
   contents: write
 
@@ -22,12 +25,27 @@ jobs:
           repository: pivoteur/protocol
           path: protocol
 
+      - name: Load Shared Environment Variables
+        uses: doughepi/yaml-env-action@v1.0.0
+        with:
+          files: .github/config/protocol-env.yml
+          
+      - name: Establish app path
+        run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
+
+      - name: Establish git path
+        run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
+
       - name: Cache virtsz binary
         id: binary-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: protocol/dapps/virtsz/target/release/virtsz
-          key: virtsz-binary-${{ hashFiles('protocol/dapps/virtsz/**/*.rs', 'protocol/dapps/virtsz/Cargo.toml', 'protocol/dapps/virtsz/Cargo.lock') }}
+          path: $DAPP_DIR/target/release/$DAPP
+          key: >-
+            virtsz-binary-
+            ${{ hashFiles(format('{0}/quiz07/b_virtual/**/*.rs', env.QUIZZES_SRC)) }}-
+            ${{ hashFiles(format('{0}/Cargo.toml', env.DAPP_DIR)) }}-
+            ${{ hashFiles(format('{0}/Cargo.lock', env.DAPP_DIR)) }}
 
       - name: Install Rust toolchain
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -45,12 +63,10 @@ jobs:
       - name: Build virtsz
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/dapps/virtsz/Cargo.toml \
-            --bin virtsz \
-            --release
+          cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
 
       - name: Add virtsz to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/virtsz/target/release" >> $GITHUB_PATH
+        run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
 
       - name: Set date and pivot_url
         run: |

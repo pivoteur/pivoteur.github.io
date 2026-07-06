@@ -9,7 +9,7 @@ on:
         type: choice
         options:
           - Pivot_Internal_Bot
-          - alpaha
+          - alpha
           - phi
           - psi
           - pi
@@ -46,6 +46,9 @@ on:
         type: boolean
         default: false
 
+env:
+  DAPP: reinvested
+
 jobs:
   run-reinvested:
     runs-on: ubuntu-latest
@@ -60,12 +63,27 @@ jobs:
           repository: pivoteur/protocol
           path: protocol
 
+      - name: Load Shared Environment Variables
+        uses: doughepi/yaml-env-action@v1.0.0
+        with:
+          files: .github/config/protocol-env.yml
+          
+      - name: Establish app path
+        run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
+
+      - name: Establish git path
+        run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
+
       - name: Cache reinvested binary
         id: binary-cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
-          path: protocol/dapps/reinvested/target/release/reinvested
-          key: reinvested-binary-${{ hashFiles('protocol/dapps/reinvested/**/*.rs', 'protocol/dapps/reinvested/Cargo.toml', 'protocol/dapps/reinvested/Cargo.lock') }}
+          path: $DAPP_DIR/target/release/$DAPP
+          key: >-
+            reinvested-binary-
+            ${{ hashFiles(format('{0}/quiz11/a_reinvested/**/*.rs', env.QUIZZES_SRC)) }}-
+            ${{ hashFiles(format('{0}/Cargo.toml', env.DAPP_DIR)) }}-
+            ${{ hashFiles(format('{0}/Cargo.lock', env.DAPP_DIR)) }}
 
       - name: Install Rust toolchain
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -95,19 +113,17 @@ jobs:
       - name: Build reinvested
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/dapps/reinvested/Cargo.toml \
-            --bin reinvested \
-            --release
+          cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
 
       - name: Add reinvested to PATH
-        run: echo "$GITHUB_WORKSPACE/protocol/dapps/reinvested/target/release" >> $GITHUB_PATH
+        run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
 
       - name: Run reinvested
         env:
           REINVESTED_BOT:    ${{ secrets.PIVOT_PROTOCOL_ROBBIE }}
           INVESTOR_CHAT_IDS: ${{ secrets.INVESTOR_CHAT_IDS }}
         run: |
-          reinvested "${{ inputs.investor }}"    \
+          $DAPP "${{ inputs.investor }}"    \
                      "${{ inputs.token_a }}"     \
                      "${{ inputs.token_b }}"     \
                      "${{ inputs.pivot_count }}" \
