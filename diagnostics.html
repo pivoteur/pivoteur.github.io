@@ -41,6 +41,20 @@
   </main>
 
   <script>
+     function copyQuoteValue(el) {
+       const val = el.dataset.copy;
+       navigator.clipboard.writeText(val).then(() => {
+         const priceEl = el.querySelector('.quote-price');
+         const original = priceEl.textContent;
+         el.classList.add('copied');
+         priceEl.textContent = 'Copied!';
+         setTimeout(() => {
+           priceEl.textContent = original;
+           el.classList.remove('copied');
+         }, 900);
+       }).catch(err => console.error('Copy failed:', err));
+     }
+
      function timeAgo(isoStr) {
       const diff = Math.floor((Date.now() - new Date(isoStr)) / 1000);
       if (diff < 60)    return diff + 's ago';
@@ -412,7 +426,8 @@
                  : price >= 1000
                  ? price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
                  : price.toFixed(2);
-               qHtml += `<div class="quote-row">
+               const copyVal = fmt.replace(/,/g, '');
+               qHtml += `<div class="quote-row copyable" data-copy="${copyVal}" onclick="copyQuoteValue(this)" title="Click to copy value">
                  <span class="quote-token">${token}</span>
                  <span class="quote-price">$${fmt}</span>
                </div>`;

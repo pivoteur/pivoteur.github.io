@@ -422,3 +422,21 @@ hr.diag-divider {
   color: rgba(200,216,232,0.2);
   font-style: italic;
 }
+
+/* --- Clickable-to-copy quote rows (Quotes of the Day) --- */
+.quote-row.copyable{
+  cursor: pointer;
+  padding: 5px 8px;
+  margin: 0 -8px;
+  border-radius: 6px;
+  transition: background 0.12s ease;
+}
+.quote-row.copyable:hover{
+  background: rgba(255,255,255,0.05);
+}
+.quote-row.copyable.copied{
+  background: rgba(0,229,160,0.12);
+}
+.quote-row.copyable.copied .quote-price{
+  color: #00e5a0;
+}
