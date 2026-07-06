@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol DIY Chart++</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="tokens.css?version=6">
+    <link rel="stylesheet" href="tokens.css?version=7">
     <link rel="stylesheet" href="chrome.css?version=2">
     <style>
       .field-group{ margin-bottom:14px; }
@@ -143,6 +143,8 @@ const go = () => {
 
 let prices = {};
 let [t1, t2] = Object.values(params());
+if (!t1 || t1 === 'undefined') { t1 = 'BTC'; }
+if (!t2 || t2 === 'undefined') { t2 = 'ETH'; }
   const f1 = document.getElementById('field1');
   const f2 = document.getElementById('field2');
   const l1 = document.getElementById('label1');

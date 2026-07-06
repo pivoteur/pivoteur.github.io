@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol - Cumulative Distributions</title>
-    <link rel="stylesheet" href="tokens.css?version=5">
+    <link rel="stylesheet" href="tokens.css?version=7">
     <link rel="stylesheet" href="chrome.css?version=2">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -33,11 +33,11 @@
     <script>
     // ----- Token config: label, TSV column prefix, bar color --------------------
     const TOKENS = [
-        { label: 'BTC $ total',    col: 'BTC $ total',    color: '#DE9E1F' },
-        { label: 'ETH $ total',    col: 'ETH $ total',    color: '#8B7FE8' },
-        { label: 'AVAX $ total',   col: 'AVAX $ total',   color: '#FF6B6B' },
-        { label: 'stable $ total', col: 'stable $ total', color: '#4FD9BE' },
-        { label: 'UNDEAD $ total', col: 'UNDEAD $ total', color: '#8B1E1E' },
+        { label: 'BTC $',    col: 'BTC $ total',    color: '#DE9E1F' },
+        { label: 'ETH $',    col: 'ETH $ total',    color: '#8B7FE8' },
+        { label: 'AVAX $',   col: 'AVAX $ total',   color: '#FF6B6B' },
+        { label: 'stable $', col: 'stable $ total', color: '#4FD9BE' },
+        { label: 'UNDEAD $', col: 'UNDEAD $ total', color: '#8B1E1E' },
     ];
     // ----- Parse TSV ------------------------------------------------------------
     function parseTSV(raw) {

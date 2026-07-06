@@ -121,8 +121,8 @@
     <script src='libs/dom.js'></script>
     <script>
    let [last, anal] = Object.values(params());
-   if (!last) { last = '100'; }
-   if (!anal) { anal = '2024-11-21'; }
+   if (!last || last === 'undefined') { last = '30'; }
+   if (!anal || anal === 'undefined') { anal = '2024-11-21'; }
 
    window.onload = () => {
       let lastElt = document.getElementById('last');
