@@ -8,6 +8,7 @@ const pivotChartsTbl = (primary, secondary, table, idx, days = 100) => {
    let secs = row(table, idx, secondary);
    let allDates = row(table, idx, 'date');
 
+   // --- Pivot Chart: respects the selected range (days), date-based cutoff ---
    let startIndex = 0;
    if (days < table.length) {
       const latest = new Date(allDates[allDates.length - 1]);
@@ -21,19 +22,24 @@ const pivotChartsTbl = (primary, secondary, table, idx, days = 100) => {
    let ratio0 = ratios(prims, secs);
    let ema20s0 = emas(ratio0, 20);
 
-   let [ds0, mins0, maxs0] = deltas(ratio0, ema20s0, days);
-   let ds = ds0.slice(startIndex);
-   let mins = mins0.slice(startIndex);
-   let maxs = maxs0.slice(startIndex);
-
    let title = primary + '/' + secondary;
    const ratios1 = line(title, ratio0.slice(startIndex), 'dodgerblue');
    const sma100s = line('SMA-100', smas(ratio0, 100).slice(startIndex), 'lime');
    const ema20s = line('EMA-20', ema20s0.slice(startIndex), 'tomato');
-
-   drawDeltas(dates, ds, mins, maxs);
    drawLineChart(dates, [ratios1, sma100s, ema20s], 'pivotChart');
-   return drawRec(dates, ds, mins, maxs, primary, secondary);
+
+   // --- Delta chart: reverted to its original fixed-100 behavior, deliberately
+   // NOT tied to the range selector. A rolling 100-day min/max stretched across
+   // a 6-month or MAX view produces a mathematically-correct but hard-to-read
+   // plateau-then-cliff shape (one old spike stays "the max" for 100 straight
+   // days, then drops all at once when it finally ages out). Always showing
+   // just the latest 100 days avoids that entirely — this is a readability
+   // decision, not a bug fix, until a better indicator design is chosen.
+   const deltaDates = allDates.slice(-100);
+   let [ds, mins, maxs] = deltas(ratio0, ema20s0, 100);
+   drawDeltas(deltaDates, ds.slice(-100), mins.slice(-100), maxs.slice(-100));
+
+   return drawRec(deltaDates, ds.slice(-100), mins.slice(-100), maxs.slice(-100), primary, secondary);
 };
 
 const drawDeltas = (dates, ds, mins, maxs) => {
@@ -62,7 +68,9 @@ const drawDeltas = (dates, ds, mins, maxs) => {
          datasets: [ {
                label: 'δ',
                data: ds,
-               backgroundColor: 'rgba(255, 159, 64, 0.6)',
+               backgroundColor: 'rgba(255, 159, 64, 0.9)',
+               borderColor: 'rgba(255, 159, 64, 1)',
+               borderWidth: 1,
                type: 'bar'
             },
             line('Max', maxs, '75', '192', '192'),
