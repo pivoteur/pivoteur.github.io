@@ -49,12 +49,21 @@
     return v.toFixed(2);
   }
 
+  function getTickerTokens(quotes) {
+    if (typeof poolAssets === 'undefined' || !poolAssets.assets) {
+      console.warn('Pivot ticker: pool-assets.js not found, showing all quoted tokens.');
+      return Object.keys(quotes);
+    }
+    const seen = new Set();
+    poolAssets.assets.forEach(pair => pair.forEach(t => seen.add(t)));
+    return Array.from(seen);
+  }
+
   function renderTicker(qdata) {
     const el = document.getElementById('app-ticker');
     if (!el) return;
     const quotes = qdata.quotes || {};
-    // Render every token present in the payload — no whitelist.
-    const tokens = Object.keys(quotes);
+    const tokens = getTickerTokens(quotes).filter(t => t in quotes);
     if (tokens.length === 0) {
       el.innerHTML = '';
       return;
