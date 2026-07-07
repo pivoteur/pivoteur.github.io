@@ -24,7 +24,8 @@
       .diy-layout{ display:grid; grid-template-columns: 1fr 260px; gap:16px; align-items:start; }
       @media (max-width: 900px){ .diy-layout{ grid-template-columns: 1fr; } }
 
-      .diy-charts{ display:flex; flex-direction:column; gap:16px; }
+      .diy-charts{ display:flex; flex-direction:column; gap:16px; width:100%; }
+      .diy-charts .panel{ width:100%; box-sizing:border-box; }
 
       .diy-sidebar{ display:flex; flex-direction:column; gap:12px; }
       .side-box{ padding:12px 14px; }
@@ -70,14 +71,14 @@
               <button class="range-btn" data-days="0">MAX</button>
             </div>
           </div>
-          <div style="padding:12px 14px;">
+          <div style="padding:12px 14px; height:340px;">
             <canvas id="pivotChart" width="900" height="240"></canvas>
           </div>
         </div>
 
         <div class="panel" style="margin-bottom:0;">
           <div class="panel-head">Delta</div>
-          <div style="padding:12px 14px;">
+          <div style="padding:12px 14px; height:340px;">
             <canvas id="deltaChart" width="900" height="240"></canvas>
           </div>
         </div>
@@ -112,6 +113,8 @@
           </div>
           <button id="rotateBtn" class="rotate-btn" onclick="swapValues()">🔄 Flip</button>
         </div>
+
+      </div>
 
     </div>
 
@@ -186,6 +189,31 @@ if (!t2 || t2 === 'undefined') { t2 = 'ETH'; }
    let [table, idx] = pivotTable(data);
    currentTable = table;
    currentIdx = idx;
+
+   // Hide range buttons asking for more history than the data actually has —
+   // showing "2Y" when only 8 months of data exists would be misleading, not
+   // just unhelpful.
+   const earliestDate = new Date(table[0][idx['date']]);
+   const latestDate = new Date(table[table.length - 1][idx['date']]);
+   const spanDays = Math.round((latestDate - earliestDate) / (1000 * 60 * 60 * 24));
+
+   let activeBtnStillValid = true;
+   document.querySelectorAll('.range-btn').forEach(btn => {
+      const btnDays = parseInt(btn.dataset.days, 10);
+      if (btnDays !== 0 && btnDays > spanDays) {
+         btn.style.display = 'none';
+         if (btn.classList.contains('active')) activeBtnStillValid = false;
+      }
+   });
+   // If the default-active range (6M) got hidden because there isn't enough
+   // data, fall back to MAX instead of rendering against a hidden/invalid button.
+   if (!activeBtnStillValid) {
+      document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+      const maxBtn = document.querySelector('.range-btn[data-days="0"]');
+      if (maxBtn) maxBtn.classList.add('active');
+      currentDays = table.length;
+   }
+
    let currentPrices = table[table.length - 1];
    let tag1 = document.getElementById('token1');
    let tag2 = document.getElementById('token2');
