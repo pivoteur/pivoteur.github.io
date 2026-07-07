@@ -68,11 +68,17 @@
       el.innerHTML = '';
       return;
     }
-    const items = tokens.map(t =>
+    const unitHtml = tokens.map(t =>
       `<span class="ticker-item"><span class="sym">${t}</span><span class="price num">$${fmtPrice(quotes[t])}</span></span>`
     ).join('');
-    // duplicated once for a seamless scroll loop
-    el.innerHTML = `<div class="ticker-wrap"><div class="ticker-track">${items}${items}</div></div>`;
+
+    el.innerHTML = `<div class="ticker-wrap"><div class="ticker-track">${unitHtml}</div></div>`;
+    const track = el.querySelector('.ticker-track');
+    const unitWidth = track.scrollWidth;
+    const viewportWidth = el.clientWidth || window.innerWidth;
+    const repeats = unitWidth > 0 ? Math.max(1, Math.ceil(viewportWidth / unitWidth)) : 1;
+    const fullUnitHtml = unitHtml.repeat(repeats);
+    track.innerHTML = fullUnitHtml + fullUnitHtml;
   }
 
   renderNav();
