@@ -98,7 +98,8 @@
       fetch('data/diagnostics.txt').then(r => { if (!r.ok) throw new Error('Could not load diagnostics.txt'); return r.text(); }),
       fetch('data/workflows.json').then(r => { if (!r.ok) throw new Error('Could not load workflows.json'); return r.json(); })
     ])
-    .then(([text, workflows]) => {
+    .then(([text, workflowsData]) => {
+      const workflows = workflowsData.workflows || [];
       const lines = text.split('\n');
       let stamp = '';
       const entries = [];
@@ -144,7 +145,7 @@
         }
       });
       if (cur) entries.push(cur);
-       // ----- Render -----------------------------------------------------------------------------
+       // ----- Render ---------------------------------------------------------------------------
        const dappsEntry = entries.find(e => e.crate === 'dapps');
        // ----- Automated tasks ------------------------------------------------------
        let taskHtml  = '';
@@ -182,49 +183,60 @@
        document.getElementById('task-list').innerHTML = taskHtml;
        document.getElementById('stamp').textContent = stamp ? 'Last run: ' + stamp : '';
 
-       // ---- Coverage segmented bar (replaces canvas pie chart) --------------------------------
-       // Same underlying numbers the old pie chart used (each crate's covered-line share of the
-       // grand total, plus an uncovered remainder) — just rendered as the same .segbar component
-       // the Dashboard's Token Breakdown / TVL bars already use, for real cross-page consistency.
+       // ---- Coverage segmented bar --------------------------------
        const chartCrates = ['book', 'libs', 'quizzes'];
        const lineData = {};
        entries.forEach(e => {
-         if (chartCrates.includes(e.crate) && e.linesC !== undefined) {
+         if (!chartCrates.includes(e.crate)) return;
+         if (e.linesC !== undefined) {
+           // Accumulate rather than overwrite, in case a crate appears in
+           // more than one diagnostics block (e.g. a split test run).
            if (!lineData[e.crate]) lineData[e.crate] = { c: 0, t: 0 };
-           lineData[e.crate].c = e.linesC;
-           lineData[e.crate].t = e.linesT;
-         }
-         if (chartCrates.includes(e.crate) && !lineData[e.crate] && e.coverage !== null) {
-           lineData[e.crate] = { c: e.coverage, t: 100, pctOnly: true };
+           lineData[e.crate].c += e.linesC;
+           lineData[e.crate].t += e.linesT;
+         } else if (!lineData[e.crate] && e.coverage !== null) {
+           // No real line counts for this crate — we only know a %.
+           // Flagged pctOnly and excluded from the weighted overall total
+           // below, since a fake denominator would silently skew the
+           // headline % once mixed with crates that DO have real line counts.
+           lineData[e.crate] = { c: e.coverage, t: null, pctOnly: true };
          }
        });
 
-       const totalCovered   = chartCrates.reduce((s, k) => s + (lineData[k]?.c || 0), 0);
-       const totalLines     = chartCrates.reduce((s, k) => s + (lineData[k]?.t || 0), 0);
+       const realCrates     = chartCrates.filter(k => lineData[k] && !lineData[k].pctOnly);
+       const totalCovered   = realCrates.reduce((s, k) => s + lineData[k].c, 0);
+       const totalLines     = realCrates.reduce((s, k) => s + lineData[k].t, 0);
        const totalUncovered = totalLines - totalCovered;
+       const nominalLines = realCrates.length ? totalLines / realCrates.length : 0;
 
        const covBarWrap = document.getElementById('coverage-bar-wrap');
        if (covBarWrap && totalLines > 0) {
          const overallPct   = (totalCovered / totalLines) * 100;
          const overallColor = covColor(overallPct);
+         // Total the bar is being divided over: real lines plus one
+         // nominal-size slot per pctOnly crate, so shares still sum to 100%.
+         const barTotal = totalLines + (chartCrates.length - realCrates.length) * nominalLines;
 
          const segs = chartCrates.filter(k => lineData[k]).map(k => {
            const d = lineData[k];
            const cratePct = d.pctOnly ? d.c : (d.c / d.t) * 100;
-           const share = (d.c / totalLines) * 100;
+           const share = d.pctOnly
+             ? (barTotal ? (nominalLines / barTotal) * 100 : 0)
+             : (barTotal ? (d.c / barTotal) * 100 : 0);
            return { crate: k, share, cratePct, color: covColor(cratePct) };
          });
-         const uncoveredShare = (totalUncovered / totalLines) * 100;
+         const uncoveredShare = barTotal ? (totalUncovered / barTotal) * 100 : 0;
 
          let segHtml = segs.map(s =>
-           `<div class="seg" style="width:${s.share.toFixed(2)}%;background:${s.color}" title="${s.crate}: ${s.share.toFixed(1)}%/${overallPct.toFixed(1)}%"></div>`
+           `<div class="seg" style="width:${s.share.toFixed(2)}%;background:${s.color};display:flex;align-items:center;justify-content:center;overflow:hidden;" title="${s.crate}: ${s.share.toFixed(1)}%/${overallPct.toFixed(1)}%">
+            <span style="color:#000;font-size:11px;font-weight:700;white-space:nowrap;">${s.crate} ${s.cratePct.toFixed(0)}%</span>
+          </div>`
          ).join('');
          segHtml += `<div class="seg" style="width:${uncoveredShare.toFixed(2)}%;background:rgba(255,107,107,0.35)" title="uncovered: ${uncoveredShare.toFixed(1)}%/${overallPct.toFixed(1)}%"></div>`;
 
          covBarWrap.innerHTML = `
            <div class="num" style="font-size:22px;font-weight:700;color:${overallColor};margin-bottom:8px;">${overallPct.toFixed(1)}%</div>
            <div class="segbar">${segHtml}</div>
-           <div class="segbar-caption sub">${segs.map(s => s.crate + ' ' + s.cratePct.toFixed(0) + '%').join(' · ')}</div>
          `;
        }
 
@@ -284,30 +296,6 @@
               <div class="quotes-unavailable">Quotes unavailable</div>`);
          });
 
-       // ---- GitHub Issues Closed (Today) ------------------------------------------------------
-       fetch('libs/github-issues.json')
-         .then(r => { if (!r.ok) throw new Error('github-issues.json not found'); return r.json(); })
-         .then(gdata => {
-           const repos = gdata.repos || {};
-           const date  = gdata.date  || '';
-           let gHtml = `
-             <div class="legend-divider" style="margin:14px 0 10px"></div>
-             <div class="legend-heading">Issues Closed — Today
-               <span class="quotes-date">${date}</span>
-             </div>`;
-           Object.keys(repos).forEach(repo => {
-             gHtml += `<div class="quote-row">
-               <span class="quote-token">${repo}</span>
-               <span class="quote-price">${repos[repo]}</span>
-             </div>`;
-           });
-           document.getElementById('graph-legend').insertAdjacentHTML('beforeend', gHtml);
-         })
-         .catch(() => {
-           document.getElementById('graph-legend').insertAdjacentHTML('beforeend',
-             `<div class="legend-divider" style="margin:14px 0 10px"></div>
-              <div class="quotes-unavailable">Issue data unavailable</div>`);
-         });
      })
      .catch(err => {
        document.getElementById('stamp').textContent = 'Error loading diagnostics data';
