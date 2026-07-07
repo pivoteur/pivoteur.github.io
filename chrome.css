@@ -8,10 +8,12 @@
   overflow: hidden;
   white-space: nowrap;
   padding: 7px 0;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 32px, black calc(100% - 32px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, black 32px, black calc(100% - 32px), transparent 100%);
 }
 .ticker-track{
   display: inline-block;
-  animation: pivot-scroll 47s linear infinite;
+  animation: pivot-scroll 35s linear infinite;
 }
 .ticker-wrap:hover .ticker-track{ animation-play-state: paused; }
 .ticker-item{

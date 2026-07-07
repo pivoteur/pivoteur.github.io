@@ -49,21 +49,36 @@
     return v.toFixed(2);
   }
 
+  function getTickerTokens(quotes) {
+    if (typeof poolAssets === 'undefined' || !poolAssets.assets) {
+      console.warn('Pivot ticker: pool-assets.js not found, showing all quoted tokens.');
+      return Object.keys(quotes);
+    }
+    const seen = new Set();
+    poolAssets.assets.forEach(pair => pair.forEach(t => seen.add(t)));
+    return Array.from(seen);
+  }
+
   function renderTicker(qdata) {
     const el = document.getElementById('app-ticker');
     if (!el) return;
     const quotes = qdata.quotes || {};
-    // Render every token present in the payload — no whitelist.
-    const tokens = Object.keys(quotes);
+    const tokens = getTickerTokens(quotes).filter(t => t in quotes);
     if (tokens.length === 0) {
       el.innerHTML = '';
       return;
     }
-    const items = tokens.map(t =>
+    const unitHtml = tokens.map(t =>
       `<span class="ticker-item"><span class="sym">${t}</span><span class="price num">$${fmtPrice(quotes[t])}</span></span>`
     ).join('');
-    // duplicated once for a seamless scroll loop
-    el.innerHTML = `<div class="ticker-wrap"><div class="ticker-track">${items}${items}</div></div>`;
+
+    el.innerHTML = `<div class="ticker-wrap"><div class="ticker-track">${unitHtml}</div></div>`;
+    const track = el.querySelector('.ticker-track');
+    const unitWidth = track.scrollWidth;
+    const viewportWidth = el.clientWidth || window.innerWidth;
+    const repeats = unitWidth > 0 ? Math.max(1, Math.ceil(viewportWidth / unitWidth)) : 1;
+    const fullUnitHtml = unitHtml.repeat(repeats);
+    track.innerHTML = fullUnitHtml + fullUnitHtml;
   }
 
   renderNav();
