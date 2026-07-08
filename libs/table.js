@@ -35,9 +35,6 @@ const orderedIndices = idx => {
 
 const row = (table, idx, key) => table.map(r => r[idx[key]]); // actually col()
 
-// Bounds-checked: throws a clear error instead of silently reading past the
-// end of the array when `date` doesn't match any row (was previously an
-// unbounded while-loop that crashed with a cryptic "undefined" error).
 const ix = (table, date) => {
    let x = 0;
    while(x < table.length && table[x][0] != date) { x++; }

@@ -1,32 +1,45 @@
-// assume EMA-20s chart is a canvas called 'pivotChart'
-// assume deltas chart is a canvas called 'deltaChart'
-
 const pivotCharts = (primary, secondary, data, days = 100) => {
    let [table, idx] = pivotTable(data);
    pivotChartsTbl(primary, secondary, table, idx, days);
 }
 
-// `days` controls the DISPLAY window only (how many trailing days are shown).
-// It does NOT change the SMA-100 or EMA-20 calculation periods — those are real
-// technical-indicator windows and stay fixed regardless of what's on screen;
-// only the post-calculation slice changes.
 const pivotChartsTbl = (primary, secondary, table, idx, days = 100) => {
    let prims = row(table, idx, primary);
    let secs = row(table, idx, secondary);
-   let dates = row(table, idx, 'date').slice(-days);
+   let allDates = row(table, idx, 'date');
+
+   // --- Pivot Chart: respects the selected range (days), date-based cutoff ---
+   let startIndex = 0;
+   if (days < table.length) {
+      const latest = new Date(allDates[allDates.length - 1]);
+      const cutoff = new Date(latest);
+      cutoff.setDate(cutoff.getDate() - days);
+      const found = allDates.findIndex(d => new Date(d) >= cutoff);
+      startIndex = found === -1 ? 0 : found;
+   }
+
+   let dates = allDates.slice(startIndex);
    let ratio0 = ratios(prims, secs);
    let ema20s0 = emas(ratio0, 20);
 
-   let [ds, mins, maxs] = deltas(ratio0, ema20s0, days);
-
    let title = primary + '/' + secondary;
-   const ratios1 = line(title, ratio0.slice(-days), 'dodgerblue');
-   const sma100s = line('SMA-100', smas(ratio0, 100).slice(-days), 'lime');
-   const ema20s = line('EMA-20', ema20s0.slice(-days), 'tomato');
-
-   drawDeltas(dates, ds, mins, maxs);
+   const ratios1 = line(title, ratio0.slice(startIndex), 'dodgerblue');
+   const sma100s = line('SMA-100', smas(ratio0, 100).slice(startIndex), 'lime');
+   const ema20s = line('EMA-20', ema20s0.slice(startIndex), 'tomato');
    drawLineChart(dates, [ratios1, sma100s, ema20s], 'pivotChart');
-   return drawRec(dates, ds, mins, maxs, primary, secondary);
+
+   // --- Delta chart: reverted to its original fixed-100 behavior, deliberately
+   // NOT tied to the range selector. A rolling 100-day min/max stretched across
+   // a 6-month or MAX view produces a mathematically-correct but hard-to-read
+   // plateau-then-cliff shape (one old spike stays "the max" for 100 straight
+   // days, then drops all at once when it finally ages out). Always showing
+   // just the latest 100 days avoids that entirely — this is a readability
+   // decision, not a bug fix, until a better indicator design is chosen.
+   const deltaDates = allDates.slice(-100);
+   let [ds, mins, maxs] = deltas(ratio0, ema20s0, 100);
+   drawDeltas(deltaDates, ds.slice(-100), mins.slice(-100), maxs.slice(-100));
+
+   return drawRec(deltaDates, ds.slice(-100), mins.slice(-100), maxs.slice(-100), primary, secondary);
 };
 
 const drawDeltas = (dates, ds, mins, maxs) => {
@@ -41,7 +54,10 @@ const drawDeltas = (dates, ds, mins, maxs) => {
          borderColor: rgba(r, g, b, '1'),
          backgroundColor: rgba(r, g, b, '0.2'),
          fill: false,
-         type: 'line'
+         type: 'line',
+         borderWidth: 2,
+         pointRadius: 2,
+         pointHoverRadius: 4
       };
    };
       
@@ -52,7 +68,9 @@ const drawDeltas = (dates, ds, mins, maxs) => {
          datasets: [ {
                label: 'δ',
                data: ds,
-               backgroundColor: 'rgba(255, 159, 64, 0.6)',
+               backgroundColor: 'rgba(255, 159, 64, 0.9)',
+               borderColor: 'rgba(255, 159, 64, 1)',
+               borderWidth: 1,
                type: 'bar'
             },
             line('Max', maxs, '75', '192', '192'),
@@ -61,10 +79,28 @@ const drawDeltas = (dates, ds, mins, maxs) => {
       },
       options: {
          responsive: true,
+         maintainAspectRatio: false,
          plugins: {
             legend: { labels: { color: 'white' } },
             customCanvasBackgroundColor: { color: '#0F1422' } },
-         scales: { y: { beginAtZero: false } }
+         scales: {
+            y: {
+               beginAtZero: false,
+               grid: { color: 'rgba(255,255,255,0.05)' },
+               ticks: { color: 'rgba(200,216,232,0.5)', font: { size: 10 } }
+            },
+            x: {
+               grid: { color: 'rgba(255,255,255,0.05)' },
+               ticks: {
+                  color: 'rgba(200,216,232,0.5)',
+                  font: { size: 10 },
+                  maxTicksLimit: 12,
+                  autoSkip: true,
+                  maxRotation: 45,
+                  minRotation: 45
+               }
+            }
+         }
       },
       plugins: [plugin]
    });
