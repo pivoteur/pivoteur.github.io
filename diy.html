@@ -59,9 +59,9 @@
           <div class="panel-head" style="display:flex; align-items:center; justify-content:space-between;">
             <span>Pivot Chart</span>
             <div style="display:flex; gap:4px;">
-              <button class="range-btn" data-days="30">1M</button>
+              <button class="range-btn active" data-days="30">1M</button>
               <button class="range-btn" data-days="90">3M</button>
-              <button class="range-btn active" data-days="180">6M</button>
+              <button class="range-btn" data-days="180">6M</button>
               <button class="range-btn" data-days="270">9M</button>
               <button class="range-btn" data-days="365">1Y</button>
               <button class="range-btn" data-days="730">2Y</button>
@@ -169,7 +169,7 @@ const go = () => {
 let prices = {};
 let currentTable = null;
 let currentIdx = null;
-let currentDays = 180; // matches the "6M" button marked active by default
+let currentDays = 30; // matches the "1M" button marked active by default
 let [t1, t2] = Object.values(params());
 if (!t1 || t1 === 'undefined') { t1 = 'BTC'; }
 if (!t2 || t2 === 'undefined') { t2 = 'ETH'; }
