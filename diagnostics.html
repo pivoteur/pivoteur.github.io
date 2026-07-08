@@ -3,7 +3,7 @@
   <title>Protocol Health</title>
   <link rel='stylesheet' href='tokens.css?version=7'>
   <link rel='stylesheet' href='chrome.css?version=2'>
-  <link rel='stylesheet' href='diag_styles.css?version=1'>
+  <link rel='stylesheet' href='diag_styles.css?version=2'>
   <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap'>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
   <style>
@@ -228,17 +228,15 @@
          const uncoveredShare = barTotal ? (totalUncovered / barTotal) * 100 : 0;
 
          let segHtml = segs.map(s =>
-           `<div class="seg" style="width:${s.share.toFixed(2)}%;background:${s.color};display:flex;align-items:center;justify-content:center;overflow:hidden;" title="${s.crate}: ${s.share.toFixed(1)}%/${overallPct.toFixed(1)}%">
-            <span style="color:#000;font-size:11px;font-weight:700;white-space:nowrap;">${s.crate} ${s.cratePct.toFixed(0)}%</span>
+          `<div class="seg seg-labeled" style="width:${s.share.toFixed(2)}%;background:${s.color};" title="${s.crate}: ${s.share.toFixed(1)}%/${overallPct.toFixed(1)}%">
+            <span class="seg-label">${s.crate} ${s.cratePct.toFixed(0)}%</span>
           </div>`
-         ).join('');
-         segHtml += `<div class="seg" style="width:${uncoveredShare.toFixed(2)}%;background:rgba(255,107,107,0.35)" title="uncovered: ${uncoveredShare.toFixed(1)}%/${overallPct.toFixed(1)}%"></div>`;
+        ).join('');
+        segHtml += `<div class="seg seg-uncovered" style="width:${uncoveredShare.toFixed(2)}%" title="uncovered: ${uncoveredShare.toFixed(1)}%/${overallPct.toFixed(1)}%"></div>`;
 
-         covBarWrap.innerHTML = `
-           <div class="num" style="font-size:22px;font-weight:700;color:${overallColor};margin-bottom:8px;">${overallPct.toFixed(1)}%</div>
-           <div class="segbar">${segHtml}</div>
-         `;
-       }
+        covBarWrap.innerHTML = `
+          <div class="num coverage-pct" style="color:${overallColor};">${overallPct.toFixed(1)}%</div>
+          <div class="segbar">${segHtml}</div>`;}
 
        // ---- Legend ----------------------------------------------------------------------
        let legendHtml = '<div class="legend-heading">Line Coverage</div>';

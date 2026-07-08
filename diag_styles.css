@@ -391,3 +391,30 @@ hr.diag-divider {
 .quote-row.copyable.copied .quote-price{
   color: #5FD9A8;
 }
+
+body { padding: 0; }
+main.diag-main { padding: 32px 24px; max-width: none; }
+
+.seg-labeled {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.seg-label {
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.seg-uncovered {
+  background: rgba(255,107,107,0.35);
+}
+
+.coverage-pct {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
