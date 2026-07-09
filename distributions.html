@@ -18,7 +18,14 @@
     </div>
 
     <div class="panel">
-      <div class="panel-head">Cumulative Distributions</div>
+      <div class="panel-head" style="display:flex; align-items:center; justify-content:space-between;">
+        <span>Cumulative Distributions</span>
+        <div style="display:flex; gap:4px;">
+          <button class="range-btn" data-days="30">1M</button>
+          <button class="range-btn" data-days="90">3M</button>
+          <button class="range-btn active" data-days="0">MAX</button>
+        </div>
+      </div>
       <div style="padding:20px;">
         <div id="summary" class="sub" style="text-align:center; margin-bottom:16px; font-size:13px;">Loading…</div>
         <div id="error" class="neg" style="text-align:center; padding:20px; display:none;">Failed to load distributions data.</div>
@@ -57,9 +64,23 @@
         if (isNaN(n)) throw new Error(`Unparseable money value${context ? ' for ' + context : ''}: "${str}"`);
         return n;
     }
+
+    // ----- Filter by real elapsed days back from the latest date in the data.
+    // "1M"/"3M" mean exactly 30/90 days, computed via millisecond diff — not
+    // setMonth(), which can land 28–31 days back depending on the month. No
+    // row-count slicing/assumption — days=0 (MAX) returns every row unfiltered.
+    const MS_PER_DAY = 1000 * 60 * 60 * 24;
+    function filterByDays(rows, days) {
+        if (!days) return rows;
+        const latest = new Date(rows[rows.length - 1]['date']);
+        return rows.filter(r => (latest - new Date(r['date'])) / MS_PER_DAY <= days);
+    }
+
     // ----- Build & render chart -------------------------------------------------
     function renderChart(rows) {
         const labels = rows.map(r => r['date']);
+        const existing = Chart.getChart('distChart');
+        if (existing) existing.destroy();
         const datasets = TOKENS.map(tok => ({
             label: tok.label,
             data: rows.map(r => money(r[tok.col], `${tok.col} on ${r['date']}`)),
@@ -130,14 +151,17 @@
         });
     }
     // ----- Load TSV then render chart -------------------------------------------------
+    let allRows = [];
+    let currentDays = 0; // 0 = MAX, matches the "MAX" button marked active by default
+
     fetch('data/distributions.tsv')
         .then(r => {
             if (!r.ok) throw new Error('HTTP ' + r.status);
             return r.text();
         })
         .then(raw => {
-            const rows = parseTSV(raw);
-            renderChart(rows);
+            allRows = parseTSV(raw);
+            renderChart(filterByDays(allRows, currentDays));
         })
         .catch(err => {
             console.error(err);
@@ -146,6 +170,16 @@
             el.textContent = `Error: ${err.message}`;
             el.style.display = 'block';
         });
+    // ----- Range selector ---------------------------------------------------------------
+    document.querySelectorAll('.range-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            if (!allRows.length) return; // data hasn't loaded yet
+            document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            currentDays = parseInt(btn.dataset.days, 10);
+            renderChart(filterByDays(allRows, currentDays));
+        });
+    });
     </script>
     <script src="libs/pool-assets.js"></script>
     <script src="libs/chrome.js"></script>

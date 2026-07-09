@@ -63,11 +63,6 @@
             <div style="display:flex; gap:4px;">
               <button class="range-btn active" data-days="30">1M</button>
               <button class="range-btn" data-days="90">3M</button>
-              <button class="range-btn" data-days="100">100D</button>
-              <button class="range-btn" data-days="180">6M</button>
-              <button class="range-btn" data-days="270">9M</button>
-              <button class="range-btn" data-days="365">1Y</button>
-              <button class="range-btn" data-days="730">2Y</button>
               <button class="range-btn" data-days="0">MAX</button>
             </div>
           </div>
@@ -77,9 +72,8 @@
         </div>
 
         <div class="panel" style="margin-bottom:0;">
-          <div class="panel-head" style="display:flex; align-items:center; justify-content:space-between;">
+          <div class="panel-head">
             <span>Delta</span>
-            <span class="sub" style="font-size:10px; text-transform:none; letter-spacing:normal;">Last 100 Days</span>
           </div>
           <div style="padding:12px 14px; height:340px;">
             <canvas id="deltaChart" width="900" height="240"></canvas>
@@ -208,13 +202,15 @@ if (!t2 || t2 === 'undefined') { t2 = 'ETH'; }
          if (btn.classList.contains('active')) activeBtnStillValid = false;
       }
    });
-   // If the default-active range (6M) got hidden because there isn't enough
+   // If the default-active range (1M) got hidden because there isn't enough
    // data, fall back to MAX instead of rendering against a hidden/invalid button.
+   // MAX is a fixed 100-day window here, not "every row" — if the table has
+   // fewer than 100 rows total, slicing 100 naturally returns everything anyway.
    if (!activeBtnStillValid) {
       document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
       const maxBtn = document.querySelector('.range-btn[data-days="0"]');
       if (maxBtn) maxBtn.classList.add('active');
-      currentDays = table.length;
+      currentDays = 100;
    }
 
    let currentPrices = table[table.length - 1];
@@ -266,7 +262,7 @@ document.querySelectorAll('.range-btn').forEach(btn => {
       document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const days = parseInt(btn.dataset.days, 10);
-      currentDays = days === 0 ? currentTable.length : days; // 0 = MAX = every row available
+      currentDays = days === 0 ? 100 : days; // 0 = MAX = fixed 100-day window
 
       const existingPivot = Chart.getChart('pivotChart');
       const existingDelta = Chart.getChart('deltaChart');

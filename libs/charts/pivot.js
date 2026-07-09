@@ -3,7 +3,7 @@ const pivotCharts = (primary, secondary, data, days = 100) => {
    pivotChartsTbl(primary, secondary, table, idx, days);
 }
 
-const pivotChartsTbl = (primary, secondary, table, idx, days = 100) => {
+const pivotChartsTbl = (primary, secondary, table, idx, days = 100, deltaDays = 100) => {
    let prims = row(table, idx, primary);
    let secs = row(table, idx, secondary);
    let allDates = row(table, idx, 'date');
@@ -29,20 +29,12 @@ const pivotChartsTbl = (primary, secondary, table, idx, days = 100) => {
    drawLineChart(dates, [ratios1, sma100s, ema20s], 'pivotChart');
 
    // ----- Delta chart --------------------------------------------------
-   let deltaStartIndex = 0;
-   if (100 < table.length) {
-      const latest = new Date(allDates[allDates.length - 1]);
-      const cutoff = new Date(latest);
-      cutoff.setDate(cutoff.getDate() - 100);
-      const found = allDates.findIndex(d => new Date(d) >= cutoff);
-      deltaStartIndex = found === -1 ? 0 : found;
-   }
-   const deltaDates = allDates.slice(deltaStartIndex);
-
+   // Shares startIndex with the Pivot Chart above — one button row now
+   // controls both charts
    let [ds, mins, maxs] = deltas(ratio0, ema20s0, 100);
-   drawDeltas(deltaDates, ds.slice(deltaStartIndex), mins.slice(deltaStartIndex), maxs.slice(deltaStartIndex));
+   drawDeltas(dates, ds.slice(startIndex), mins.slice(startIndex), maxs.slice(startIndex));
 
-   return drawRec(deltaDates, ds.slice(deltaStartIndex), mins.slice(deltaStartIndex), maxs.slice(deltaStartIndex), primary, secondary);
+   return drawRec(dates, ds.slice(startIndex), mins.slice(startIndex), maxs.slice(startIndex), primary, secondary);
 };
 
 const drawDeltas = (dates, ds, mins, maxs) => {
@@ -90,15 +82,19 @@ const drawDeltas = (dates, ds, mins, maxs) => {
             y: {
                beginAtZero: false,
                grid: { color: 'rgba(255,255,255,0.05)' },
-               ticks: { color: 'rgba(200,216,232,0.5)', font: { size: 10 } }
+               ticks: { color: 'rgba(200,216,232,0.5)', font: { size: 10 } },
+               afterFit: scale => { scale.width = 50; } // fixed gutter width so this chart's
+                                                        // gridlines/points align with pivotChart's
             },
             x: {
                grid: { color: 'rgba(255,255,255,0.05)' },
+               afterBuildTicks: axis => {
+                  const step = Math.ceil(axis.ticks.length / 12);
+                  axis.ticks = axis.ticks.filter((t, i) => i % step === 0);
+               },
                ticks: {
                   color: 'rgba(200,216,232,0.5)',
                   font: { size: 10 },
-                  maxTicksLimit: 12,
-                  autoSkip: true,
                   maxRotation: 45,
                   minRotation: 45
                }
