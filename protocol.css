@@ -1,0 +1,769 @@
+/* ==========================================================================
+   Pivot Protocol — protocol.css
+   Single combined stylesheet for all pages. Sectioned below:
+   tokens -> chrome -> diagnostics -> diy
+   ========================================================================== */
+
+/* ----- tokens ------------------------------------------------------------- */
+
+:root{
+  /* --- Background --- */
+  --bg-grad: linear-gradient(45deg, #0A0E1A 0%, #0D1220 35%, #101830 65%, #14203A 100%);
+  --bg-solid: #0A0E1A;
+
+  /* --- Surfaces --- */
+  --surface: #0F1422;
+  --surface-hover: #141A2B;
+  --border: rgba(255,255,255,0.06);
+  --border-strong: rgba(255,255,255,0.10);
+
+  /* --- Text ---
+     Seeded from diag_styles.css per site-wide-consistency decision:
+     --text updated to diagnostics' body-text color (#C8D8E8).
+     --text-bright kept at tokens.css's original value (#F2F5F8) per decision.
+     --text-dim's base was derived from the OLD --text (#B8C4D4); updated here
+     to derive from the NEW --text base (200,216,232) so it stays internally
+     consistent. Flagging this since it wasn't explicitly asked — easy to revert
+     to rgba(184,196,212,0.42) if you want the old dim value kept. */
+  --text: #C8D8E8;
+  --text-bright: #F2F5F8;
+  --text-dim: rgba(200,216,232,0.42);
+
+  /* --- Accent (pulled from Pivot logo) --- */
+  --teal: #4FD9BE;
+  --teal-dim: rgba(79,217,190,0.10);
+  --teal-border: rgba(79,217,190,0.25);
+  --chrome: #8FA6C4; /* secondary metallic accent, logo gradient endpoint */
+  --gold: #DE9E1F;
+
+  /* --- Semantic --- */
+  --green: #5FD9A8;
+  --red: #FF6B6B;
+
+  /* --- Type ---
+     Unified to Inter everywhere; diagnostics previously used Arial (see
+     conversation history — confirmed Inter is the intended sitewide font). */
+  --font-body: Inter, -apple-system, system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+
+  /* --- Radius / spacing --- */
+  --radius: 10px;
+  --radius-sm: 6px;
+}
+
+/* Single sitewide reset — consolidated from tokens.css (box-sizing only) and
+   diag_styles.css (box-sizing + margin + padding). Now one consistent rule. */
+*{ box-sizing: border-box; margin: 0; padding: 0; }
+
+html, body{
+  background: var(--bg-grad);
+  background-attachment: fixed;
+  color: var(--text);
+  font-family: var(--font-body);
+  min-height: 100vh;
+}
+
+a{ color: var(--teal); text-decoration: none; }
+a:hover{ text-decoration: underline; }
+
+h1, h2, h3{ color: var(--text-bright); letter-spacing: -0.01em; }
+
+.num{ font-family: var(--font-mono); }
+.pos{ color: var(--green); }
+.neg{ color: var(--red); }
+
+canvas{ background: transparent; }
+
+/* ----- Shared panel / card primitive ----- */
+.panel{
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  overflow: hidden;
+  margin-bottom: 24px;
+}
+.panel-head{
+  padding: 16px 20px;
+  border-bottom: 1px solid var(--border);
+  font-size: 13px;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+}
+
+/* ----- Shared table primitive ----- */
+table{ width: 100%; border-collapse: collapse; font-size: 13px; }
+thead th{
+  text-align: left; padding: 12px 20px;
+  color: var(--text-dim); font-size: 11px; text-transform: uppercase;
+  letter-spacing: 0.06em; font-weight: 500;
+}
+tbody td{ padding: 14px 20px; border-top: 1px solid var(--border); }
+tbody tr.clickable{ cursor: pointer; transition: background 0.12s ease; }
+tbody tr.clickable:hover{ background: var(--surface-hover); }
+tbody tr.clickable:hover .name-cell{ color: var(--teal); }
+.name-cell{ color: var(--text-bright); font-weight: 600; transition: color 0.12s ease; }
+.sub{ color: var(--text-dim); font-weight: 400; }
+.chevron{ color: var(--text-dim); text-align: right; }
+
+main{ padding: 32px; max-width: 1180px; margin: 0 auto; position: relative; z-index: 1; }
+.page-head{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px; }
+
+/* ----- Shared background watermark logo ----- */
+.bg-watermark{
+  position: fixed;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  width: min(70vw, 700px);
+  opacity: 0.08;
+  z-index: 0;
+  pointer-events: none;
+  user-select: none;
+}
+
+.stat-row{ display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 32px; }
+.stat{ background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
+.stat .label{ font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
+.stat .value{ font-size: 20px; color: var(--text-bright); }
+
+/* ----- Auto-cycling token carousel (used in stat cards) ----- */
+.token-cycle{
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px; margin-top: 4px;
+}
+.token-cycle-content{ text-align: center; flex: 1; min-width: 0; }
+.token-cycle-name{
+  font-size: 12px; color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 4px;
+}
+.token-cycle-value{ font-size: 20px; color: var(--text-bright); }
+.cycle-arrow{
+  background: transparent; border: 1px solid var(--border);
+  color: var(--text-dim); width: 26px; height: 26px; border-radius: 6px;
+  cursor: pointer; font-size: 14px; line-height: 1; flex-shrink: 0;
+  transition: color 0.12s ease, border-color 0.12s ease;
+}
+.cycle-arrow:hover{ color: var(--teal); border-color: var(--teal-border); }
+.token-cycle-dots{
+  display: flex; justify-content: center; gap: 4px; margin-top: 10px; flex-wrap: wrap;
+}
+.token-cycle-dots .dot{
+  width: 5px; height: 5px; border-radius: 50%; background: var(--border-strong);
+  cursor: pointer; transition: background 0.15s ease;
+}
+.token-cycle-dots .dot.active{ background: var(--teal); }
+
+/* --- Tiny logo hover-trigger inside the token cycle card --- */
+.cycle-logo-trigger{
+  width: 14px; height: 14px; object-fit: contain;
+  margin-left: 5px; vertical-align: middle;
+  opacity: 0.55; cursor: pointer;
+  transition: opacity 0.15s ease;
+}
+.cycle-logo-trigger:hover{ opacity: 1; }
+
+/* --- Floating "all assets today" pill, follows the mouse --- */
+.all-assets-pill{
+  position: fixed;
+  z-index: 999;
+  display: none;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius);
+  padding: 10px 14px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+  pointer-events: none;
+  max-width: 260px;
+}
+.all-assets-pill.visible{ display: block; }
+.all-assets-pill .pill-title{
+  font-size: 10px; color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 0.06em; margin-bottom: 6px;
+}
+.all-assets-pill .pill-row{
+  display: flex; justify-content: space-between; gap: 14px;
+  font-size: 12px; padding: 2px 0;
+}
+.all-assets-pill .pill-row .pill-name{ color: var(--text-dim); }
+.all-assets-pill .pill-row .pill-value{ color: var(--text-bright); font-family: var(--font-mono); }
+
+/* --- dapps breakdown, shown as a compact segmented bar in the page header --- */
+.header-dapps-bar{ flex: 1; min-width: 160px; margin: 0 32px; }
+.segbar{
+  display: flex; width: 100%; height: 10px; border-radius: 5px;
+  overflow: visible; background: transparent; margin-bottom: 6px; gap: 3px;
+}
+.segbar .seg{ height: 100%; border-radius: 3px; }
+.segbar-caption{
+  font-size: 11px; text-align: center; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+
+/* --- Divider + sub-labels for merged multi-section panels (Tokens + NAV) --- */
+.panel-divider{ height: 1px; background: var(--border-strong); margin: 4px 20px 0; }
+.section-label{
+  font-size: 10px; color: var(--text-dim); text-transform: uppercase;
+  letter-spacing: 0.08em; margin-bottom: 10px;
+}
+
+/* --- Form controls (selects, buttons, text/date inputs) — shared across pages --- */
+select.styled-select, input[type="text"], input[type="date"]{
+  background: var(--surface-hover);
+  border: 1px solid var(--border-strong);
+  color: var(--text-bright);
+  padding: 8px 12px;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-body);
+  font-size: 13px;
+}
+select.styled-select:focus, input[type="text"]:focus, input[type="date"]:focus{
+  outline:none; border-color: var(--teal-border);
+}
+.btn-primary{
+  background: var(--teal); color:#06201c; border:none;
+  padding:9px 18px; border-radius:var(--radius-sm);
+  font-weight:600; font-size:13px; cursor:pointer;
+}
+.btn-primary:hover{ background:#3fc9ae; }
+.control-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:13px; color:var(--text-dim); }
+
+/* --- Custom scrollbar, matches theme --- */
+html{
+  scrollbar-width: thin;
+  scrollbar-color: var(--border-strong) var(--bg-solid);
+}
+::-webkit-scrollbar{
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track{
+  background: var(--bg-solid);
+}
+::-webkit-scrollbar-thumb{
+  background: var(--border-strong);
+  border-radius: 6px;
+  border: 2px solid var(--bg-solid);
+}
+::-webkit-scrollbar-thumb:hover{
+  background: var(--teal-border);
+}
+
+/* ----- chrome --------------------------------------------------------------- */
+
+.ticker-wrap{
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  overflow: hidden;
+  white-space: nowrap;
+  padding: 7px 0;
+  -webkit-mask-image: linear-gradient(to right, transparent 0, black 32px, black calc(100% - 32px), transparent 100%);
+  mask-image: linear-gradient(to right, transparent 0, black 32px, black calc(100% - 32px), transparent 100%);
+}
+.ticker-track{
+  display: inline-block;
+  animation: pivot-scroll 35s linear infinite;
+}
+.ticker-wrap:hover .ticker-track{ animation-play-state: paused; }
+.ticker-item{
+  display: inline-flex; align-items: center; gap: 8px;
+  padding: 0 22px;
+  font-size: 12px;
+}
+.ticker-item .sym{ color: var(--text-dim); letter-spacing: 0.04em; }
+.ticker-item .price{ color: var(--text-bright); }
+@keyframes pivot-scroll{
+  from{ transform: translateX(0); }
+  to{ transform: translateX(-50%); }
+}
+@media (prefers-reduced-motion: reduce){
+  .ticker-track{ animation: none; }
+}
+
+.topnav{
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 14px 32px;
+  border-bottom: 1px solid var(--border);
+}
+.brand{ display: flex; align-items: center; gap: 10px; }
+.brand-mark{
+  width: 28px; height: 28px;
+  object-fit: contain;
+}
+.brand-name{ color: var(--text-bright); font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
+
+nav.links{ display: flex; gap: 26px; flex-wrap: wrap; }
+nav.links a{
+  color: var(--text-dim); text-decoration: none; font-size: 13px; font-weight: 500;
+  padding: 6px 0; border-bottom: 2px solid transparent;
+}
+nav.links a.active{ color: var(--text-bright); border-bottom-color: var(--teal); }
+nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
+
+.nav-right{ display: flex; align-items: center; gap: 14px; }
+.nav-cta{
+  background: var(--teal-dim); color: var(--teal); border: 1px solid var(--teal-border);
+  padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer;
+}
+.nav-cta:hover{ background: rgba(79,217,190,0.18); }
+
+@media (max-width: 860px){
+  nav.links{ display: none; } /* mobile nav pattern to be addressed in a follow-up pass */
+}
+
+/* ----- diagnostics ----------------------------------------------------------- */
+/* Requires <body class="diag-page"> on diagnostics.html so these rules don't
+   bleed into index.html / diy.html (see conversation — bare `body{}` selector
+   was flagged as a rendering-break risk once merged into one shared file). */
+
+#header { margin-bottom: 28px; }
+
+#header h2 {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--text-bright);
+  letter-spacing: -0.01em;
+  margin-bottom: 5px;
+}
+
+#stamp {
+  font-size: 10px;
+  color: rgba(200,216,232,0.35); /* --text at custom opacity */
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.diag-section-heading {
+  font-size: 10px;
+  color: rgba(200,216,232,0.3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin: 20px 0 8px 2px;
+}
+
+.diag-row {
+  padding: 13px 16px;
+  background: rgba(255,255,255,0.03);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  margin-bottom: 7px;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeUp 0.4s ease forwards;
+}
+
+.diag-row-top {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.diag-row-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: 1;
+  min-width: 0;
+}
+
+.dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.dot-pass { background: var(--green); box-shadow: 0 0 6px rgba(95,217,168,0.53); }
+.dot-fail { background: var(--red); box-shadow: 0 0 6px rgba(255,107,107,0.53); }
+
+.diag-label {
+  font-size: 13px;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.diag-sublabel {
+  font-size: 11px;
+  color: rgba(200,216,232,0.38);
+  margin-left: 4px;
+  letter-spacing: 0.04em;
+}
+
+.diag-counts {
+  font-size: 11px;
+  color: rgba(200,216,232,0.32);
+  white-space: nowrap;
+  margin-left: 6px;
+}
+
+.diag-counts-fail { color: #ff9999; } /* intentionally distinct lighter red, not --red */
+
+.diag-row-right {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.diag-status {
+  font-size: 10px;
+  color: rgba(200,216,232,0.4);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  text-align: right;
+  line-height: 1.4;
+}
+
+.diag-pct {
+  font-size: 13px;
+  font-weight: 600;
+  min-width: 52px;
+  text-align: right;
+}
+
+.diag-total {
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.diag-bar-wrap {
+  width: 100%;
+  height: 3px;
+  background: rgba(255,255,255,0.07);
+  border-radius: 2px;
+  margin-top: 9px;
+  overflow: hidden;
+}
+
+.diag-bar-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
+}
+
+.diag-failures {
+  margin-top: 9px;
+  padding: 7px 10px;
+  background: rgba(255,107,107,0.07);
+  border-left: 2px solid rgba(255,107,107,0.5);
+  border-radius: 0 4px 4px 0;
+  font-size: 11px;
+  color: #ff9999; /* intentionally distinct lighter red, not --red */
+  line-height: 1.7;
+}
+
+.diag-fail-banner {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 13px 16px;
+  background: rgba(255,107,107,0.08);
+  border: 1px solid rgba(255,107,107,0.25);
+  border-radius: 8px;
+  margin-bottom: 7px;
+  font-size: 13px;
+  color: var(--red);
+  font-weight: 600;
+  opacity: 0;
+  animation: fadeUp 0.4s ease forwards;
+}
+
+hr.diag-divider {
+  border: none;
+  border-top: 1px solid rgba(255,255,255,0.05);
+  margin: 18px 0;
+}
+
+.health-row {
+  display: flex;
+  gap: 16px;
+  align-items: flex-start;
+  margin-top: 24px;
+}
+.health-box {
+  background: rgba(255,255,255,0.02);
+  border: 1px solid rgba(255,255,255,0.06);
+  border-radius: 8px;
+  padding: 18px;
+}
+.health-box-coverage { flex: 1; }
+.health-box-tasks { flex: 1; min-width: 0; }
+
+#graph-legend {
+  display: flex;
+  flex-direction: column;
+  gap: 9px;
+  margin-top: 14px;
+}
+
+/* ----- Compact pass-row (only fails get the heavier .task-row card) ----- */
+.task-compact {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 6px 8px;
+  border-radius: 6px;
+  font-size: 12px;
+  gap: 10px;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeUp 0.4s ease forwards;
+}
+.task-compact:hover { background: rgba(255,255,255,0.04); }
+.task-compact-left { display: flex; align-items: center; gap: 8px; }
+
+.legend-heading {
+  font-size: 10px;
+  color: rgba(200,216,232,0.3);
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  margin-bottom: 2px;
+}
+
+.legend-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.legend-left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.legend-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+
+.legend-label {
+  font-size: 12px;
+  color: var(--text);
+}
+
+.legend-value {
+  font-size: 12px;
+  color: rgba(200,216,232,0.5);
+  white-space: nowrap;
+}
+
+.legend-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.05);
+  margin: 1px 0;
+}
+
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.task-row {
+  padding: 11px 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255,255,255,0.06);
+  border-left-width: 3px;
+  margin-bottom: 7px;
+  opacity: 0;
+  transform: translateY(8px);
+  animation: fadeUp 0.4s ease forwards;
+}
+
+.task-row-pass {
+  background: rgba(95,217,168,0.04);
+  border-left-color: var(--green);
+}
+
+.task-row-fail {
+  background: rgba(255,107,107,0.06);
+  border-left-color: var(--red);
+}
+
+.task-row-unknown {
+  background: rgba(255,255,255,0.02);
+  border-left-color: rgba(255,255,255,0.15);
+}
+
+.task-row-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.task-name {
+  font-size: 13px;
+  color: var(--text);
+  letter-spacing: 0.02em;
+}
+
+.task-right {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-shrink: 0;
+}
+
+.task-pill {
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  padding: 2px 7px;
+  border-radius: 4px;
+  text-transform: uppercase;
+}
+
+.task-pill-pass {
+  background: rgba(95,217,168,0.15);
+  color: var(--green);
+}
+
+.task-pill-fail {
+  background: rgba(255,107,107,0.15);
+  color: var(--red);
+}
+
+.task-pill-unknown {
+  background: rgba(255,255,255,0.07);
+  color: rgba(200,216,232,0.4);
+}
+
+.task-time {
+  font-size: 10px;
+  color: rgba(200,216,232,0.75);
+  letter-spacing: 0.04em;
+  text-align: right;
+  line-height: 1.5;
+}
+
+.task-count {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.quotes-date {
+  font-size: 9px;
+  color: rgba(200,216,232,0.75);
+  letter-spacing: 0.06em;
+  margin-left: 7px;
+  font-weight: 400;
+  text-transform: uppercase;
+}
+
+.quote-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: 3px 0;
+}
+
+.quote-token {
+  font-size: 11px;
+  color: rgba(200,216,232,0.55);
+  letter-spacing: 0.04em;
+}
+
+.quote-price {
+  font-size: 11px;
+  color: rgba(200,216,232,0.75);
+  text-align: right;
+  white-space: nowrap;
+}
+
+.quotes-unavailable {
+  font-size: 11px;
+  color: rgba(200,216,232,0.2);
+  font-style: italic;
+}
+
+/* --- Clickable-to-copy quote rows (Quotes of the Day) --- */
+.quote-row.copyable{
+  cursor: pointer;
+  padding: 5px 8px;
+  margin: 0 -8px;
+  border-radius: 6px;
+  transition: background 0.12s ease;
+}
+.quote-row.copyable:hover{
+  background: rgba(255,255,255,0.05);
+}
+.quote-row.copyable.copied{
+  background: rgba(95,217,168,0.12);
+}
+.quote-row.copyable.copied .quote-price{
+  color: var(--green);
+}
+
+main.diag-main { padding: 32px 24px; max-width: none; }
+
+.seg-labeled {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  overflow: hidden;
+}
+
+.seg-label {
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.seg-uncovered {
+  background: rgba(255,107,107,0.35);
+}
+
+.coverage-pct {
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 8px;
+}
+
+/* ----- diy -------------------------------------------------------------------- */
+
+.value-display{ color:var(--text-bright); font-family: var(--font-mono); font-size:13px; }
+
+/* Page-specific: use full page width instead of the site-wide centered
+   1180px main column — charts benefit from the extra room, and this page
+   doesn't need to match the nav's full-width feel with a big empty gutter.
+   Scoped to main.diy-main (add this class to diy.html's <main> tag) — a
+   bare `main{}` selector here would win the cascade sitewide and kill
+   index.html's centered layout, the same bleed risk as the body rule above. */
+main.diy-main{ max-width: none; margin: 0; }
+.rotate-btn{
+  background: var(--teal-dim); color:var(--teal); border:1px solid var(--teal-border);
+  padding:6px 10px; border-radius:var(--radius-sm); cursor:pointer; font-size:11px; width:100%;
+}
+.rotate-btn:hover{ background: rgba(79,217,190,0.18); }
+
+/* --- Layout: charts left (main focus), controls right (compact sidebar) --- */
+.diy-layout{ display:grid; grid-template-columns: 1fr 260px; gap:16px; align-items:start; }
+@media (max-width: 900px){ .diy-layout{ grid-template-columns: 1fr; } }
+
+.diy-charts{ display:flex; flex-direction:column; gap:16px; width:100%; }
+.diy-charts .panel{ width:100%; box-sizing:border-box; }
+
+.diy-sidebar{ display:flex; flex-direction:column; gap:12px; }
+.side-box{ padding:12px 14px; }
+.side-box .panel-head{ padding:0 0 8px; border:none; font-size:9px; }
+
+.side-field{ margin-bottom:10px; }
+.side-field:last-child{ margin-bottom:0; }
+.side-field label{
+  display:block; font-size:10px; color:var(--text-dim); text-transform:uppercase;
+  letter-spacing:0.05em; margin-bottom:4px;
+}
+#field1{ width:100%; box-sizing:border-box; }
+.call-text{ font-size:12px; color:var(--text-bright); line-height:1.5; }
+
+.range-btn{
+  background:var(--surface-hover); border:1px solid var(--border-strong); color:var(--text-dim);
+  padding:4px 9px; border-radius:var(--radius-sm); cursor:pointer; font-size:11px; text-align:left;
+}
+.range-btn:hover{ color:var(--text-bright); }
+.range-btn.active{ background:var(--teal-dim); border-color:var(--teal-border); color:var(--teal); font-weight:600; }
