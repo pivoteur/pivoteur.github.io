@@ -3,12 +3,12 @@ const pivotCharts = (primary, secondary, data, days = 100) => {
    pivotChartsTbl(primary, secondary, table, idx, days);
 }
 
-const pivotChartsTbl = (primary, secondary, table, idx, days = 100) => {
+const pivotChartsTbl = (primary, secondary, table, idx, days = 100, deltaDays = 100) => {
    let prims = row(table, idx, primary);
    let secs = row(table, idx, secondary);
    let allDates = row(table, idx, 'date');
 
-   // --- Pivot Chart: respects the selected range (days), date-based cutoff ---
+   // ----- Pivot Chart --------------------------------------------------
    let startIndex = 0;
    if (days < table.length) {
       const latest = new Date(allDates[allDates.length - 1]);
@@ -28,18 +28,13 @@ const pivotChartsTbl = (primary, secondary, table, idx, days = 100) => {
    const ema20s = line('EMA-20', ema20s0.slice(startIndex), 'tomato');
    drawLineChart(dates, [ratios1, sma100s, ema20s], 'pivotChart');
 
-   // --- Delta chart: reverted to its original fixed-100 behavior, deliberately
-   // NOT tied to the range selector. A rolling 100-day min/max stretched across
-   // a 6-month or MAX view produces a mathematically-correct but hard-to-read
-   // plateau-then-cliff shape (one old spike stays "the max" for 100 straight
-   // days, then drops all at once when it finally ages out). Always showing
-   // just the latest 100 days avoids that entirely — this is a readability
-   // decision, not a bug fix, until a better indicator design is chosen.
-   const deltaDates = allDates.slice(-100);
+   // ----- Delta chart --------------------------------------------------
+   // Shares startIndex with the Pivot Chart above — one button row now
+   // controls both charts
    let [ds, mins, maxs] = deltas(ratio0, ema20s0, 100);
-   drawDeltas(deltaDates, ds.slice(-100), mins.slice(-100), maxs.slice(-100));
+   drawDeltas(dates, ds.slice(startIndex), mins.slice(startIndex), maxs.slice(startIndex));
 
-   return drawRec(deltaDates, ds.slice(-100), mins.slice(-100), maxs.slice(-100), primary, secondary);
+   return drawRec(dates, ds.slice(startIndex), mins.slice(startIndex), maxs.slice(startIndex), primary, secondary);
 };
 
 const drawDeltas = (dates, ds, mins, maxs) => {
@@ -87,15 +82,19 @@ const drawDeltas = (dates, ds, mins, maxs) => {
             y: {
                beginAtZero: false,
                grid: { color: 'rgba(255,255,255,0.05)' },
-               ticks: { color: 'rgba(200,216,232,0.5)', font: { size: 10 } }
+               ticks: { color: 'rgba(200,216,232,0.5)', font: { size: 10 } },
+               afterFit: scale => { scale.width = 50; } // fixed gutter width so this chart's
+                                                        // gridlines/points align with pivotChart's
             },
             x: {
                grid: { color: 'rgba(255,255,255,0.05)' },
+               afterBuildTicks: axis => {
+                  const step = Math.ceil(axis.ticks.length / 12);
+                  axis.ticks = axis.ticks.filter((t, i) => i % step === 0);
+               },
                ticks: {
                   color: 'rgba(200,216,232,0.5)',
                   font: { size: 10 },
-                  maxTicksLimit: 12,
-                  autoSkip: true,
                   maxRotation: 45,
                   minRotation: 45
                }

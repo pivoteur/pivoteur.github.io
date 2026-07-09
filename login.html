@@ -4,8 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>My Pivot Protocol Portfolio</title>
-    <link rel="stylesheet" href="tokens.css?version=7">
-    <link rel="stylesheet" href="chrome.css?version=2">
+    <link rel="stylesheet" href="protocol.css?version=1">
     <style>
         .dialog-overlay {
             position: fixed;
@@ -62,7 +61,7 @@
         <div class="dialog-box">
             <h2>Login</h2>
             <p>Profile:</p>
-            <input type="text" id="profile" placeholder="none">
+            <input type="text" id="profile" placeholder="none" onkeydown="if(event.key==='Enter') go()">
             <button id="submitProfile" onClick="go()">Continue</button>
         </div>
     </div>

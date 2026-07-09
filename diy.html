@@ -5,11 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol DIY Chart++</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="tokens.css?version=7">
-    <link rel="stylesheet" href="chrome.css?version=2">
+    <link rel="stylesheet" href="protocol.css?version=2">
     <style>
       .value-display{ color:var(--text-bright); font-family: var(--font-mono); font-size:13px; }
 
+      /* Page-specific: use full page width instead of the site-wide centered
+         1180px main column — charts benefit from the extra room, and this page
+         doesn't need to match the nav's full-width feel with a big empty gutter. */
       main{ max-width: none; margin: 0; }
       .rotate-btn{
         background: var(--teal-dim); color:var(--teal); border:1px solid var(--teal-border);
@@ -18,7 +20,7 @@
       .rotate-btn:hover{ background: rgba(79,217,190,0.18); }
 
       /* --- Layout: charts left (main focus), controls right (compact sidebar) --- */
-      .diy-layout{ display:grid; grid-template-columns: 1fr 426px; gap:16px; align-items:start; }
+      .diy-layout{ display:grid; grid-template-columns: 1fr 260px; gap:16px; align-items:start; }
       @media (max-width: 900px){ .diy-layout{ grid-template-columns: 1fr; } }
 
       .diy-charts{ display:flex; flex-direction:column; gap:16px; width:100%; }
@@ -61,10 +63,6 @@
             <div style="display:flex; gap:4px;">
               <button class="range-btn active" data-days="30">1M</button>
               <button class="range-btn" data-days="90">3M</button>
-              <button class="range-btn" data-days="180">6M</button>
-              <button class="range-btn" data-days="270">9M</button>
-              <button class="range-btn" data-days="365">1Y</button>
-              <button class="range-btn" data-days="730">2Y</button>
               <button class="range-btn" data-days="0">MAX</button>
             </div>
           </div>
@@ -74,7 +72,9 @@
         </div>
 
         <div class="panel" style="margin-bottom:0;">
-          <div class="panel-head">Delta</div>
+          <div class="panel-head">
+            <span>Delta</span>
+          </div>
           <div style="padding:12px 14px; height:340px;">
             <canvas id="deltaChart" width="900" height="240"></canvas>
           </div>
@@ -202,13 +202,15 @@ if (!t2 || t2 === 'undefined') { t2 = 'ETH'; }
          if (btn.classList.contains('active')) activeBtnStillValid = false;
       }
    });
-   // If the default-active range (6M) got hidden because there isn't enough
+   // If the default-active range (1M) got hidden because there isn't enough
    // data, fall back to MAX instead of rendering against a hidden/invalid button.
+   // MAX is a fixed 100-day window here, not "every row" — if the table has
+   // fewer than 100 rows total, slicing 100 naturally returns everything anyway.
    if (!activeBtnStillValid) {
       document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
       const maxBtn = document.querySelector('.range-btn[data-days="0"]');
       if (maxBtn) maxBtn.classList.add('active');
-      currentDays = table.length;
+      currentDays = 100;
    }
 
    let currentPrices = table[table.length - 1];
@@ -260,7 +262,7 @@ document.querySelectorAll('.range-btn').forEach(btn => {
       document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
       const days = parseInt(btn.dataset.days, 10);
-      currentDays = days === 0 ? currentTable.length : days; // 0 = MAX = every row available
+      currentDays = days === 0 ? 100 : days; // 0 = MAX = fixed 100-day window
 
       const existingPivot = Chart.getChart('pivotChart');
       const existingDelta = Chart.getChart('deltaChart');

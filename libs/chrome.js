@@ -11,7 +11,6 @@
     { label: 'Dashboard',      href: 'index.html' },
     { label: 'Distributions',  href: 'distributions.html' },
     { label: 'Pools',          href: 'pools.html' },
-    { label: 'Treasury',       href: 'treasury.html' },
     { label: 'DIY Charts',     href: 'diy.html' },
     { label: '$UNDEAD',        href: 'undead.html' },
     { label: 'Diagnostics',    href: 'diagnostics.html' },
