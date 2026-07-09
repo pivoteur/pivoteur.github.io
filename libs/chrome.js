@@ -30,10 +30,10 @@
     ).join('');
     el.innerHTML = `
       <div class="topnav">
-        <div class="brand">
+        <a class="brand" href="index.html">
           <img class="brand-mark" src="imgs/pivot-logo-sillo.png" alt="Pivot Technologies">
           <span class="brand-name">Pivot Technologies, LLC</span>
-        </div>
+        </a>
         <nav class="links">${links}</nav>
         <div class="nav-right">
           <button class="nav-cta" onclick="location.href='login.html'">Profile</button>

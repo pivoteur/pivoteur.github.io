@@ -4,8 +4,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol</title>
-    <link rel="stylesheet" href="protocol.css?version=1">
-    <script> const version = 22; 
+    <link rel="stylesheet" href="protocol.css?version=3">
+    <script> const version = 23; 
       // When the versoin number updates for `protocol.css`, update the version number here, too. 
     </script> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -42,16 +42,6 @@
         <div class="segbar-caption sub" id="dappsSegCaption">Loading…</div>
       </div>
     </div>
-
-    <section class="panel">
-      <div class="panel-head">Pools</div>
-      <table>
-        <thead><tr><th>Pool</th><th>Incept</th><th>TVL</th><th>ROI</th><th>APR</th><th></th></tr></thead>
-        <tbody id="poolTableBody">
-          <tr><td colspan="6" class="sub" style="padding:20px;">Loading pools…</td></tr>
-        </tbody>
-      </table>
-    </section>
 
     <p style="margin-top:8px;">
       <a href="#" onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md";'>
@@ -172,31 +162,6 @@
 
    document.getElementById('dappsSegCaption').textContent =
       dappEntries.map(([label, val]) => label + ' ' + (dappTotal ? (val / dappTotal * 100).toFixed(0) : 0) + '%').join(' · ');
-
-   // Real pool rows, filtered to dapp === 'pools'. Link target comes straight
-   // from the TSV's own href column — no invented routing.
-   const poolRows = wallets.filter(r => r[idx['dapp']] === 'pools');
-
-   const tbody = document.getElementById('poolTableBody');
-   tbody.innerHTML = poolRows.map(r => {
-      const name  = r[idx['pool']];
-      const p1    = r[idx['p1']];
-      const p2    = r[idx['p2']];
-      const incept = r[idx['incept']];
-      const tvl   = r[idx['TVL']];
-      const roi   = r[idx['ROI']];
-      const apr   = r[idx['APR']];
-      const href  = r[idx['href']] || 'pools.html';
-      const roiCls = roi.trim().startsWith('-') ? 'neg' : 'pos';
-      const aprCls = apr.trim().startsWith('-') ? 'neg' : 'pos';
-      return '<tr class="clickable" onclick="location.href=\'' + href + '\'">' +
-         '<td class="name-cell">' + name + ' <span class="sub">(' + p1 + '+' + p2 + ')</span></td>' +
-         '<td class="num">' + incept + '</td>' +
-         '<td class="num">' + tvl + '</td>' +
-         '<td class="num ' + roiCls + '">' + roi + '</td>' +
-         '<td class="num ' + aprCls + '">' + apr + '</td>' +
-         '<td class="chevron">›</td></tr>';
-   }).join('');
 });
     </script>
 </body>

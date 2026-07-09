@@ -301,6 +301,9 @@ nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
   nav.links{ display: none; }
 }
 
+a.brand{ color: inherit; text-decoration: none; cursor: pointer; }
+a.brand:hover{ text-decoration: none; }
+
 /* ----- diagnostics ----------------------------------------------------------- */
 #header { margin-bottom: 28px; }
 
