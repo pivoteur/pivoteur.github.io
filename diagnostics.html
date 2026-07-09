@@ -68,10 +68,10 @@
       return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
     }
 
-    function renderTaskRow(name, isPass, pillLabel, countHtml, ranAt, delay) {
+    function renderTaskRow(name, isPass, pillLabel, countHtml, ranAt) {
       if (isPass) {
         const timeHtml = ranAt && ranAt !== 'unknown' ? `<span class="task-time">${timeAgo(ranAt)}</span>` : '';
-        return `<div class="task-compact" style="animation-delay:${delay}ms">
+        return `<div class="task-compact">
           <div class="task-compact-left"><span class="dot dot-pass"></span><span class="task-name">${name}</span></div>
           ${countHtml}${timeHtml}
         </div>`;
@@ -80,7 +80,7 @@
       const timeHtml = ranAt && ranAt !== 'unknown'
         ? `<div class="task-time">${timeAgo(ranAt)}<br>${fmtDate(ranAt)}</div>`
         : `<div class="task-time">—</div>`;
-      return `<div class="task-row task-row-${cls}" style="animation-delay:${delay}ms">
+      return `<div class="task-row task-row-${cls}">
         <div class="task-row-top">
           <span class="task-name">${name}</span>
           <div class="task-right">
@@ -147,13 +147,11 @@
        const dappsEntry = entries.find(e => e.crate === 'dapps');
        // ----- Automated tasks ------------------------------------------------------
        let taskHtml  = '';
-       let delay = 0;
 
        workflows.forEach(w => {
-        const isPass = w.status === 'success';
-        const pill   = w.status === 'unknown' ? 'UNKNOWN' : (isPass ? 'SUCCESS' : 'FAILED');
-        taskHtml += renderTaskRow(w.name, isPass, pill, '', w.ran_at, delay);
-        delay += 60; 
+         const isPass = w.status === 'success';
+         const pill   = w.status === 'unknown' ? 'UNKNOWN' : (isPass ? 'SUCCESS' : 'FAILED');
+         taskHtml += renderTaskRow(w.name, isPass, pill, '', w.ran_at);
        });
 
        // ----- dapps itr row at the bottom ------------------------------------------------------
@@ -163,12 +161,12 @@
          const color     = covColor(pct);
          const countHtml = `<span class="task-count" style="color:${color}">${dappsEntry.total}/${dappsEntry.totalOf}</span>`;
          if (isPass) {
-           taskHtml += `<div class="task-compact" style="animation-delay:${delay}ms">
+           taskHtml += `<div class="task-compact">
              <div class="task-compact-left"><span class="dot dot-pass"></span><span class="task-name">ITR</span></div>
              ${countHtml}
            </div>`;
          } else {
-           taskHtml += `<div class="task-row task-row-fail" style="animation-delay:${delay}ms">
+           taskHtml += `<div class="task-row task-row-fail">
              <div class="task-row-top">
                <span class="task-name">ITR</span>
                <span class="task-pill task-pill-fail">FAILURE</span>

@@ -38,7 +38,8 @@
   --font-mono: 'JetBrains Mono', monospace;
 
   /* --- Radius / spacing --- */
-  --radius: 10px;
+  --radius: 12px;
+  --radius-med: 10px;
   --radius-sm: 6px;
 }
 
@@ -58,7 +59,7 @@ a:hover{ text-decoration: underline; }
 
 h1, h2, h3{ color: var(--text-bright); letter-spacing: -0.01em; }
 
-.num{ font-family: var(--font-mono); }
+.num{ font-family: var(--font-body); }
 .pos{ color: var(--green); }
 .neg{ color: var(--red); }
 
@@ -68,7 +69,7 @@ canvas{ background: transparent; }
 .panel{
   background: var(--surface);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius);
   overflow: hidden;
   margin-bottom: 24px;
 }
@@ -129,8 +130,8 @@ main{ padding: 32px; max-width: 1180px; margin: 0 auto; position: relative; z-in
 .token-cycle-value{ font-size: 20px; color: var(--text-bright); }
 .cycle-arrow{
   background: transparent; border: 1px solid var(--border);
-  color: var(--text-dim); width: 26px; height: 26px; border-radius: 6px;
-  cursor: pointer; font-size: 14px; line-height: 1; flex-shrink: 0;
+  color: var(--text-dim); width: 26px; height: 26px; border-radius: var(--radius-sm);
+  cursor: pointer; font-size: var(--radius); line-height: 1; flex-shrink: 0;
   transition: color 0.12s ease, border-color 0.12s ease;
 }
 .cycle-arrow:hover{ color: var(--teal); border-color: var(--teal-border); }
@@ -167,32 +168,32 @@ main{ padding: 32px; max-width: 1180px; margin: 0 auto; position: relative; z-in
 }
 .all-assets-pill.visible{ display: block; }
 .all-assets-pill .pill-title{
-  font-size: 10px; color: var(--text-dim); text-transform: uppercase;
+  font-size: var(--radius-med); color: var(--text-dim); text-transform: uppercase;
   letter-spacing: 0.06em; margin-bottom: 6px;
 }
 .all-assets-pill .pill-row{
   display: flex; justify-content: space-between; gap: 14px;
-  font-size: 12px; padding: 2px 0;
+  font-size: var(--radius); padding: 2px 0;
 }
 .all-assets-pill .pill-row .pill-name{ color: var(--text-dim); }
-.all-assets-pill .pill-row .pill-value{ color: var(--text-bright); font-family: var(--font-mono); }
+.all-assets-pill .pill-row .pill-value{ color: var(--text-bright); font-family: var(--font-body); }
 
 /* --- dapps breakdown, shown as a compact segmented bar in the page header --- */
 .header-dapps-bar{ flex: 1; min-width: 160px; margin: 0 32px; }
 .segbar{
-  display: flex; width: 100%; height: 10px; border-radius: 5px;
+  display: flex; width: 100%; height: 10px; border-radius: var(--radius-sm);
   overflow: visible; background: transparent; margin-bottom: 6px; gap: 3px;
 }
-.segbar .seg{ height: 100%; border-radius: 3px; }
+.segbar .seg{ height: 100%; border-radius: var(--radius-sm); }
 .segbar-caption{
-  font-size: 11px; text-align: center; white-space: nowrap;
+  font-size: var(--radius); text-align: center; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
 }
 
 /* --- Divider + sub-labels for merged multi-section panels (Tokens + NAV) --- */
 .panel-divider{ height: 1px; background: var(--border-strong); margin: 4px 20px 0; }
 .section-label{
-  font-size: 10px; color: var(--text-dim); text-transform: uppercase;
+  font-size: var(--radius-med); color: var(--text-dim); text-transform: uppercase;
   letter-spacing: 0.08em; margin-bottom: 10px;
 }
 
@@ -204,7 +205,7 @@ select.styled-select, input[type="text"], input[type="date"]{
   padding: 8px 12px;
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: var(--radius);
 }
 select.styled-select:focus, input[type="text"]:focus, input[type="date"]:focus{
   outline:none; border-color: var(--teal-border);
@@ -212,10 +213,10 @@ select.styled-select:focus, input[type="text"]:focus, input[type="date"]:focus{
 .btn-primary{
   background: var(--teal); color:#06201c; border:none;
   padding:9px 18px; border-radius:var(--radius-sm);
-  font-weight:600; font-size:13px; cursor:pointer;
+  font-weight:600; font-size:var(--radius); cursor:pointer;
 }
 .btn-primary:hover{ background:#3fc9ae; }
-.control-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:13px; color:var(--text-dim); }
+.control-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:var(--radius); color:var(--text-dim); }
 
 /* --- Custom scrollbar, matches theme --- */
 html{
@@ -231,7 +232,7 @@ html{
 }
 ::-webkit-scrollbar-thumb{
   background: var(--border-strong);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   border: 2px solid var(--bg-solid);
 }
 ::-webkit-scrollbar-thumb:hover{
@@ -257,7 +258,7 @@ html{
 .ticker-item{
   display: inline-flex; align-items: center; gap: 8px;
   padding: 0 22px;
-  font-size: 12px;
+  font-size: var(--radius);
 }
 .ticker-item .sym{ color: var(--text-dim); letter-spacing: 0.04em; }
 .ticker-item .price{ color: var(--text-bright); }
@@ -283,7 +284,7 @@ html{
 
 nav.links{ display: flex; gap: 26px; flex-wrap: wrap; }
 nav.links a{
-  color: var(--text-dim); text-decoration: none; font-size: 13px; font-weight: 500;
+  color: var(--text-dim); text-decoration: none; font-size: var(--radius); font-weight: 500;
   padding: 6px 0; border-bottom: 2px solid transparent;
 }
 nav.links a.active{ color: var(--text-bright); border-bottom-color: var(--teal); }
@@ -292,7 +293,7 @@ nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
 .nav-right{ display: flex; align-items: center; gap: 14px; }
 .nav-cta{
   background: var(--teal-dim); color: var(--teal); border: 1px solid var(--teal-border);
-  padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer;
+  padding: 8px 16px; border-radius: var(--radius-sm); font-size: var(--radius); font-weight: 600; cursor: pointer;
 }
 .nav-cta:hover{ background: rgba(79,217,190,0.18); }
 
@@ -336,10 +337,8 @@ nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
   border: 1px solid rgba(255,255,255,0.06);
   border-radius: 8px;
   margin-bottom: 7px;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fadeUp 0.4s ease forwards;
 }
+
 
 .diag-row-top {
   display: flex;
@@ -454,8 +453,6 @@ nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
   font-size: 13px;
   color: var(--red);
   font-weight: 600;
-  opacity: 0;
-  animation: fadeUp 0.4s ease forwards;
 }
 
 hr.diag-divider {
@@ -495,9 +492,6 @@ hr.diag-divider {
   border-radius: 6px;
   font-size: 12px;
   gap: 10px;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fadeUp 0.4s ease forwards;
 }
 .task-compact:hover { background: rgba(255,255,255,0.04); }
 .task-compact-left { display: flex; align-items: center; gap: 8px; }
@@ -547,19 +541,12 @@ hr.diag-divider {
   margin: 1px 0;
 }
 
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-
 .task-row {
   padding: 11px 14px;
   border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.06);
   border-left-width: 3px;
   margin-bottom: 7px;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fadeUp 0.4s ease forwards;
 }
 
 .task-row-pass {
