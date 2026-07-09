@@ -298,14 +298,10 @@ nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
 .nav-cta:hover{ background: rgba(79,217,190,0.18); }
 
 @media (max-width: 860px){
-  nav.links{ display: none; } /* mobile nav pattern to be addressed in a follow-up pass */
+  nav.links{ display: none; }
 }
 
 /* ----- diagnostics ----------------------------------------------------------- */
-/* Requires <body class="diag-page"> on diagnostics.html so these rules don't
-   bleed into index.html / diy.html (see conversation — bare `body{}` selector
-   was flagged as a rendering-break risk once merged into one shared file). */
-
 #header { margin-bottom: 28px; }
 
 #header h2 {
@@ -331,31 +327,6 @@ nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
   margin: 20px 0 8px 2px;
 }
 
-.diag-row {
-  padding: 13px 16px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 8px;
-  margin-bottom: 7px;
-}
-
-
-.diag-row-top {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.diag-row-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  min-width: 0;
-}
-
 .dot {
   width: 7px;
   height: 7px;
@@ -364,82 +335,6 @@ nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
 }
 .dot-pass { background: var(--green); box-shadow: 0 0 6px rgba(95,217,168,0.53); }
 .dot-fail { background: var(--red); box-shadow: 0 0 6px rgba(255,107,107,0.53); }
-
-.diag-label {
-  font-size: 13px;
-  color: var(--text);
-  letter-spacing: 0.02em;
-}
-
-.diag-sublabel {
-  font-size: 11px;
-  color: rgba(200,216,232,0.38);
-  margin-left: 4px;
-  letter-spacing: 0.04em;
-}
-
-.diag-counts {
-  font-size: 11px;
-  color: rgba(200,216,232,0.32);
-  white-space: nowrap;
-  margin-left: 6px;
-}
-
-.diag-counts-fail { color: #ff9999; } /* intentionally distinct lighter red, not --red */
-
-.diag-row-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-shrink: 0;
-}
-
-.diag-status {
-  font-size: 10px;
-  color: rgba(200,216,232,0.4);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  text-align: right;
-  line-height: 1.4;
-}
-
-.diag-pct {
-  font-size: 13px;
-  font-weight: 600;
-  min-width: 52px;
-  text-align: right;
-}
-
-.diag-total {
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.diag-bar-wrap {
-  width: 100%;
-  height: 3px;
-  background: rgba(255,255,255,0.07);
-  border-radius: 2px;
-  margin-top: 9px;
-  overflow: hidden;
-}
-
-.diag-bar-fill {
-  height: 100%;
-  border-radius: 2px;
-  transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
-}
-
-.diag-failures {
-  margin-top: 9px;
-  padding: 7px 10px;
-  background: rgba(255,107,107,0.07);
-  border-left: 2px solid rgba(255,107,107,0.5);
-  border-radius: 0 4px 4px 0;
-  font-size: 11px;
-  color: #ff9999; /* intentionally distinct lighter red, not --red */
-  line-height: 1.7;
-}
 
 .diag-fail-banner {
   display: flex;
@@ -453,12 +348,6 @@ nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
   font-size: 13px;
   color: var(--red);
   font-weight: 600;
-}
-
-hr.diag-divider {
-  border: none;
-  border-top: 1px solid rgba(255,255,255,0.05);
-  margin: 18px 0;
 }
 
 .health-row {
