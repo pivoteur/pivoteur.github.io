@@ -87,7 +87,7 @@ const pivotTR = (tableId, rowIx, row) => {
   let table = document.getElementById(tableId);
   let tr = table.insertRow(rowIx); // remember: we already have a header row
   let { pool, href, incept, roi, apr, tvl } = row;
-  datum(tr, 0, "<a href='" + href + "'>" + pool + "</a>");
+  datum(tr, 0, pool);
   datum(tr, 1, incept);
   datum(tr, 2, tvl);
   datum(tr, 3, roi);

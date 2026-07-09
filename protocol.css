@@ -17,14 +17,7 @@
   --border: rgba(255,255,255,0.06);
   --border-strong: rgba(255,255,255,0.10);
 
-  /* --- Text ---
-     Seeded from diag_styles.css per site-wide-consistency decision:
-     --text updated to diagnostics' body-text color (#C8D8E8).
-     --text-bright kept at tokens.css's original value (#F2F5F8) per decision.
-     --text-dim's base was derived from the OLD --text (#B8C4D4); updated here
-     to derive from the NEW --text base (200,216,232) so it stays internally
-     consistent. Flagging this since it wasn't explicitly asked — easy to revert
-     to rgba(184,196,212,0.42) if you want the old dim value kept. */
+  /* --- Text --- */
   --text: #C8D8E8;
   --text-bright: #F2F5F8;
   --text-dim: rgba(200,216,232,0.42);
@@ -40,9 +33,7 @@
   --green: #5FD9A8;
   --red: #FF6B6B;
 
-  /* --- Type ---
-     Unified to Inter everywhere; diagnostics previously used Arial (see
-     conversation history — confirmed Inter is the intended sitewide font). */
+  /* --- Type --- */
   --font-body: Inter, -apple-system, system-ui, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
 
@@ -51,8 +42,7 @@
   --radius-sm: 6px;
 }
 
-/* Single sitewide reset — consolidated from tokens.css (box-sizing only) and
-   diag_styles.css (box-sizing + margin + padding). Now one consistent rule. */
+/* Single sitewide reset */
 *{ box-sizing: border-box; margin: 0; padding: 0; }
 
 html, body{
@@ -712,6 +702,7 @@ main.diag-main { padding: 32px 24px; max-width: none; }
   font-size: 11px;
   font-weight: 700;
   white-space: nowrap;
+  line-height: 1;
 }
 
 .seg-uncovered {
