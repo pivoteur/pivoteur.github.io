@@ -1,47 +1,47 @@
 {
-  "date": "2026-07-08",
+  "date": "2026-07-09",
   "workflows": [
     {
       "name": "Quotes",
       "repo": "logicalgraphs/crypto-n-rust",
       "status": "success",
-      "ran_at": "2026-07-08T13:47:21Z"
+      "ran_at": "2026-07-09T06:29:02Z"
     },
     {
       "name": "Assets",
       "repo": "pivoteur/pivoteur.github.io",
       "status": "success",
-      "ran_at": "2026-07-08T13:55:34Z"
+      "ran_at": "2026-07-09T08:25:40Z"
     },
     {
       "name": "Virtsz",
       "repo": "pivoteur/pivoteur.github.io",
       "status": "success",
-      "ran_at": "2026-07-08T14:01:00Z"
+      "ran_at": "2026-07-09T07:26:35Z"
     },
     {
       "name": "Dusk",
       "repo": "pivoteur/pivoteur.github.io",
       "status": "success",
-      "ran_at": "2026-07-08T14:03:16Z"
+      "ran_at": "2026-07-09T08:53:32Z"
     },
     {
       "name": "Hwaet",
       "repo": "pivoteur/pivoteur.github.io",
-      "status": "success",
-      "ran_at": "2026-07-08T12:10:44Z"
+      "status": "failure",
+      "ran_at": "2026-07-09T08:53:31Z"
     },
     {
       "name": "Daily",
       "repo": "pivoteur/pivoteur.github.io",
       "status": "success",
-      "ran_at": "2026-07-08T14:15:13Z"
+      "ran_at": "2026-07-09T08:04:22Z"
     },
     {
       "name": "R.A.T.",
       "repo": "pivoteur/protocol",
       "status": "success",
-      "ran_at": "2026-07-08T14:32:43Z"
+      "ran_at": "2026-07-09T05:16:23Z"
     }
   ],
   "closed_issues": [
@@ -51,7 +51,7 @@
     },
     {
       "repo": "pivoteur/pivoteur.github.io",
-      "closed_today": 1
+      "closed_today": 0
     },
     {
       "repo": "logicalgraphs/crypto-n-rust",
