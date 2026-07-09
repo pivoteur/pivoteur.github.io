@@ -69,9 +69,12 @@ const barChartTbl = (labels, assets) => {
             responsive: true,
             plugins: {
                legend: { labels: { color: 'white' } },
-               customCanvasBackgroundColor: { color: '#0F1422' }
+               customCanvasBackgroundColor: { color: 'transparent' }
             },
-            scales: { x: { stacked: true }, y: { stacked: true } }
+            scales: {
+               x: { stacked: true, grid: { color: 'rgba(255,255,255,0.07)' } },
+               y: { stacked: true, grid: { color: 'rgba(255,255,255,0.07)' } }
+            }
         },
         plugins: [plugin]
     });
@@ -99,8 +102,11 @@ const simpleBar = (dates, bars, label, canvas = 'barChart') => {
          responsive: true,
          plugins: {
             legend: { labels: { color: 'white' } },
-            customCanvasBackgroundColor: { color: '#0F1422' } },
-         scales: { y: { beginAtZero: false } }
+            customCanvasBackgroundColor: { color: 'transparent' } },
+         scales: {
+            y: { beginAtZero: false, grid: { color: 'rgba(255,255,255,0.07)' } },
+            x: { grid: { color: 'rgba(255,255,255,0.07)' } }
+         }
       },
       plugins: [plugin]
    });
