@@ -47,11 +47,11 @@
   "closed_issues": [
     {
       "repo": "pivoteur/protocol",
-      "closed_today": 0
+      "closed_today": 1
     },
     {
       "repo": "pivoteur/pivoteur.github.io",
-      "closed_today": 0
+      "closed_today": 9
     },
     {
       "repo": "logicalgraphs/crypto-n-rust",
