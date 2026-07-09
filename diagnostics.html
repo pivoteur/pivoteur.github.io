@@ -1,7 +1,7 @@
 <html>
  <head>
   <title>Protocol Health</title>
-  <link rel="stylesheet" href="protocol.css?version=2">
+  <link rel="stylesheet" href="protocol.css?version=3">
   <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap'>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
   <script>
@@ -28,6 +28,7 @@
       <div class="diag-section-heading" style="margin-top:0;">Code Coverage</div>
       <div id="coverage-bar-wrap"></div>
       <div id="graph-legend"></div>
+      <div id="closed-issues"></div>
     </div>
     <div class="health-box health-box-tasks">
       <div class="diag-section-heading" style="margin-top:0;">Automated Tasks</div>
@@ -64,6 +65,31 @@
       return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
     }
 
+    function renderClosedIssues(closedIssues, date) {
+      const active = closedIssues.filter(r => r.closed_today > 0);
+      let html = `<div class="legend-divider" style="margin:14px 0 10px"></div>
+        <div class="legend-heading">Issues Closed Today
+          <span class="quotes-date">${date}</span>
+        </div>`;
+
+      if (active.length === 0) {
+        html += `<div class="quotes-unavailable">Pivot Tech internal is currently working diligently. No issues closed today.</div>`;
+      } else {
+        active.forEach(r => {
+          const name = r.repo.split('/')[1];
+          html += `<div class="legend-row">
+            <div class="legend-left">
+              <span class="legend-dot" style="background:var(--green);box-shadow:0 0 5px rgba(95,217,168,0.53)"></span>
+              <span class="legend-label">${name}</span>
+            </div>
+            <span class="legend-value" style="color:var(--green)">${r.closed_today} closed</span>
+          </div>`;
+        });
+      }
+
+      document.getElementById('closed-issues').innerHTML = html;
+    }
+
     function renderTaskRow(name, isPass, pillLabel, countHtml, ranAt) {
       if (isPass) {
         const timeHtml = ranAt && ranAt !== 'unknown' ? `<span class="task-time">${timeAgo(ranAt)}</span>` : '';
@@ -93,7 +119,9 @@
       fetch('data/workflows.json').then(r => { if (!r.ok) throw new Error('Could not load workflows.json'); return r.json(); })
     ])
     .then(([text, workflowsData]) => {
-      const workflows = workflowsData.workflows || [];
+      const { workflows = [], closed_issues = [] } = workflowsData;
+      renderClosedIssues(closed_issues, workflowsData.date || '');
+
       const lines = text.split('\n');
       let stamp = '';
       const entries = [];
