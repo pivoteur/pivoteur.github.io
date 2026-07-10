@@ -639,6 +639,15 @@ a.brand:hover{ text-decoration: none; }
   flex-direction: column;
   gap: 20px;
 }
+
+/* Compact variant of .segbar for the Pool Name table's TVL column —
+   sits under the dollar figure inside a table cell, so it needs to be
+   slimmer than the default 10px used in the bigger Dashboard bars. */
+.pool-tvl-bar{
+  height: 5px;
+  margin-top: 5px;
+  margin-bottom: 0;
+}
 /* Venn diagram tooltip + pool table styling — shared by pools.html and
    profile.html, both of which render the same #vennChart/#poolTable pattern. */
 .venntooltip {

@@ -105,7 +105,7 @@ async function indexPools(wallets = 'wallets', subDir = '', startRowIx = 3) {
    const pools = [];
    const nonPools = [];
    let tot = 0;
-   fetch(file)
+   return fetch(file)
       .then(response => {
          if (!response.ok) {
            throw new Error(wallets);

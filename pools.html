@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol Pools</title>
-    <link rel="stylesheet" href="protocol.css?version=6">
+    <link rel="stylesheet" href="protocol.css?version=7">
     <script src='https://d3js.org/d3.v4.min.js'></script>
 </head>
 
@@ -61,8 +61,50 @@ about amplified staking.
     <script src='libs/charts/venn.js'></script>
     <script src='libs/dom.js'></script>
     <script src="libs/pool-assets.js"></script>
+    <script src="libs/pool-health.js"></script>
     <script src='libs/chrome.js'></script>
-    <script>indexPools('wallets', '', 1);</script>
+    <script>
+       indexPools('wallets', '', 1).then(() => {
+          // pool-health.js may not have loaded correctly, or a given run may
+          // simply have no data yet — bail quietly rather than error.
+          if (typeof poolHealth === 'undefined' || !poolHealth.pools) return;
+
+          const healthByPool = {};
+          poolHealth.pools.forEach(p => { healthByPool[p.pool] = parseUSD(p.available); });
+
+          // Uncommitted amounts are often tiny relative to total pool TVL —
+          // floor the segment width so it stays a visible sliver instead of
+          // disappearing at sub-pixel width, same pattern as the Dashboard's
+          // token/TVL breakdown bars.
+          const UNCOMMITTED_MIN_PCT = 4;
+
+          document.querySelectorAll('#poolTable tr').forEach(tr => {
+             const nameCell = tr.cells && tr.cells[0];
+             if (!nameCell) return;
+             const poolName = nameCell.textContent.trim();
+             if (!(poolName in healthByPool)) return; // no health data for this row — leave plain TVL text as-is
+
+             const tvlCell = tr.cells[2];
+             if (!tvlCell) return;
+
+             const totalTvl = parseUSD(tvlCell.textContent);
+             const uncommitted = healthByPool[poolName];
+             if (!totalTvl || totalTvl <= 0) return; // guard against div-by-zero / negative-TVL rows
+
+             const rawPct = (uncommitted / totalTvl) * 100;
+             const uncommittedPct = Math.min(100, Math.max(rawPct, UNCOMMITTED_MIN_PCT));
+             const activePct = 100 - uncommittedPct;
+             const active = totalTvl - uncommitted;
+
+             tvlCell.innerHTML = `
+                <div class="num">${showUsd(totalTvl)}</div>
+                <div class="segbar pool-tvl-bar" title="Active: ${showUsd(active)} · Uncommitted: ${showUsd(uncommitted)}">
+                   <div class="seg" style="width:${activePct.toFixed(2)}%;background:var(--teal);"></div>
+                   <div class="seg" style="width:${uncommittedPct.toFixed(2)}%;background:var(--gold);"></div>
+                </div>`;
+          });
+       });
+    </script>
     
 </body>
 </html>
