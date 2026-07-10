@@ -99,7 +99,7 @@ tbody tr.clickable:hover .name-cell{ color: var(--teal); }
 .sub{ color: var(--text-dim); font-weight: 400; }
 .chevron{ color: var(--text-dim); text-align: right; }
 
-main{ padding: 32px; max-width: 1180px; margin: 0 auto; position: relative; z-index: 1; }
+main{ padding: 32px 24px; max-width: none; position: relative; z-index: 1; }
 .page-head{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px; }
 
 /* ----- Shared background watermark logo ----- */
@@ -566,8 +566,6 @@ a.brand:hover{ text-decoration: none; }
   color: var(--green);
 }
 
-main.diag-main { padding: 32px 24px; max-width: none; }
-
 .seg-labeled {
   display: flex;
   align-items: center;
@@ -594,16 +592,8 @@ main.diag-main { padding: 32px 24px; max-width: none; }
 }
 
 /* ----- diy -------------------------------------------------------------------- */
-
 .value-display{ color:var(--text-bright); font-family: var(--font-mono); font-size:13px; }
 
-/* Page-specific: use full page width instead of the site-wide centered
-   1180px main column — charts benefit from the extra room, and this page
-   doesn't need to match the nav's full-width feel with a big empty gutter.
-   Scoped to main.diy-main (add this class to diy.html's <main> tag) — a
-   bare `main{}` selector here would win the cascade sitewide and kill
-   index.html's centered layout, the same bleed risk as the body rule above. */
-main.diy-main{ max-width: none; margin: 0; }
 .rotate-btn{
   background: var(--teal-dim); color:var(--teal); border:1px solid var(--teal-border);
   padding:6px 10px; border-radius:var(--radius-sm); cursor:pointer; font-size:11px; width:100%;
@@ -638,12 +628,16 @@ main.diy-main{ max-width: none; margin: 0; }
 .range-btn.active{ background:var(--teal-dim); border-color:var(--teal-border); color:var(--teal); font-weight:600; }
 
 /* ----- pools -------------------------------------------------------------------- */
-main.pools-main{ padding: 32px 24px; max-width: none; }
 .pools-layout{
   display: grid;
   grid-template-columns: 1fr 1.4fr;
   gap: 20px;
   align-items: start;
+}
+.pools-left{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
 }
 /* Venn diagram tooltip + pool table styling — shared by pools.html and
    profile.html, both of which render the same #vennChart/#poolTable pattern. */
