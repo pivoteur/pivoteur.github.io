@@ -77,17 +77,17 @@ const drawDeltas = (dates, ds, mins, maxs) => {
          maintainAspectRatio: false,
          plugins: {
             legend: { labels: { color: 'white' } },
-            customCanvasBackgroundColor: { color: '#0F1422' } },
+            customCanvasBackgroundColor: { color: 'transparent' } },
          scales: {
             y: {
                beginAtZero: false,
-               grid: { color: 'rgba(255,255,255,0.05)' },
+               grid: { color: 'rgba(255,255,255,0.07)' },
                ticks: { color: 'rgba(200,216,232,0.5)', font: { size: 10 } },
                afterFit: scale => { scale.width = 50; } // fixed gutter width so this chart's
                                                         // gridlines/points align with pivotChart's
             },
             x: {
-               grid: { color: 'rgba(255,255,255,0.05)' },
+               grid: { color: 'rgba(255,255,255,0.07)' },
                afterBuildTicks: axis => {
                   const step = Math.ceil(axis.ticks.length / 12);
                   axis.ticks = axis.ticks.filter((t, i) => i % step === 0);

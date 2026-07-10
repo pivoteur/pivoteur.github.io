@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol</title>
-    <link rel="stylesheet" href="protocol.css?version=1">
-    <script> const version = 22; 
-      // When the versoin number updates for `protocol.css`, update the version number here, too. 
+    <link rel="stylesheet" href="protocol.css?version=7">
+    <script> const version = 27; 
+      // When the versoin number updates for `protocol.css?version=#`, update `const version = #` here, too 
     </script> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -16,14 +16,17 @@
   <div id="app-nav"></div>
 
   <main>
-    <div class="page-head">
-      <h1>Dashboard</h1>
-      <div class="sub">Protocol NAV&nbsp; <span class="num tvl" style="color:var(--text-bright);font-size:15px;">$0.00</span></div>
-    </div>
-
     <div class="panel">
-      <div class="panel-head">NAV</div>
-      <div style="padding:0 20px 20px; max-width:700px; margin:0 auto;">
+      <div class="panel-head" style="display:flex; align-items:center; justify-content:space-between;">
+        <span>NAV</span>
+        <span class="sub">Protocol NAV&nbsp; <span class="num tvl" style="color:var(--text-bright);">$0.00</span></span>
+        <div style="display:flex; gap:4px;">
+          <button class="range-btn" data-days="30">1M</button>
+          <button class="range-btn" data-days="90">3M</button>
+          <button class="range-btn active" data-days="0">MAX</button>
+        </div>
+      </div>
+      <div style="padding:0 20px 20px; position:relative; height:420px;">
         <canvas id="barChart" width="400" height="200"></canvas>
       </div>
       <div id="navSummary" class="sub" style="padding:0 20px 18px; font-size:12px;">Loading…</div>
@@ -42,16 +45,6 @@
         <div class="segbar-caption sub" id="dappsSegCaption">Loading…</div>
       </div>
     </div>
-
-    <section class="panel">
-      <div class="panel-head">Pools</div>
-      <table>
-        <thead><tr><th>Pool</th><th>Incept</th><th>TVL</th><th>ROI</th><th>APR</th><th></th></tr></thead>
-        <tbody id="poolTableBody">
-          <tr><td colspan="6" class="sub" style="padding:20px;">Loading pools…</td></tr>
-        </tbody>
-      </table>
-    </section>
 
     <p style="margin-top:8px;">
       <a href="#" onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md";'>
@@ -74,16 +67,39 @@
     <script src="libs/pool-assets.js"></script>
     <script src="libs/chrome.js"></script>
     <script>
+       const MS_PER_DAY = 1000 * 60 * 60 * 24;
+       function filterByDays(rows, days, dateIx) {
+          if (!days) return rows; // 0 = MAX = every row, unfiltered
+          const latest = new Date(rows[rows.length - 1][dateIx]);
+          return rows.filter(r => (latest - new Date(r[dateIx])) / MS_PER_DAY <= days);
+       }
+
+       let navAssets = null, navIdx = null, navLabels = null;
+
+       function renderNav(days) {
+          if (!navAssets) return; // data hasn't loaded yet — guard against clicks during fetch
+          const filtered = filterByDays(navAssets, days, navIdx['date']);
+          const existing = Chart.getChart('barChart');
+          if (existing) existing.destroy();
+          barChartTbl(navLabels, filtered);
+       }
+
        fetch('data/assets.csv')
             .then(result => result.text())
             .then(data => {
-   tvlChart(data);
+   // Parsed once here and reused for both the chart and the summary below —
+   // tvlChart() would otherwise re-parse the same CSV a second time.
+   let [assets, idx] = sortedTable(data, ',');
+   navAssets = assets;
+   navIdx = idx;
+   navLabels = orderedIndices(idx).slice(1); // skip 'date'
+   renderNav(0); // MAX by default, matches the active button
 
    try {
       // Always-visible NAV summary + stat cards — no hover required.
-      // Reuses the same helpers bar.js already calls (sortedTable, orderedIndices, parseUSD).
-      let [assets, idx] = sortedTable(data, ',');
-      let labels = orderedIndices(idx).slice(1); // skip 'date'
+      // Independent of the chart-range buttons — always reflects the latest
+      // real data point regardless of which range is currently displayed.
+      let labels = navLabels;
 
       // Guard against blank/malformed trailing rows (assets.csv has a few).
       const validRows = assets.filter(r => r && r[idx['date']] && r[idx['date']].trim() !== '');
@@ -100,6 +116,16 @@
       document.getElementById('navSummary').classList.add('neg');
    }
 });
+
+       document.querySelectorAll('.range-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+             if (!navAssets) return;
+             document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+             btn.classList.add('active');
+             renderNav(parseInt(btn.dataset.days, 10));
+          });
+       });
+
        fetch('data/wallets.tsv')
             .then(result => result.text())
             .then(data => {
@@ -172,31 +198,6 @@
 
    document.getElementById('dappsSegCaption').textContent =
       dappEntries.map(([label, val]) => label + ' ' + (dappTotal ? (val / dappTotal * 100).toFixed(0) : 0) + '%').join(' · ');
-
-   // Real pool rows, filtered to dapp === 'pools'. Link target comes straight
-   // from the TSV's own href column — no invented routing.
-   const poolRows = wallets.filter(r => r[idx['dapp']] === 'pools');
-
-   const tbody = document.getElementById('poolTableBody');
-   tbody.innerHTML = poolRows.map(r => {
-      const name  = r[idx['pool']];
-      const p1    = r[idx['p1']];
-      const p2    = r[idx['p2']];
-      const incept = r[idx['incept']];
-      const tvl   = r[idx['TVL']];
-      const roi   = r[idx['ROI']];
-      const apr   = r[idx['APR']];
-      const href  = r[idx['href']] || 'pools.html';
-      const roiCls = roi.trim().startsWith('-') ? 'neg' : 'pos';
-      const aprCls = apr.trim().startsWith('-') ? 'neg' : 'pos';
-      return '<tr class="clickable" onclick="location.href=\'' + href + '\'">' +
-         '<td class="name-cell">' + name + ' <span class="sub">(' + p1 + '+' + p2 + ')</span></td>' +
-         '<td class="num">' + incept + '</td>' +
-         '<td class="num">' + tvl + '</td>' +
-         '<td class="num ' + roiCls + '">' + roi + '</td>' +
-         '<td class="num ' + aprCls + '">' + apr + '</td>' +
-         '<td class="chevron">›</td></tr>';
-   }).join('');
 });
     </script>
 </body>

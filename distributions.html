@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol - Cumulative Distributions</title>
-    <link rel="stylesheet" href="protocol.css?version=1">
+    <link rel="stylesheet" href="protocol.css?version=4">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -13,10 +13,6 @@
   <div id="app-nav"></div>
 
   <main>
-    <div class="page-head">
-      <h1>Distributions</h1>
-    </div>
-
     <div class="panel">
       <div class="panel-head" style="display:flex; align-items:center; justify-content:space-between;">
         <span>Cumulative Distributions</span>
@@ -29,7 +25,7 @@
       <div style="padding:20px;">
         <div id="summary" class="sub" style="text-align:center; margin-bottom:16px; font-size:13px;">Loading…</div>
         <div id="error" class="neg" style="text-align:center; padding:20px; display:none;">Failed to load distributions data.</div>
-        <div id="chartContainer" style="position:relative; width:100%; max-width:900px; margin:0 auto;">
+        <div id="chartContainer" style="position:relative; width:100%; height:420px;">
           <canvas id="distChart"></canvas>
         </div>
       </div>
@@ -101,13 +97,15 @@
             data: { labels, datasets },
             options: {
                 responsive: true,
+                maintainAspectRatio: false,
                 plugins: {
                     legend: {
                         position: 'right',
                         labels: {
-                            boxWidth: 10, boxHeight: 10, usePointStyle: true, pointStyle: 'circle',
+                            boxWidth: 16, boxHeight: 16, usePointStyle: true, pointStyle: 'rect',
+                            padding: 16,
                             color: 'rgba(184,196,212,0.85)',
-                            font: { family: "Inter, -apple-system, system-ui, sans-serif", size: 11 },
+                            font: { family: "Inter, -apple-system, system-ui, sans-serif", size: 13, weight: '600' },
                         },
                     },
                     tooltip: {
@@ -123,27 +121,27 @@
                 scales: {
                     x: {
                         stacked: true,
-                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        grid: { color: 'rgba(255,255,255,0.07)' },
                         ticks: {
                             maxRotation: 90,
                             minRotation: 45,
                             color: 'rgba(184,196,212,0.5)',
-                            font: { size: 9 },
+                            font: { size: 10 },
                         },
                     },
                     y: {
                         stacked: true,
-                        grid: { color: 'rgba(255,255,255,0.05)' },
+                        grid: { color: 'rgba(255,255,255,0.07)' },
                         ticks: {
                             callback: v => '$' + v.toLocaleString(),
                             color: 'rgba(184,196,212,0.5)',
-                            font: { size: 10 },
+                            font: { size: 12 },
                         },
                         title: {
                             display: true,
                             text: 'Distributed Value ($)',
-                            color: 'rgba(184,196,212,0.6)',
-                            font: { size: 11 },
+                            color: 'rgba(200,216,232,0.42)',
+                            font: { size: 14 },
                         },
                     },
                 },

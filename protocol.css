@@ -1,7 +1,7 @@
 /* ==========================================================================
    Pivot Protocol — protocol.css
    Single combined stylesheet for all pages. Sectioned below:
-   tokens -> chrome -> diagnostics -> diy
+   tokens -> chrome -> diagnostics -> diy -> pools
    ========================================================================== */
 
 /* ----- tokens ------------------------------------------------------------- */
@@ -38,7 +38,8 @@
   --font-mono: 'JetBrains Mono', monospace;
 
   /* --- Radius / spacing --- */
-  --radius: 10px;
+  --radius: 12px;
+  --radius-med: 10px;
   --radius-sm: 6px;
 }
 
@@ -58,17 +59,19 @@ a:hover{ text-decoration: underline; }
 
 h1, h2, h3{ color: var(--text-bright); letter-spacing: -0.01em; }
 
-.num{ font-family: var(--font-mono); }
+.num{ font-family: var(--font-body); }
 .pos{ color: var(--green); }
 .neg{ color: var(--red); }
 
 canvas{ background: transparent; }
 
 /* ----- Shared panel / card primitive ----- */
-.panel{
-  background: var(--surface);
+.panel, .health-box{
+  background: rgba(255,255,255,0.02);
   border: 1px solid var(--border);
-  border-radius: 12px;
+  border-radius: var(--radius);
+}
+.panel{
   overflow: hidden;
   margin-bottom: 24px;
 }
@@ -96,7 +99,7 @@ tbody tr.clickable:hover .name-cell{ color: var(--teal); }
 .sub{ color: var(--text-dim); font-weight: 400; }
 .chevron{ color: var(--text-dim); text-align: right; }
 
-main{ padding: 32px; max-width: 1180px; margin: 0 auto; position: relative; z-index: 1; }
+main{ padding: 32px 24px; max-width: none; position: relative; z-index: 1; }
 .page-head{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px; }
 
 /* ----- Shared background watermark logo ----- */
@@ -104,8 +107,8 @@ main{ padding: 32px; max-width: 1180px; margin: 0 auto; position: relative; z-in
   position: fixed;
   top: 50%; left: 50%;
   transform: translate(-50%, -50%);
-  width: min(70vw, 700px);
-  opacity: 0.08;
+  width: min(50vw, 500px);
+  opacity: 0.021;
   z-index: 0;
   pointer-events: none;
   user-select: none;
@@ -129,8 +132,8 @@ main{ padding: 32px; max-width: 1180px; margin: 0 auto; position: relative; z-in
 .token-cycle-value{ font-size: 20px; color: var(--text-bright); }
 .cycle-arrow{
   background: transparent; border: 1px solid var(--border);
-  color: var(--text-dim); width: 26px; height: 26px; border-radius: 6px;
-  cursor: pointer; font-size: 14px; line-height: 1; flex-shrink: 0;
+  color: var(--text-dim); width: 26px; height: 26px; border-radius: var(--radius-sm);
+  cursor: pointer; font-size: var(--radius); line-height: 1; flex-shrink: 0;
   transition: color 0.12s ease, border-color 0.12s ease;
 }
 .cycle-arrow:hover{ color: var(--teal); border-color: var(--teal-border); }
@@ -167,32 +170,32 @@ main{ padding: 32px; max-width: 1180px; margin: 0 auto; position: relative; z-in
 }
 .all-assets-pill.visible{ display: block; }
 .all-assets-pill .pill-title{
-  font-size: 10px; color: var(--text-dim); text-transform: uppercase;
+  font-size: var(--radius-med); color: var(--text-dim); text-transform: uppercase;
   letter-spacing: 0.06em; margin-bottom: 6px;
 }
 .all-assets-pill .pill-row{
   display: flex; justify-content: space-between; gap: 14px;
-  font-size: 12px; padding: 2px 0;
+  font-size: var(--radius); padding: 2px 0;
 }
 .all-assets-pill .pill-row .pill-name{ color: var(--text-dim); }
-.all-assets-pill .pill-row .pill-value{ color: var(--text-bright); font-family: var(--font-mono); }
+.all-assets-pill .pill-row .pill-value{ color: var(--text-bright); font-family: var(--font-body); }
 
 /* --- dapps breakdown, shown as a compact segmented bar in the page header --- */
 .header-dapps-bar{ flex: 1; min-width: 160px; margin: 0 32px; }
 .segbar{
-  display: flex; width: 100%; height: 10px; border-radius: 5px;
+  display: flex; width: 100%; height: 10px; border-radius: var(--radius-sm);
   overflow: visible; background: transparent; margin-bottom: 6px; gap: 3px;
 }
-.segbar .seg{ height: 100%; border-radius: 3px; }
+.segbar .seg{ height: 100%; border-radius: var(--radius-sm); }
 .segbar-caption{
-  font-size: 11px; text-align: center; white-space: nowrap;
+  font-size: var(--radius); text-align: center; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
 }
 
 /* --- Divider + sub-labels for merged multi-section panels (Tokens + NAV) --- */
 .panel-divider{ height: 1px; background: var(--border-strong); margin: 4px 20px 0; }
 .section-label{
-  font-size: 10px; color: var(--text-dim); text-transform: uppercase;
+  font-size: var(--radius-med); color: var(--text-dim); text-transform: uppercase;
   letter-spacing: 0.08em; margin-bottom: 10px;
 }
 
@@ -204,7 +207,7 @@ select.styled-select, input[type="text"], input[type="date"]{
   padding: 8px 12px;
   border-radius: var(--radius-sm);
   font-family: var(--font-body);
-  font-size: 13px;
+  font-size: var(--radius);
 }
 select.styled-select:focus, input[type="text"]:focus, input[type="date"]:focus{
   outline:none; border-color: var(--teal-border);
@@ -212,10 +215,10 @@ select.styled-select:focus, input[type="text"]:focus, input[type="date"]:focus{
 .btn-primary{
   background: var(--teal); color:#06201c; border:none;
   padding:9px 18px; border-radius:var(--radius-sm);
-  font-weight:600; font-size:13px; cursor:pointer;
+  font-weight:600; font-size:var(--radius); cursor:pointer;
 }
 .btn-primary:hover{ background:#3fc9ae; }
-.control-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:13px; color:var(--text-dim); }
+.control-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:var(--radius); color:var(--text-dim); }
 
 /* --- Custom scrollbar, matches theme --- */
 html{
@@ -231,7 +234,7 @@ html{
 }
 ::-webkit-scrollbar-thumb{
   background: var(--border-strong);
-  border-radius: 6px;
+  border-radius: var(--radius-sm);
   border: 2px solid var(--bg-solid);
 }
 ::-webkit-scrollbar-thumb:hover{
@@ -257,7 +260,7 @@ html{
 .ticker-item{
   display: inline-flex; align-items: center; gap: 8px;
   padding: 0 22px;
-  font-size: 12px;
+  font-size: var(--radius);
 }
 .ticker-item .sym{ color: var(--text-dim); letter-spacing: 0.04em; }
 .ticker-item .price{ color: var(--text-bright); }
@@ -283,7 +286,7 @@ html{
 
 nav.links{ display: flex; gap: 26px; flex-wrap: wrap; }
 nav.links a{
-  color: var(--text-dim); text-decoration: none; font-size: 13px; font-weight: 500;
+  color: var(--text-dim); text-decoration: none; font-size: var(--radius); font-weight: 500;
   padding: 6px 0; border-bottom: 2px solid transparent;
 }
 nav.links a.active{ color: var(--text-bright); border-bottom-color: var(--teal); }
@@ -292,19 +295,18 @@ nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
 .nav-right{ display: flex; align-items: center; gap: 14px; }
 .nav-cta{
   background: var(--teal-dim); color: var(--teal); border: 1px solid var(--teal-border);
-  padding: 8px 16px; border-radius: var(--radius-sm); font-size: 13px; font-weight: 600; cursor: pointer;
+  padding: 8px 16px; border-radius: var(--radius-sm); font-size: var(--radius); font-weight: 600; cursor: pointer;
 }
 .nav-cta:hover{ background: rgba(79,217,190,0.18); }
 
 @media (max-width: 860px){
-  nav.links{ display: none; } /* mobile nav pattern to be addressed in a follow-up pass */
+  nav.links{ display: none; }
 }
 
-/* ----- diagnostics ----------------------------------------------------------- */
-/* Requires <body class="diag-page"> on diagnostics.html so these rules don't
-   bleed into index.html / diy.html (see conversation — bare `body{}` selector
-   was flagged as a rendering-break risk once merged into one shared file). */
+a.brand{ color: inherit; text-decoration: none; cursor: pointer; }
+a.brand:hover{ text-decoration: none; }
 
+/* ----- diagnostics ----------------------------------------------------------- */
 #header { margin-bottom: 28px; }
 
 #header h2 {
@@ -330,33 +332,6 @@ nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
   margin: 20px 0 8px 2px;
 }
 
-.diag-row {
-  padding: 13px 16px;
-  background: rgba(255,255,255,0.03);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 8px;
-  margin-bottom: 7px;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fadeUp 0.4s ease forwards;
-}
-
-.diag-row-top {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: space-between;
-  gap: 12px;
-}
-
-.diag-row-left {
-  display: flex;
-  align-items: center;
-  gap: 8px;
-  flex: 1;
-  min-width: 0;
-}
-
 .dot {
   width: 7px;
   height: 7px;
@@ -365,82 +340,6 @@ nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
 }
 .dot-pass { background: var(--green); box-shadow: 0 0 6px rgba(95,217,168,0.53); }
 .dot-fail { background: var(--red); box-shadow: 0 0 6px rgba(255,107,107,0.53); }
-
-.diag-label {
-  font-size: 13px;
-  color: var(--text);
-  letter-spacing: 0.02em;
-}
-
-.diag-sublabel {
-  font-size: 11px;
-  color: rgba(200,216,232,0.38);
-  margin-left: 4px;
-  letter-spacing: 0.04em;
-}
-
-.diag-counts {
-  font-size: 11px;
-  color: rgba(200,216,232,0.32);
-  white-space: nowrap;
-  margin-left: 6px;
-}
-
-.diag-counts-fail { color: #ff9999; } /* intentionally distinct lighter red, not --red */
-
-.diag-row-right {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  flex-shrink: 0;
-}
-
-.diag-status {
-  font-size: 10px;
-  color: rgba(200,216,232,0.4);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  text-align: right;
-  line-height: 1.4;
-}
-
-.diag-pct {
-  font-size: 13px;
-  font-weight: 600;
-  min-width: 52px;
-  text-align: right;
-}
-
-.diag-total {
-  font-size: 13px;
-  font-weight: 600;
-}
-
-.diag-bar-wrap {
-  width: 100%;
-  height: 3px;
-  background: rgba(255,255,255,0.07);
-  border-radius: 2px;
-  margin-top: 9px;
-  overflow: hidden;
-}
-
-.diag-bar-fill {
-  height: 100%;
-  border-radius: 2px;
-  transition: width 1.2s cubic-bezier(0.4,0,0.2,1);
-}
-
-.diag-failures {
-  margin-top: 9px;
-  padding: 7px 10px;
-  background: rgba(255,107,107,0.07);
-  border-left: 2px solid rgba(255,107,107,0.5);
-  border-radius: 0 4px 4px 0;
-  font-size: 11px;
-  color: #ff9999; /* intentionally distinct lighter red, not --red */
-  line-height: 1.7;
-}
 
 .diag-fail-banner {
   display: flex;
@@ -454,14 +353,6 @@ nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
   font-size: 13px;
   color: var(--red);
   font-weight: 600;
-  opacity: 0;
-  animation: fadeUp 0.4s ease forwards;
-}
-
-hr.diag-divider {
-  border: none;
-  border-top: 1px solid rgba(255,255,255,0.05);
-  margin: 18px 0;
 }
 
 .health-row {
@@ -471,9 +362,6 @@ hr.diag-divider {
   margin-top: 24px;
 }
 .health-box {
-  background: rgba(255,255,255,0.02);
-  border: 1px solid rgba(255,255,255,0.06);
-  border-radius: 8px;
   padding: 18px;
 }
 .health-box-coverage { flex: 1; }
@@ -495,9 +383,6 @@ hr.diag-divider {
   border-radius: 6px;
   font-size: 12px;
   gap: 10px;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fadeUp 0.4s ease forwards;
 }
 .task-compact:hover { background: rgba(255,255,255,0.04); }
 .task-compact-left { display: flex; align-items: center; gap: 8px; }
@@ -547,19 +432,12 @@ hr.diag-divider {
   margin: 1px 0;
 }
 
-@keyframes fadeUp {
-  to { opacity: 1; transform: translateY(0); }
-}
-
 .task-row {
   padding: 11px 14px;
   border-radius: 8px;
   border: 1px solid rgba(255,255,255,0.06);
   border-left-width: 3px;
   margin-bottom: 7px;
-  opacity: 0;
-  transform: translateY(8px);
-  animation: fadeUp 0.4s ease forwards;
 }
 
 .task-row-pass {
@@ -688,8 +566,6 @@ hr.diag-divider {
   color: var(--green);
 }
 
-main.diag-main { padding: 32px 24px; max-width: none; }
-
 .seg-labeled {
   display: flex;
   align-items: center;
@@ -716,16 +592,8 @@ main.diag-main { padding: 32px 24px; max-width: none; }
 }
 
 /* ----- diy -------------------------------------------------------------------- */
-
 .value-display{ color:var(--text-bright); font-family: var(--font-mono); font-size:13px; }
 
-/* Page-specific: use full page width instead of the site-wide centered
-   1180px main column — charts benefit from the extra room, and this page
-   doesn't need to match the nav's full-width feel with a big empty gutter.
-   Scoped to main.diy-main (add this class to diy.html's <main> tag) — a
-   bare `main{}` selector here would win the cascade sitewide and kill
-   index.html's centered layout, the same bleed risk as the body rule above. */
-main.diy-main{ max-width: none; margin: 0; }
 .rotate-btn{
   background: var(--teal-dim); color:var(--teal); border:1px solid var(--teal-border);
   padding:6px 10px; border-radius:var(--radius-sm); cursor:pointer; font-size:11px; width:100%;
@@ -758,3 +626,57 @@ main.diy-main{ max-width: none; margin: 0; }
 }
 .range-btn:hover{ color:var(--text-bright); }
 .range-btn.active{ background:var(--teal-dim); border-color:var(--teal-border); color:var(--teal); font-weight:600; }
+
+/* ----- pools -------------------------------------------------------------------- */
+.pools-layout{
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 20px;
+  align-items: start;
+}
+.pools-left{
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+/* Compact variant of .segbar for the Pool Name table's TVL column —
+   sits under the dollar figure inside a table cell, so it needs to be
+   slimmer than the default 10px used in the bigger Dashboard bars. */
+.pool-tvl-bar{
+  height: 5px;
+  margin-top: 5px;
+  margin-bottom: 0;
+}
+/* Venn diagram tooltip + pool table styling — shared by pools.html and
+   profile.html, both of which render the same #vennChart/#poolTable pattern. */
+.venntooltip {
+  position: absolute;
+  text-align: center;
+  min-width: 200px;
+  max-width: 320px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  color: var(--text-bright);
+  padding: 8px 12px;
+  border-radius: 8px;
+  opacity: 0;
+  font-family: Inter, -apple-system, system-ui, sans-serif;
+  font-size: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+}
+#vennChart{ display:flex; justify-content:center; padding:12px 0; }
+#poolTable{ width:100%; border-collapse:collapse; font-size:13px; }
+#poolTable th{
+  text-align:left; padding:12px 20px; color:var(--text-dim);
+  font-size:11px; text-transform:uppercase; letter-spacing:0.06em; font-weight:500;
+  border-bottom:1px solid var(--border);
+}
+#poolTable td{ padding:14px 20px; border-top:1px solid var(--border); }
+#poolTable td[colspan='5']{ padding: 8px 20px; }
+#poolTable tr.divider-row td{ padding:0; border-top:none; }
+#poolTable tr.divider-row hr{ display:none; }
+#poolTable tr:hover td{ background: var(--surface-hover); }
+#poolTable td a{ color: var(--text-bright); font-weight:600; text-decoration:none; }
+#poolTable td a:hover{ color: var(--teal); text-decoration:none; }
+#poolTable hr{ border:none; height:1px; background:var(--border-strong); margin:0; padding:0; }

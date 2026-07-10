@@ -4,82 +4,54 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol Pools</title>
-    <link rel="stylesheet" href="protocol.css?version=1">
+    <link rel="stylesheet" href="protocol.css?version=7">
     <script src='https://d3js.org/d3.v4.min.js'></script>
-    <style>
-     .venntooltip {
-        position: absolute;
-        text-align: center;
-        min-width: 200px;
-        max-width: 320px;
-        background: var(--surface);
-        border: 1px solid var(--border-strong);
-        color: var(--text-bright);
-        padding: 8px 12px;
-        border-radius: 8px;
-        opacity: 0;
-        font-family: Inter, -apple-system, system-ui, sans-serif;
-        font-size: 12px;
-        box-shadow: 0 8px 24px rgba(0,0,0,0.45);
-     }
-     #poolTable{ width:100%; border-collapse:collapse; font-size:13px; }
-     #poolTable th{
-        text-align:left; padding:12px 20px; color:var(--text-dim);
-        font-size:11px; text-transform:uppercase; letter-spacing:0.06em; font-weight:500;
-        border-bottom:1px solid var(--border);
-     }
-     #poolTable td{ padding:14px 20px; border-top:1px solid var(--border); }
-     #poolTable td[colspan='5']{ padding: 8px 20px; }
-     #poolTable tr.divider-row td{ padding:0; border-top:none; }
-     #poolTable tr.divider-row hr{ display:none; }
-     #poolTable tr:hover td{ background: var(--surface-hover); }
-     #poolTable td a{ color: var(--text-bright); font-weight:600; text-decoration:none; }
-     #poolTable td a:hover{ color: var(--teal); text-decoration:none; }
-     #poolTable hr{ border:none; height:1px; background:var(--border-strong); margin:0; padding:0; }
-     #vennChart{ display:flex; justify-content:center; padding:12px 0; }
-    </style>
 </head>
 
 <body>
-
   <div id="app-ticker"></div>
   <div id="app-nav"></div>
 
   <main>
-    <div class="page-head">
-      <h1>Pools</h1>
-      <div class="sub">Pivot Pools TVL&nbsp; <span class="num tvl" style="color:var(--text-bright);font-size:15px;">$0.00</span></div>
-    </div>
+    <div class="pools-layout">
+      <div class="pools-left">
+        <div class="panel">
+          <div class="panel-head" style="display:flex; align-items:center; justify-content:space-between;">
+            <span>Pool Overview</span>
+            <span class="sub">Pivot Pools TVL&nbsp; <span class="num tvl" style="color:var(--text-bright);">$0.00</span></span>
+          </div>
+          <div id='vennChart'></div>
+        </div>
 
-    <div class="panel">
-      <div class="panel-head">Pool Overview</div>
-      <table id="poolTable" border="0" width="100%">
-       <tr><td colspan='5'><div id='vennChart'></div></td></tr>
-       <tr class="divider-row"><td colspan='5'><hr/></td></tr>
-       <tr>
-        <th>Pool Name</th><th>incept</th><th>TVL</th><th>ROI</th><th>APR</th>
-       </tr>
-
-       <!-- data for pools inserted here via javascript -->
-
-       <tr class="divider-row"><td colspan='5'><hr/></td></tr>
-       <tr><th colspan='5'>Non-pool stakes</th></tr>
-
-       <!-- data for treasure and echo pool inserted here -->
-
-      </table>
-    </div>
-
-    <p style="margin-top:8px;">
-      <a href='#'
-         onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#1-the-pivot-pools";'>
+        <p style="margin:0;">
+          <a href='#'
+             onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#1-the-pivot-pools";'>
 Learn more <img src='imgs/leave-site-2.png' width='16'/></a>
 about the Pivot pools.<br/>
-      <a href='#'
-         onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/articles/staking.md";'>
+          <a href='#'
+             onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/articles/staking.md";'>
 Learn more <img src='imgs/leave-site-2.png' width='16'/></a>
 about amplified staking.
-    </p>
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">Pool Name</div>
+        <table id="poolTable" border="0" width="100%">
+         <tr>
+          <th>Pool Name</th><th>incept</th><th>TVL</th><th>ROI</th><th>APR</th>
+         </tr>
+
+         <!-- data for pools inserted here via javascript -->
+
+         <tr class="divider-row"><td colspan='5'><hr/></td></tr>
+         <tr><th colspan='5'>Non-pool stakes</th></tr>
+
+         <!-- data for treasure and echo pool inserted here -->
+
+        </table>
+      </div>
+    </div>
   </main>
 
     <script src="libs/table.js"></script>
@@ -89,8 +61,50 @@ about amplified staking.
     <script src='libs/charts/venn.js'></script>
     <script src='libs/dom.js'></script>
     <script src="libs/pool-assets.js"></script>
+    <script src="libs/pool-health.js"></script>
     <script src='libs/chrome.js'></script>
-    <script>indexPools();</script>
+    <script>
+       indexPools('wallets', '', 1).then(() => {
+          // pool-health.js may not have loaded correctly, or a given run may
+          // simply have no data yet — bail quietly rather than error.
+          if (typeof poolHealth === 'undefined' || !poolHealth.pools) return;
 
+          const healthByPool = {};
+          poolHealth.pools.forEach(p => { healthByPool[p.pool] = parseUSD(p.available); });
+
+          // Uncommitted amounts are often tiny relative to total pool TVL —
+          // floor the segment width so it stays a visible sliver instead of
+          // disappearing at sub-pixel width, same pattern as the Dashboard's
+          // token/TVL breakdown bars.
+          const UNCOMMITTED_MIN_PCT = 4;
+
+          document.querySelectorAll('#poolTable tr').forEach(tr => {
+             const nameCell = tr.cells && tr.cells[0];
+             if (!nameCell) return;
+             const poolName = nameCell.textContent.trim();
+             if (!(poolName in healthByPool)) return; // no health data for this row — leave plain TVL text as-is
+
+             const tvlCell = tr.cells[2];
+             if (!tvlCell) return;
+
+             const totalTvl = parseUSD(tvlCell.textContent);
+             const uncommitted = healthByPool[poolName];
+             if (!totalTvl || totalTvl <= 0) return; // guard against div-by-zero / negative-TVL rows
+
+             const rawPct = (uncommitted / totalTvl) * 100;
+             const uncommittedPct = Math.min(100, Math.max(rawPct, UNCOMMITTED_MIN_PCT));
+             const activePct = 100 - uncommittedPct;
+             const active = totalTvl - uncommitted;
+
+             tvlCell.innerHTML = `
+                <div class="num">${showUsd(totalTvl)}</div>
+                <div class="segbar pool-tvl-bar" title="Active: ${showUsd(active)} · Uncommitted: ${showUsd(uncommitted)}">
+                   <div class="seg" style="width:${activePct.toFixed(2)}%;background:var(--teal);"></div>
+                   <div class="seg" style="width:${uncommittedPct.toFixed(2)}%;background:var(--gold);"></div>
+                </div>`;
+          });
+       });
+    </script>
+    
 </body>
 </html>

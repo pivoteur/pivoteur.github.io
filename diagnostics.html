@@ -1,13 +1,9 @@
 <html>
  <head>
   <title>Protocol Health</title>
-  <link rel="stylesheet" href="protocol.css?version=1">
+  <link rel="stylesheet" href="protocol.css?version=6">
   <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap'>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
-  <style>
-    body{ padding: 0; }
-    main.diag-main{ padding: 32px 24px; max-width: none; }
-  </style>
   <script>
     const covColor = d3.scaleLinear()
       .domain([0, 40, 60, 75, 90, 100])
@@ -22,16 +18,13 @@
 
   <img class="bg-watermark" src="imgs/pivot-logo-sillo-nior.png" alt="">
 
-  <main class="diag-main">
-  <div id="header">
-   <h2>Protocol Health</h2>
-   <div id="stamp">Loading...</div>
-  </div>
+  <main>
   <div class="health-row">
     <div class="health-box health-box-coverage">
       <div class="diag-section-heading" style="margin-top:0;">Code Coverage</div>
       <div id="coverage-bar-wrap"></div>
       <div id="graph-legend"></div>
+      <div id="closed-issues"></div>
     </div>
     <div class="health-box health-box-tasks">
       <div class="diag-section-heading" style="margin-top:0;">Automated Tasks</div>
@@ -68,10 +61,35 @@
       return d.toLocaleString('en-US', { month: 'short', day: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true });
     }
 
-    function renderTaskRow(name, isPass, pillLabel, countHtml, ranAt, delay) {
+    function renderClosedIssues(closedIssues, date) {
+      const active = closedIssues.filter(r => r.closed_today > 0);
+      let html = `<div class="legend-divider" style="margin:14px 0 10px"></div>
+        <div class="legend-heading">Issues Closed Today
+          <span class="quotes-date">${date}</span>
+        </div>`;
+
+      if (active.length === 0) {
+        html += `<div class="quotes-unavailable">Pivot Tech internal is currently working diligently. No issues closed today.</div>`;
+      } else {
+        active.forEach(r => {
+          const name = r.repo.split('/')[1];
+          html += `<div class="legend-row">
+            <div class="legend-left">
+              <span class="legend-dot" style="background:var(--green);box-shadow:0 0 5px rgba(95,217,168,0.53)"></span>
+              <span class="legend-label">${name}</span>
+            </div>
+            <span class="legend-value" style="color:var(--green)">${r.closed_today} closed</span>
+          </div>`;
+        });
+      }
+
+      document.getElementById('closed-issues').innerHTML = html;
+    }
+
+    function renderTaskRow(name, isPass, pillLabel, countHtml, ranAt) {
       if (isPass) {
         const timeHtml = ranAt && ranAt !== 'unknown' ? `<span class="task-time">${timeAgo(ranAt)}</span>` : '';
-        return `<div class="task-compact" style="animation-delay:${delay}ms">
+        return `<div class="task-compact">
           <div class="task-compact-left"><span class="dot dot-pass"></span><span class="task-name">${name}</span></div>
           ${countHtml}${timeHtml}
         </div>`;
@@ -80,7 +98,7 @@
       const timeHtml = ranAt && ranAt !== 'unknown'
         ? `<div class="task-time">${timeAgo(ranAt)}<br>${fmtDate(ranAt)}</div>`
         : `<div class="task-time">—</div>`;
-      return `<div class="task-row task-row-${cls}" style="animation-delay:${delay}ms">
+      return `<div class="task-row task-row-${cls}">
         <div class="task-row-top">
           <span class="task-name">${name}</span>
           <div class="task-right">
@@ -97,7 +115,9 @@
       fetch('data/workflows.json').then(r => { if (!r.ok) throw new Error('Could not load workflows.json'); return r.json(); })
     ])
     .then(([text, workflowsData]) => {
-      const workflows = workflowsData.workflows || [];
+      const { workflows = [], closed_issues = [] } = workflowsData;
+      renderClosedIssues(closed_issues, workflowsData.date || '');
+
       const lines = text.split('\n');
       let stamp = '';
       const entries = [];
@@ -147,13 +167,11 @@
        const dappsEntry = entries.find(e => e.crate === 'dapps');
        // ----- Automated tasks ------------------------------------------------------
        let taskHtml  = '';
-       let delay = 0;
 
        workflows.forEach(w => {
-        const isPass = w.status === 'success';
-        const pill   = w.status === 'unknown' ? 'UNKNOWN' : (isPass ? 'SUCCESS' : 'FAILED');
-        taskHtml += renderTaskRow(w.name, isPass, pill, '', w.ran_at, delay);
-        delay += 60; 
+         const isPass = w.status === 'success';
+         const pill   = w.status === 'unknown' ? 'UNKNOWN' : (isPass ? 'SUCCESS' : 'FAILED');
+         taskHtml += renderTaskRow(w.name, isPass, pill, '', w.ran_at);
        });
 
        // ----- dapps itr row at the bottom ------------------------------------------------------
@@ -163,12 +181,12 @@
          const color     = covColor(pct);
          const countHtml = `<span class="task-count" style="color:${color}">${dappsEntry.total}/${dappsEntry.totalOf}</span>`;
          if (isPass) {
-           taskHtml += `<div class="task-compact" style="animation-delay:${delay}ms">
+           taskHtml += `<div class="task-compact">
              <div class="task-compact-left"><span class="dot dot-pass"></span><span class="task-name">ITR</span></div>
              ${countHtml}
            </div>`;
          } else {
-           taskHtml += `<div class="task-row task-row-fail" style="animation-delay:${delay}ms">
+           taskHtml += `<div class="task-row task-row-fail">
              <div class="task-row-top">
                <span class="task-name">ITR</span>
                <span class="task-pill task-pill-fail">FAILURE</span>
@@ -179,7 +197,6 @@
         }
 
        document.getElementById('task-list').innerHTML = taskHtml;
-       document.getElementById('stamp').textContent = stamp ? 'Last run: ' + stamp : '';
 
        // ---- Coverage segmented bar --------------------------------
        const chartCrates = ['book', 'libs', 'quizzes'];
@@ -294,7 +311,6 @@
 
      })
      .catch(err => {
-       document.getElementById('stamp').textContent = 'Error loading diagnostics data';
        document.getElementById('graph-legend').innerHTML =
          `<div class="diag-fail-banner">Could not load data: ${err.message}</div>`;
      });
