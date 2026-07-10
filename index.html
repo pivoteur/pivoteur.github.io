@@ -4,9 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol</title>
-    <link rel="stylesheet" href="protocol.css?version=5">
-    <script> const version = 25; 
-      // When the versoin number updates for `protocol.css`, update the version number here, too. 
+    <link rel="stylesheet" href="protocol.css?version=7">
+    <script> const version = 27; 
+      // When the versoin number updates for `protocol.css?version=#`, update `const version = #` here, too 
     </script> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
@@ -16,14 +16,10 @@
   <div id="app-nav"></div>
 
   <main>
-    <div class="page-head">
-      <h1>Dashboard</h1>
-      <div class="sub">Protocol NAV&nbsp; <span class="num tvl" style="color:var(--text-bright);font-size:15px;">$0.00</span></div>
-    </div>
-
     <div class="panel">
       <div class="panel-head" style="display:flex; align-items:center; justify-content:space-between;">
         <span>NAV</span>
+        <span class="sub">Protocol NAV&nbsp; <span class="num tvl" style="color:var(--text-bright);">$0.00</span></span>
         <div style="display:flex; gap:4px;">
           <button class="range-btn" data-days="30">1M</button>
           <button class="range-btn" data-days="90">3M</button>

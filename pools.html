@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol Pools</title>
-    <link rel="stylesheet" href="protocol.css?version=5">
+    <link rel="stylesheet" href="protocol.css?version=6">
     <script src='https://d3js.org/d3.v4.min.js'></script>
 </head>
 
@@ -13,15 +13,13 @@
   <div id="app-nav"></div>
 
   <main>
-    <div class="page-head">
-      <h1>Pools</h1>
-      <div class="sub">Pivot Pools TVL&nbsp; <span class="num tvl" style="color:var(--text-bright);font-size:15px;">$0.00</span></div>
-    </div>
-
     <div class="pools-layout">
       <div class="pools-left">
         <div class="panel">
-          <div class="panel-head">Pool Overview</div>
+          <div class="panel-head" style="display:flex; align-items:center; justify-content:space-between;">
+            <span>Pool Overview</span>
+            <span class="sub">Pivot Pools TVL&nbsp; <span class="num tvl" style="color:var(--text-bright);">$0.00</span></span>
+          </div>
           <div id='vennChart'></div>
         </div>
 
