@@ -100,7 +100,7 @@ const assets = names => {
    return ans;
 };
 
-async function indexPools(wallets = 'wallets', subDir = '') {
+async function indexPools(wallets = 'wallets', subDir = '', startRowIx = 3) {
    let file = 'data/' + subDir + '/' + wallets + '.tsv';
    const pools = [];
    const nonPools = [];
@@ -125,7 +125,7 @@ async function indexPools(wallets = 'wallets', subDir = '') {
          });
          replaceText('tvl', showUsd(tot));
 
-         let rowIx = 3;
+         let rowIx = startRowIx;
          pools.forEach(row => pivotTR("poolTable", rowIx++, row));
          let stakeIx = rowIx + 2; // to hop over the horizontal rule
          nonPools.forEach(row => pivotTR("poolTable", stakeIx++, row));

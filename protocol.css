@@ -1,7 +1,7 @@
 /* ==========================================================================
    Pivot Protocol — protocol.css
    Single combined stylesheet for all pages. Sectioned below:
-   tokens -> chrome -> diagnostics -> diy
+   tokens -> chrome -> diagnostics -> diy -> pools
    ========================================================================== */
 
 /* ----- tokens ------------------------------------------------------------- */
@@ -636,3 +636,44 @@ main.diy-main{ max-width: none; margin: 0; }
 }
 .range-btn:hover{ color:var(--text-bright); }
 .range-btn.active{ background:var(--teal-dim); border-color:var(--teal-border); color:var(--teal); font-weight:600; }
+
+/* ----- pools -------------------------------------------------------------------- */
+main.pools-main{ padding: 32px 24px; max-width: none; }
+.pools-layout{
+  display: grid;
+  grid-template-columns: 1fr 1.4fr;
+  gap: 20px;
+  align-items: start;
+}
+/* Venn diagram tooltip + pool table styling — shared by pools.html and
+   profile.html, both of which render the same #vennChart/#poolTable pattern. */
+.venntooltip {
+  position: absolute;
+  text-align: center;
+  min-width: 200px;
+  max-width: 320px;
+  background: var(--surface);
+  border: 1px solid var(--border-strong);
+  color: var(--text-bright);
+  padding: 8px 12px;
+  border-radius: 8px;
+  opacity: 0;
+  font-family: Inter, -apple-system, system-ui, sans-serif;
+  font-size: 12px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
+}
+#vennChart{ display:flex; justify-content:center; padding:12px 0; }
+#poolTable{ width:100%; border-collapse:collapse; font-size:13px; }
+#poolTable th{
+  text-align:left; padding:12px 20px; color:var(--text-dim);
+  font-size:11px; text-transform:uppercase; letter-spacing:0.06em; font-weight:500;
+  border-bottom:1px solid var(--border);
+}
+#poolTable td{ padding:14px 20px; border-top:1px solid var(--border); }
+#poolTable td[colspan='5']{ padding: 8px 20px; }
+#poolTable tr.divider-row td{ padding:0; border-top:none; }
+#poolTable tr.divider-row hr{ display:none; }
+#poolTable tr:hover td{ background: var(--surface-hover); }
+#poolTable td a{ color: var(--text-bright); font-weight:600; text-decoration:none; }
+#poolTable td a:hover{ color: var(--teal); text-decoration:none; }
+#poolTable hr{ border:none; height:1px; background:var(--border-strong); margin:0; padding:0; }
