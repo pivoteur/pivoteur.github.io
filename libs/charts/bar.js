@@ -67,6 +67,7 @@ const barChartTbl = (labels, assets) => {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                legend: { labels: { color: 'white' } },
                customCanvasBackgroundColor: { color: 'transparent' }
