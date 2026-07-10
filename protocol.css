@@ -666,7 +666,7 @@ a.brand:hover{ text-decoration: none; }
   box-shadow: 0 8px 24px rgba(0,0,0,0.45);
 }
 #vennChart{ display:flex; justify-content:center; padding:12px 0; }
-#poolTable{ width:100%; border-collapse:collapse; font-size:13px; }
+#poolTable{ width:100%; border-collapse:collapse; font-size:13px; table-layout:fixed; }
 #poolTable th{
   text-align:left; padding:12px 20px; color:var(--text-dim);
   font-size:11px; text-transform:uppercase; letter-spacing:0.06em; font-weight:500;
