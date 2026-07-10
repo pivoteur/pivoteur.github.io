@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>$UNDEAD Metrics</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="protocol.css?version=2">
+    <link rel="stylesheet" href="protocol.css?version=4">
     <style>
       .metric-table th, .metric-table td{ text-align:left; }
       .metric-table th:not(:first-child), .metric-table td:not(:first-child){ text-align:right; }
@@ -15,6 +15,8 @@
 
   <div id="app-ticker"></div>
   <div id="app-nav"></div>
+
+  <img class="bg-watermark" src="imgs/wagyu-logo-sillo-nior.png" alt="">
 
   <main>
     <div class="page-head">
@@ -32,7 +34,7 @@
           <div style="display:flex; gap:4px;">
             <button class="range-btn active" data-days="30">1M</button>
             <button class="range-btn" data-days="90">3M</button>
-            <button class="range-btn" data-days="100">MAX</button>
+            <button class="range-btn" data-days="0">MAX</button>
           </div>
         </div>
         <div style="padding:16px;"><canvas id="quoteChart" width="400" height="200"></canvas></div>
@@ -130,6 +132,7 @@
    // already sorted ascending by sortedTable().
    const MS_PER_DAY = 1000 * 60 * 60 * 24;
    function filterByDays(tabl, days) {
+      if (!days) return tabl; // 0 = MAX = every row, unfiltered
       const latest = new Date(tabl[tabl.length - 1][0]);
       return tabl.filter(r => (latest - new Date(r[0])) / MS_PER_DAY <= days);
    }
