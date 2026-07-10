@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol Pools</title>
-    <link rel="stylesheet" href="protocol.css?version=7">
+    <link rel="stylesheet" href="protocol.css?version=8">
     <script src='https://d3js.org/d3.v4.min.js'></script>
 </head>
 
@@ -38,6 +38,13 @@ about amplified staking.
       <div class="panel">
         <div class="panel-head">Pool Name</div>
         <table id="poolTable" border="0" width="100%">
+         <colgroup>
+           <col style="width:22%;">
+           <col style="width:13%;">
+           <col style="width:32%;">
+           <col style="width:15%;">
+           <col style="width:18%;">
+         </colgroup>
          <tr>
           <th>Pool Name</th><th>incept</th><th>TVL</th><th>ROI</th><th>APR</th>
          </tr>
@@ -98,9 +105,9 @@ about amplified staking.
 
              tvlCell.innerHTML = `
                 <div class="num">${showUsd(totalTvl)}</div>
-                <div class="segbar pool-tvl-bar" title="Active: ${showUsd(active)} · Uncommitted: ${showUsd(uncommitted)}">
-                   <div class="seg" style="width:${activePct.toFixed(2)}%;background:var(--teal);"></div>
-                   <div class="seg" style="width:${uncommittedPct.toFixed(2)}%;background:var(--gold);"></div>
+                <div class="segbar pool-tvl-bar">
+                   <div class="seg" style="width:${activePct.toFixed(2)}%;background:var(--teal);" title="Active: ${showUsd(active)}"></div>
+                   <div class="seg" style="width:${uncommittedPct.toFixed(2)}%;background:var(--gold);" title="Uncommitted: ${showUsd(uncommitted)}"></div>
                 </div>`;
           });
        });
