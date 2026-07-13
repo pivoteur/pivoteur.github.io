@@ -60,7 +60,6 @@ a:hover{ text-decoration: underline; }
 h1, h2, h3{ color: var(--text-bright); letter-spacing: -0.01em; }
 
 .num{ font-family: var(--font-body); }
-.pos{ color: var(--green); }
 .neg{ color: var(--red); }
 
 canvas{ background: transparent; }
@@ -92,12 +91,7 @@ thead th{
   letter-spacing: 0.06em; font-weight: 500;
 }
 tbody td{ padding: 14px 20px; border-top: 1px solid var(--border); }
-tbody tr.clickable{ cursor: pointer; transition: background 0.12s ease; }
-tbody tr.clickable:hover{ background: var(--surface-hover); }
-tbody tr.clickable:hover .name-cell{ color: var(--teal); }
-.name-cell{ color: var(--text-bright); font-weight: 600; transition: color 0.12s ease; }
 .sub{ color: var(--text-dim); font-weight: 400; }
-.chevron{ color: var(--text-dim); text-align: right; }
 
 main{ padding: 32px 24px; max-width: none; position: relative; z-index: 1; }
 .page-head{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px; }
@@ -113,72 +107,6 @@ main{ padding: 32px 24px; max-width: none; position: relative; z-index: 1; }
   pointer-events: none;
   user-select: none;
 }
-
-.stat-row{ display: grid; grid-template-columns: repeat(3,1fr); gap: 12px; margin-bottom: 32px; }
-.stat{ background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); padding: 16px 18px; }
-.stat .label{ font-size: 11px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.06em; margin-bottom: 8px; }
-.stat .value{ font-size: 20px; color: var(--text-bright); }
-
-/* ----- Auto-cycling token carousel (used in stat cards) ----- */
-.token-cycle{
-  display: flex; align-items: center; justify-content: space-between;
-  gap: 8px; margin-top: 4px;
-}
-.token-cycle-content{ text-align: center; flex: 1; min-width: 0; }
-.token-cycle-name{
-  font-size: 12px; color: var(--text-dim); text-transform: uppercase;
-  letter-spacing: 0.06em; margin-bottom: 4px;
-}
-.token-cycle-value{ font-size: 20px; color: var(--text-bright); }
-.cycle-arrow{
-  background: transparent; border: 1px solid var(--border);
-  color: var(--text-dim); width: 26px; height: 26px; border-radius: var(--radius-sm);
-  cursor: pointer; font-size: var(--radius); line-height: 1; flex-shrink: 0;
-  transition: color 0.12s ease, border-color 0.12s ease;
-}
-.cycle-arrow:hover{ color: var(--teal); border-color: var(--teal-border); }
-.token-cycle-dots{
-  display: flex; justify-content: center; gap: 4px; margin-top: 10px; flex-wrap: wrap;
-}
-.token-cycle-dots .dot{
-  width: 5px; height: 5px; border-radius: 50%; background: var(--border-strong);
-  cursor: pointer; transition: background 0.15s ease;
-}
-.token-cycle-dots .dot.active{ background: var(--teal); }
-
-/* --- Tiny logo hover-trigger inside the token cycle card --- */
-.cycle-logo-trigger{
-  width: 14px; height: 14px; object-fit: contain;
-  margin-left: 5px; vertical-align: middle;
-  opacity: 0.55; cursor: pointer;
-  transition: opacity 0.15s ease;
-}
-.cycle-logo-trigger:hover{ opacity: 1; }
-
-/* --- Floating "all assets today" pill, follows the mouse --- */
-.all-assets-pill{
-  position: fixed;
-  z-index: 999;
-  display: none;
-  background: var(--surface);
-  border: 1px solid var(--border-strong);
-  border-radius: var(--radius);
-  padding: 10px 14px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.45);
-  pointer-events: none;
-  max-width: 260px;
-}
-.all-assets-pill.visible{ display: block; }
-.all-assets-pill .pill-title{
-  font-size: var(--radius-med); color: var(--text-dim); text-transform: uppercase;
-  letter-spacing: 0.06em; margin-bottom: 6px;
-}
-.all-assets-pill .pill-row{
-  display: flex; justify-content: space-between; gap: 14px;
-  font-size: var(--radius); padding: 2px 0;
-}
-.all-assets-pill .pill-row .pill-name{ color: var(--text-dim); }
-.all-assets-pill .pill-row .pill-value{ color: var(--text-bright); font-family: var(--font-body); }
 
 /* --- dapps breakdown, shown as a compact segmented bar in the page header --- */
 .header-dapps-bar{ flex: 1; min-width: 160px; margin: 0 32px; }
@@ -218,7 +146,6 @@ select.styled-select:focus, input[type="text"]:focus, input[type="date"]:focus{
   font-weight:600; font-size:var(--radius); cursor:pointer;
 }
 .btn-primary:hover{ background:#3fc9ae; }
-.control-row{ display:flex; gap:10px; align-items:center; flex-wrap:wrap; font-size:var(--radius); color:var(--text-dim); }
 
 /* --- Custom scrollbar, matches theme --- */
 html{
@@ -307,23 +234,6 @@ a.brand{ color: inherit; text-decoration: none; cursor: pointer; }
 a.brand:hover{ text-decoration: none; }
 
 /* ----- diagnostics ----------------------------------------------------------- */
-#header { margin-bottom: 28px; }
-
-#header h2 {
-  font-size: 20px;
-  font-weight: 700;
-  color: var(--text-bright);
-  letter-spacing: -0.01em;
-  margin-bottom: 5px;
-}
-
-#stamp {
-  font-size: 10px;
-  color: rgba(200,216,232,0.35); /* --text at custom opacity */
-  letter-spacing: 0.07em;
-  text-transform: uppercase;
-}
-
 .diag-section-heading {
   font-size: 10px;
   color: rgba(200,216,232,0.3);
@@ -339,7 +249,6 @@ a.brand:hover{ text-decoration: none; }
   flex-shrink: 0;
 }
 .dot-pass { background: var(--green); box-shadow: 0 0 6px rgba(95,217,168,0.53); }
-.dot-fail { background: var(--red); box-shadow: 0 0 6px rgba(255,107,107,0.53); }
 
 .diag-fail-banner {
   display: flex;
@@ -440,11 +349,6 @@ a.brand:hover{ text-decoration: none; }
   margin-bottom: 7px;
 }
 
-.task-row-pass {
-  background: rgba(95,217,168,0.04);
-  border-left-color: var(--green);
-}
-
 .task-row-fail {
   background: rgba(255,107,107,0.06);
   border-left-color: var(--red);
@@ -482,11 +386,6 @@ a.brand:hover{ text-decoration: none; }
   padding: 2px 7px;
   border-radius: 4px;
   text-transform: uppercase;
-}
-
-.task-pill-pass {
-  background: rgba(95,217,168,0.15);
-  color: var(--green);
 }
 
 .task-pill-fail {
