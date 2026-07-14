@@ -2,8 +2,13 @@ name: github-issues
 
 on:
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (print to stdout only, no commit)'
+        type: boolean
+        default: false
   # schedule:
-    # cron ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time
+    # ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time
     # - cron: "40 04 * * *"
 
 permissions:
@@ -39,9 +44,17 @@ jobs:
             --argjson protocol "$PROTOCOL_COUNT" \
             --argjson crypto "$CRYPTO_COUNT" \
             '{date: $date, repos: {"pivoteur.github.io": $site, "protocol": $protocol, "crypto-n-rust": $crypto}}' \
-            > libs/github-issues.json
+            > /tmp/github-issues_out.json
+
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "=== DRY RUN: github-issues.json would be ==="
+            cat /tmp/github-issues_out.json
+          else
+            mv /tmp/github-issues_out.json libs/github-issues.json
+          fi
 
       - name: Commit and push github-issues.json
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         env:
           USER0_NAME: ${{ vars.USER0_NAME }}
           USER0_EMAIL: ${{ secrets.USER0_EMAIL }}
