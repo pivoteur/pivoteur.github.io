@@ -80,7 +80,7 @@ jobs:
         env:
           DRY_RUN: ${{ github.event.inputs.dry_run }}
         run: |
-          if [ "$DRY_RUN" = "true" ]; then here ya go biisshhhhh
+          if [ "$DRY_RUN" = "true" ]; then
             $DAPP $PROTOCOL_ALIAS $LE_DATE
           else
             $DAPP $PROTOCOL_ALIAS $LE_DATE >> data/assets.csv
