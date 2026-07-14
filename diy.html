@@ -5,47 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol DIY Chart++</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="protocol.css?version=3">
-    <style>
-      .value-display{ color:var(--text-bright); font-family: var(--font-mono); font-size:13px; }
-
-      /* Page-specific: use full page width instead of the site-wide centered
-         1180px main column — charts benefit from the extra room, and this page
-         doesn't need to match the nav's full-width feel with a big empty gutter. */
-      main{ max-width: none; margin: 0; }
-      .rotate-btn{
-        background: var(--teal-dim); color:var(--teal); border:1px solid var(--teal-border);
-        padding:6px 10px; border-radius:var(--radius-sm); cursor:pointer; font-size:11px; width:100%;
-      }
-      .rotate-btn:hover{ background: rgba(79,217,190,0.18); }
-
-      /* --- Layout: charts left (main focus), controls right (compact sidebar) --- */
-      .diy-layout{ display:grid; grid-template-columns: 1fr 260px; gap:16px; align-items:start; }
-      @media (max-width: 900px){ .diy-layout{ grid-template-columns: 1fr; } }
-
-      .diy-charts{ display:flex; flex-direction:column; gap:16px; width:100%; }
-      .diy-charts .panel{ width:100%; box-sizing:border-box; }
-
-      .diy-sidebar{ display:flex; flex-direction:column; gap:12px; }
-      .side-box{ padding:12px 14px; }
-      .side-box .panel-head{ padding:0 0 8px; border:none; font-size:9px; }
-
-      .side-field{ margin-bottom:10px; }
-      .side-field:last-child{ margin-bottom:0; }
-      .side-field label{
-        display:block; font-size:10px; color:var(--text-dim); text-transform:uppercase;
-        letter-spacing:0.05em; margin-bottom:4px;
-      }
-      #field1{ width:100%; box-sizing:border-box; }
-      .call-text{ font-size:12px; color:var(--text-bright); line-height:1.5; }
-
-      .range-btn{
-        background:var(--surface-hover); border:1px solid var(--border-strong); color:var(--text-dim);
-        padding:4px 9px; border-radius:var(--radius-sm); cursor:pointer; font-size:11px; text-align:left;
-      }
-      .range-btn:hover{ color:var(--text-bright); }
-      .range-btn.active{ background:var(--teal-dim); border-color:var(--teal-border); color:var(--teal); font-weight:600; }
-    </style>
+    <link rel="stylesheet" href="protocol.css?version=4">
 </head>
 <body>
 
