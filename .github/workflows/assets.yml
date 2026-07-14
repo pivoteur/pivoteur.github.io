@@ -79,7 +79,12 @@ jobs:
       - name: Run assets and log output
         env:
           DRY_RUN: ${{ github.event.inputs.dry_run }}
-        run: $DAPP $PROTOCOL_ALIAS $LE_DATE >> data/assets.csv
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            $DAPP $PROTOCOL_ALIAS $LE_DATE
+          else
+            $DAPP $PROTOCOL_ALIAS $LE_DATE >> data/assets.csv
+          fi
 
       - name: Commit and push results
         if: ${{ github.event.inputs.dry_run != 'true' }}
