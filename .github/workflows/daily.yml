@@ -93,5 +93,11 @@ jobs:
           git config --local user.email "$USER0_EMAIL"
           git config --local user.name "$USER0_NAME"
           git add libs/quotes.json
+
+          if git diff --staged --quiet; then
+            echo "Nothing to commit, skipping push"
+            exit 0
+          fi
+
           git commit -m "Daily quotes JSON for $LE_DATE"
           git push
