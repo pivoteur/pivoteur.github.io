@@ -46,7 +46,7 @@ jobs:
         id: binary-cache
         uses: actions/cache@v4
         with:
-          path: $DAPP_DIR/target/release/$DAPP
+          path: ${{ env.DAPP_DIR }}/target/release/${{ env.DAPP }}
           key: >-
             reinvested-binary-
             ${{ hashFiles(format('{0}/quiz11/a_reinvested/**/*.rs', env.QUIZZES_SRC)) }}-

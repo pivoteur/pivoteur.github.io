@@ -45,7 +45,7 @@ jobs:
         id: binary-cache
         uses: actions/cache@v4
         with:
-          path: protocol/dapps/distributed/target/release/distributed
+          path: ${{ env.DAPP_DIR }}/target/release/${{ env.DAPP }}
           key: >-
             distributed-binary-
             ${{ hashFiles(format('{0}/quiz11/b_distributed/**/*.rs', env.QUIZZES_SRC)) }}-
