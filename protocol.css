@@ -233,6 +233,16 @@ nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
 a.brand{ color: inherit; text-decoration: none; cursor: pointer; }
 a.brand:hover{ text-decoration: none; }
 
+.pre-alpha-badge {
+  display: block;
+  width: max-content;
+  margin: 32px auto 24px;
+  padding: 6px 14px;
+  color: var(--text-dim, var(--text));
+  font-size: 0.85rem;
+  text-align: center;
+}
+
 /* ----- diagnostics ----------------------------------------------------------- */
 .diag-section-heading {
   font-size: 10px;
