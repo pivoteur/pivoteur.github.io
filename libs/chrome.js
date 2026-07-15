@@ -7,6 +7,8 @@
    ========================================================================== */
 
 (function () {
+  const PROTOCOL_VERSION = 28; 
+
   const NAV_LINKS = [
     { label: 'Dashboard',      href: 'index.html' },
     { label: 'Distributions',  href: 'distributions.html' },
@@ -41,6 +43,13 @@
       </div>`;
   }
 
+  function renderVersionBadge() {
+    const badge = document.createElement('div');
+    badge.className = 'pre-alpha-badge';
+    badge.textContent = `pre-α, version ${PROTOCOL_VERSION}`;
+    document.body.appendChild(badge);
+  }
+
   function fmtPrice(v) {
     if (v < 0.01) return v.toFixed(6);
     if (v < 1) return v.toFixed(4);
@@ -49,12 +58,14 @@
   }
 
   function getTickerTokens(quotes) {
+    const ALWAYS_SHOW = ['SAVAX'];
     if (typeof poolAssets === 'undefined' || !poolAssets.assets) {
       console.warn('Pivot ticker: pool-assets.js not found, showing all quoted tokens.');
       return Object.keys(quotes);
     }
     const seen = new Set();
     poolAssets.assets.forEach(pair => pair.forEach(t => seen.add(t)));
+    ALWAYS_SHOW.forEach(t => seen.add(t));
     return Array.from(seen);
   }
 
@@ -81,7 +92,7 @@
   }
 
   renderNav();
-
+  renderVersionBadge();
   fetch('libs/quotes.json')
     .then(r => { if (!r.ok) throw new Error('HTTP ' + r.status); return r.json(); })
     .then(renderTicker)

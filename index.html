@@ -4,10 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol</title>
-    <link rel="stylesheet" href="protocol.css?version=7">
-    <script> const version = 27; 
-      // When the versoin number updates for `protocol.css?version=#`, update `const version = #` here, too 
-    </script> 
+    <link rel="stylesheet" href="protocol.css?version=8"> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -51,7 +48,6 @@
         Learn more <img src="imgs/leave-site-2.png" width="16"/></a>
       about the Pivot Protocol.
     </p>
-    <p class="sub" style="text-align:center; margin-top:4px;">pre-α, version <span class="version">version</span></p>
   </main>
 
     <script src="libs/copy-addy.js"></script>
@@ -144,7 +140,6 @@
    const tokensTotal = showUsd(tokensGrandTotal);
    replaceText('tvl', tokensTotal);
    document.getElementById('tokensTotal').textContent = '· ' + tokensTotal;
-   replaceText('version', version);
 
    // Bar only shows positive-value tokens — a negative-value token would break
    // proportional width the same way dapps' negative treasury figure did.
