@@ -87,7 +87,7 @@ const pivotTR = (tableId, rowIx, row) => {
   let table = document.getElementById(tableId);
   let tr = table.insertRow(rowIx); // remember: we already have a header row
   let { pool, href, incept, roi, apr, tvl } = row;
-  datum(tr, 0, "<a href='" + href + "'>" + pool + "</a>");
+  datum(tr, 0, pool);
   datum(tr, 1, incept);
   datum(tr, 2, tvl);
   datum(tr, 3, roi);
@@ -100,12 +100,12 @@ const assets = names => {
    return ans;
 };
 
-async function indexPools(wallets = 'wallets', subDir = '') {
+async function indexPools(wallets = 'wallets', subDir = '', startRowIx = 3) {
    let file = 'data/' + subDir + '/' + wallets + '.tsv';
    const pools = [];
    const nonPools = [];
    let tot = 0;
-   fetch(file)
+   return fetch(file)
       .then(response => {
          if (!response.ok) {
            throw new Error(wallets);
@@ -125,7 +125,7 @@ async function indexPools(wallets = 'wallets', subDir = '') {
          });
          replaceText('tvl', showUsd(tot));
 
-         let rowIx = 3;
+         let rowIx = startRowIx;
          pools.forEach(row => pivotTR("poolTable", rowIx++, row));
          let stakeIx = rowIx + 2; // to hop over the horizontal rule
          nonPools.forEach(row => pivotTR("poolTable", stakeIx++, row));

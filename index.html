@@ -1,130 +1,199 @@
-<html>
- <head>
-  <title>Pivot Protocol</title>
-  <link rel='stylesheet' href='styles.css?version=19'></link>
- <script>
-  const version=19;   // MAKE SURE THIS MATCHES THE VERSION VALUE (above)
-  let frames = ['undead', 'dash', 'pools', 'prof', 'diy', 'treas', 'diag', 'dist'];
-  const switchFrame = frame => {
-     const i = f => 'iframe_' + f;
-     frames.forEach(fram =>  {
-        document.getElementById(i(fram)).style.display = 'none';
-     });
-     let elframe = document.getElementById(i(frame));
-     elframe.frameBorder = "0";
-     elframe.allowTransparency="true";
-     elframe.height = "750";
-     elframe.width = "100%";
-     elframe.style.backgroundColor="transparent"
-     elframe.style.display = 'block';
-  };
- </script>
- </head>
- <body>
-  <center>
-   <h1>Pivot Protocol</h1>
-   <table border="1" width="85%">
-    <tr>
-     <td style='vertical-align:top' width='20%'>
-      <table border='0'>
-       <tr>
-        <td><a href="#" onclick="switchFrame('dash')">Dashboard</a></td>
-       </tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('dist')">Distributions</a></td>
-       </tr>
-       <tr><td><hr/></td></tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('pools')">Pools</a></td>
-       </tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('treas')">Treasury</a></td>
-       </tr>
-       <tr><td><hr/></td></tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('diy')">DIY Charts++</a></td>
-       </tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('undead')">$UNDEAD</a></td>
-       </tr>
-       <tr><td><hr/></td></tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('prof')">Profile</a></td>
-       </tr>
-       <tr><td><hr/></td></tr>
-       <tr>
-        <td><a href="#" onclick="switchFrame('diag')">Diagnostics</a></td>
-       </tr>
-       <tr><td><hr/></td></tr>
-       <tr><td>Docs</td></tr>
-       <tr>
-        <td>
-         <ul>
-          <li><a href='docs/dear-investors.pdf'>Dear α-investors <img src='imgs/leave-site.png' width='16'/></a></li>
-          <li><a href='https://github.com/pivoteur/biz/blob/main/README.md'>Whitepaper</a></li>
-          <li><a href='https://github.com/pivoteur/biz/blob/main/articles/README.md'>Articles</a></li>
-          <li><a href='https://github.com/pivoteur/biz/blob/main/blog/README.md'>BLOG</a></li>
-         </ul>
-        </td>
-       </tr>
-       <tr><td><hr/></td></tr>
-       <tr><td><a href="https://x.com/pivocateur">Contact us</a></td></tr>
-       <tr><td><hr/></td></tr>
-       <tr><td><em>pre-release α, revision: <span class='version'>1.0</span><em></td></tr>
-       <tr><td><hr/></td></tr>
-      </table>
-     </td>
-     <td width='80%'>
-      <iframe src="dashboard.html" 
-              name="iframe_dash" 
-              id="iframe_dash" 
-              title="Dashboard"
-              height="750"
-              width="100%"
-              style="display:block"></iframe>
-      <iframe src="pools.html"
-              name="iframe_pools"
-              id="iframe_pools"
-              title="Pools"
-              style="display:none"></iframe>
-      <iframe src="login.html"
-              name="iframe_prof"
-              id="iframe_prof"
-              title="Profile"
-              style="display:none"></iframe>
-      <iframe src="diy.html?t1=BTC&t2=ETH"
-              name="iframe_diy"
-              id="iframe_diy"
-              title="Do It Yourself"
-              style="display:none"></iframe>
-      <iframe src="treasury.html"
-              name="iframe_treas"
-              id="iframe_treas"
-              title="Treasury"
-              style="display:none"></iframe>
-      <iframe src="undead.html?last=15&analysis=2025-07-17"
-              name="iframe_undead"
-              id="iframe_undead"
-              title="$UNDEAD"
-              style="display:none"></iframe>
-      <iframe src="diagnostics.html"
-              name="iframe_diag"
-              id="iframe_diag"
-              title="Diagnostics"
-              style="display:none"></iframe>
-      <iframe src="distributions.html"
-              name="iframe_dist"
-              id="iframe_dist"
-              title="Distributions"
-              style="display:none"></iframe>
-     </td>
-    </tr>
-   </table>
-  </center>
-    <script src='libs/dom.js'></script>
-    <script>
-     replaceText('version', version);
-    </script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pivot Protocol</title>
+    <link rel="stylesheet" href="protocol.css?version=8"> 
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
 
- </body>
+  <div id="app-ticker"></div>
+  <div id="app-nav"></div>
+
+  <main>
+    <div class="panel">
+      <div class="panel-head" style="display:flex; align-items:center; justify-content:space-between;">
+        <span>NAV</span>
+        <span class="sub">Protocol NAV&nbsp; <span class="num tvl" style="color:var(--text-bright);">$0.00</span></span>
+        <div style="display:flex; gap:4px;">
+          <button class="range-btn" data-days="30">1M</button>
+          <button class="range-btn" data-days="90">3M</button>
+          <button class="range-btn active" data-days="0">MAX</button>
+        </div>
+      </div>
+      <div style="padding:0 20px 20px; position:relative; height:420px;">
+        <canvas id="barChart" width="400" height="200"></canvas>
+      </div>
+      <div id="navSummary" class="sub" style="padding:0 20px 18px; font-size:12px;">Loading…</div>
+
+      <div class="panel-divider"></div>
+
+      <div class="panel-head" style="border-bottom:none;">Tokens <span id="tokensTotal" class="sub"></span></div>
+      <div style="padding:20px 20px 8px;">
+        <div class="section-label">Token Breakdown</div>
+        <div class="segbar" id="tokensSegbar"></div>
+        <div class="segbar-caption sub" id="tokensSegCaption">Loading…</div>
+      </div>
+      <div class="header-dapps-bar" id="headerDappsBar" style="margin:0; padding:0 20px 20px;">
+        <div class="section-label">TVL</div>
+        <div class="segbar" id="dappsSegbar"></div>
+        <div class="segbar-caption sub" id="dappsSegCaption">Loading…</div>
+      </div>
+    </div>
+
+    <p style="margin-top:8px;">
+      <a href="#" onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md";'>
+        Learn more <img src="imgs/leave-site-2.png" width="16"/></a>
+      about the Pivot Protocol.
+    </p>
+  </main>
+
+    <script src="libs/copy-addy.js"></script>
+    <script src="libs/table.js"></script>
+    <script src="libs/canvas-bg.js"></script>
+    <script src="libs/colors.js"></script>
+    <script src="libs/usd.js"></script>
+    <script src="libs/tokens.js"></script>
+    <script src="libs/charts/bar.js"></script>
+    <script src="libs/charts/pie.js"></script>
+    <script src="libs/indicators.js"></script>
+    <script src="libs/dom.js"></script>
+    <script src="libs/pool-assets.js"></script>
+    <script src="libs/chrome.js"></script>
+    <script>
+       const MS_PER_DAY = 1000 * 60 * 60 * 24;
+       function filterByDays(rows, days, dateIx) {
+          if (!days) return rows; // 0 = MAX = every row, unfiltered
+          const latest = new Date(rows[rows.length - 1][dateIx]);
+          return rows.filter(r => (latest - new Date(r[dateIx])) / MS_PER_DAY <= days);
+       }
+
+       let navAssets = null, navIdx = null, navLabels = null;
+
+       function renderNav(days) {
+          if (!navAssets) return; // data hasn't loaded yet — guard against clicks during fetch
+          const filtered = filterByDays(navAssets, days, navIdx['date']);
+          const existing = Chart.getChart('barChart');
+          if (existing) existing.destroy();
+          barChartTbl(navLabels, filtered);
+       }
+
+       fetch('data/assets.csv')
+            .then(result => result.text())
+            .then(data => {
+   // Parsed once here and reused for both the chart and the summary below —
+   // tvlChart() would otherwise re-parse the same CSV a second time.
+   let [assets, idx] = sortedTable(data, ',');
+   navAssets = assets;
+   navIdx = idx;
+   navLabels = orderedIndices(idx).slice(1); // skip 'date'
+   renderNav(0); // MAX by default, matches the active button
+
+   try {
+      // Always-visible NAV summary + stat cards — no hover required.
+      // Independent of the chart-range buttons — always reflects the latest
+      // real data point regardless of which range is currently displayed.
+      let labels = navLabels;
+
+      // Guard against blank/malformed trailing rows (assets.csv has a few).
+      const validRows = assets.filter(r => r && r[idx['date']] && r[idx['date']].trim() !== '');
+
+      const latestTotal = r => labels.reduce((sum, [name, i]) => sum + parseUSD(r[i]), 0);
+      const latest = validRows[validRows.length - 1];
+
+      document.getElementById('navSummary').textContent =
+         'Latest date: ' + latest[idx['date']] + '  |  Total: ' + showUsd(latestTotal(latest));
+
+   } catch (err) {
+      console.error('NAV summary failed:', err);
+      document.getElementById('navSummary').textContent = 'Could not compute NAV summary: ' + err.message;
+      document.getElementById('navSummary').classList.add('neg');
+   }
+});
+
+       document.querySelectorAll('.range-btn').forEach(btn => {
+          btn.addEventListener('click', () => {
+             if (!navAssets) return;
+             document.querySelectorAll('.range-btn').forEach(b => b.classList.remove('active'));
+             btn.classList.add('active');
+             renderNav(parseInt(btn.dataset.days, 10));
+          });
+       });
+
+       fetch('data/wallets.tsv')
+            .then(result => result.text())
+            .then(data => {
+   let [wallets, idx] = table(data);
+
+   // --- Token breakdown, rendered as a segmented bar (not a donut). Computed once
+   // here and reused for both the header total and the bar, so the two numbers
+   // can never disagree the way the old donut-center-total vs. header-total did.
+   let tokenAmounts = [];
+   let tokenLabels = usdLabels(idx).map(([lab, ix]) => {
+      tokenAmounts.push(total(wallets.map(r => r[ix])));
+      return lab;
+   });
+   const tokenEntriesAll = tokenLabels.map((lab, i) => [lab, tokenAmounts[i]]);
+   const tokensGrandTotal = tokenEntriesAll.reduce((s, [, v]) => s + v, 0);
+   const tokensTotal = showUsd(tokensGrandTotal);
+   replaceText('tvl', tokensTotal);
+   document.getElementById('tokensTotal').textContent = '· ' + tokensTotal;
+
+   // Bar only shows positive-value tokens — a negative-value token would break
+   // proportional width the same way dapps' negative treasury figure did.
+   const tokenEntries = tokenEntriesAll.filter(([, v]) => v > 0).sort((a, b) => b[1] - a[1]);
+   const tokenPosTotal = tokenEntries.reduce((s, [, v]) => s + v, 0);
+   const TOKEN_MIN_PCT = 5;
+   const tokenRawPcts = tokenEntries.map(([, v]) => tokenPosTotal ? (v / tokenPosTotal) * 100 : 0);
+   const tokenFloored = tokenRawPcts.map(p => Math.max(p, TOKEN_MIN_PCT));
+   const tokenFlooredTotal = tokenFloored.reduce((a, b) => a + b, 0);
+   const tokenDisplayPcts = tokenFloored.map(p => (p / tokenFlooredTotal) * 100);
+
+   const tokensSegbar = document.getElementById('tokensSegbar');
+   tokensSegbar.innerHTML = tokenEntries.map(([label, val], i) => {
+      return '<div class="seg" style="width:' + tokenDisplayPcts[i].toFixed(2) + '%;background:' + colorOf(label) + '" title="' + label + ': ' + showUsd(val) + '"></div>';
+   }).join('');
+
+   document.getElementById('tokensSegCaption').textContent =
+      tokenEntries.map(([label, val]) => label + ' ' + (tokenPosTotal ? (val / tokenPosTotal * 100).toFixed(0) : 0) + '%').join(' · ');
+
+   // ----- dapps breakdown --------------------------------------------------------------
+   let dappTvl = {};
+   row(wallets, idx, 'dapp').forEach((label, ix) => {
+      const amt = parseUSD(wallets[ix][idx['TVL']]);
+      dappTvl[label] = (dappTvl[label] || 0) + amt;
+   });
+   const BAR_CATEGORIES = ['pools', 'reserves', 'operations'];
+   const dappEntries = BAR_CATEGORIES
+      .filter(label => dappTvl[label] !== undefined)
+      .map(label => [label, dappTvl[label]])
+      .sort((a, b) => b[1] - a[1]);
+   const dappTotal = dappEntries.reduce((sum, [, v]) => sum + v, 0);
+
+   // Explicit, guaranteed-distinct colors — colorOf()'s hash-based palette
+   // put pools/reserves/operations too close together to tell apart at a glance.
+   const CATEGORY_COLOR = { pools: 'var(--teal)', reserves: 'var(--chrome)', operations: 'var(--gold)' };
+
+   // Minimum visual width so a tiny share (e.g. operations at 0.03%) still
+   // renders as a real, visible sliver instead of disappearing at sub-pixel width.
+   const MIN_PCT = 6;
+   const rawPcts = dappEntries.map(([, v]) => dappTotal ? (v / dappTotal) * 100 : 0);
+   const floored = rawPcts.map(p => Math.max(p, MIN_PCT));
+   const flooredTotal = floored.reduce((a, b) => a + b, 0);
+   const displayPcts = floored.map(p => (p / flooredTotal) * 100);
+
+   const segbar = document.getElementById('dappsSegbar');
+   segbar.innerHTML = dappEntries.map(([label], i) => {
+      const displayPct = displayPcts[i];
+      const color = CATEGORY_COLOR[label] || colorOf(label);
+      return '<div class="seg" style="width:' + displayPct.toFixed(2) + '%;background:' + color + '" title="' + label + ': ' + showUsd(dappEntries[i][1]) + '"></div>';
+   }).join('');
+
+   document.getElementById('dappsSegCaption').textContent =
+      dappEntries.map(([label, val]) => label + ' ' + (dappTotal ? (val / dappTotal * 100).toFixed(0) : 0) + '%').join(' · ');
+});
+    </script>
+</body>
 </html>

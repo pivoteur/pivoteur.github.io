@@ -4,57 +4,62 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol Pools</title>
-    <link rel="stylesheet" href="styles.css"></link>
-    <style>
-     div { background: rgba(15,15,15,0.7); }
-    </style>
+    <link rel="stylesheet" href="protocol.css?version=9">
     <script src='https://d3js.org/d3.v4.min.js'></script>
 </head>
 
 <body>
-   <center><h1>Pivot Pool Management</h1></center>
-   <h2>Pivot Pools TVL <span class='tvl'>$0.00</span></h2>
+  <div id="app-ticker"></div>
+  <div id="app-nav"></div>
 
-  <style>
-   .venntooltip {
-      position: absolute;
-      text-align: center;
-      width: 400px;
-      height: 200px;
-      background: #333;
-      color: #ddd;
-      padding: 2px;
-      border: 0px;
-      border-radius: 8px;
-      opacity: 0;
-   }
-  </style>
-  <table border="1" width="100%" id="poolTable">
-   <tr><td colspan='5'><div id='vennChart'></div></td></tr>
-   <tr><td colspan='5'><hr/></td></tr>
-   <tr>
-    <th>Pool Name</th><th>incept</th><th>TVL</th><th>ROI</th><th>APR</th>
-   </tr>
+  <main>
+    <div class="pools-layout">
+      <div class="pools-left">
+        <div class="panel">
+          <div class="panel-head" style="display:flex; align-items:center; justify-content:space-between;">
+            <span>Pool Overview</span>
+            <span class="sub">Pivot Pools TVL&nbsp; <span class="num tvl" style="color:var(--text-bright);">$0.00</span></span>
+          </div>
+          <div id='vennChart'></div>
+        </div>
 
-   <!-- data for pools inserted here via javascript -->
-
-   <tr><td colspan='5'><hr/></td></tr>
-   <tr><th colspan='5'>Non-pool stakes</th></tr>
-
-   <!-- data for treasure and echo pool inserted here -->
-
-  </table>
-
-  <p style="vertical-align:bottom">
-   <a href='#'
-      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#1-the-pivot-pools";'>
-Learn more <img src='imgs/leave-site.png' width='16'/></a> 
+        <p style="margin:0;">
+          <a href='#'
+             onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/README.md#1-the-pivot-pools";'>
+Learn more <img src='imgs/leave-site-2.png' width='16'/></a>
 about the Pivot pools.<br/>
-   <a href='#'
-      onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/articles/staking.md";'>
-Learn more <img src='imgs/leave-site.png' width='16'/></a>
+          <a href='#'
+             onclick='window.top.location.href = "https://github.com/pivoteur/biz/blob/main/articles/staking.md";'>
+Learn more <img src='imgs/leave-site-2.png' width='16'/></a>
 about amplified staking.
-  </p>
+        </p>
+      </div>
+
+      <div class="panel">
+        <div class="panel-head">Pool Name</div>
+        <table id="poolTable" border="0" width="100%">
+         <colgroup>
+           <col style="width:22%;">
+           <col style="width:13%;">
+           <col style="width:32%;">
+           <col style="width:15%;">
+           <col style="width:18%;">
+         </colgroup>
+         <tr>
+          <th>Pool Name</th><th>incept</th><th>TVL</th><th>ROI</th><th>APR</th>
+         </tr>
+
+         <!-- data for pools inserted here via javascript -->
+
+         <tr class="divider-row"><td colspan='5'><hr/></td></tr>
+         <tr><th colspan='5'>Non-pool stakes</th></tr>
+
+         <!-- data for treasure and echo pool inserted here -->
+
+        </table>
+      </div>
+    </div>
+  </main>
 
     <script src="libs/table.js"></script>
     <script src='libs/usd.js'></script>
@@ -62,7 +67,51 @@ about amplified staking.
     <script src='https://benfred.github.io/venn.js/venn.js'></script>
     <script src='libs/charts/venn.js'></script>
     <script src='libs/dom.js'></script>
-    <script>indexPools();</script>
+    <script src="libs/pool-assets.js"></script>
+    <script src="libs/pool-health.js"></script>
+    <script src='libs/chrome.js'></script>
+    <script>
+       indexPools('wallets', '', 1).then(() => {
+          // pool-health.js may not have loaded correctly, or a given run may
+          // simply have no data yet — bail quietly rather than error.
+          if (typeof poolHealth === 'undefined' || !poolHealth.pools) return;
 
+          const healthByPool = {};
+          poolHealth.pools.forEach(p => { healthByPool[p.pool] = parseUSD(p.available); });
+
+          // Uncommitted amounts are often tiny relative to total pool TVL —
+          // floor the segment width so it stays a visible sliver instead of
+          // disappearing at sub-pixel width, same pattern as the Dashboard's
+          // token/TVL breakdown bars.
+          const UNCOMMITTED_MIN_PCT = 4;
+
+          document.querySelectorAll('#poolTable tr').forEach(tr => {
+             const nameCell = tr.cells && tr.cells[0];
+             if (!nameCell) return;
+             const poolName = nameCell.textContent.trim();
+             if (!(poolName in healthByPool)) return; // no health data for this row — leave plain TVL text as-is
+
+             const tvlCell = tr.cells[2];
+             if (!tvlCell) return;
+
+             const totalTvl = parseUSD(tvlCell.textContent);
+             const uncommitted = healthByPool[poolName];
+             if (!totalTvl || totalTvl <= 0) return; // guard against div-by-zero / negative-TVL rows
+
+             const rawPct = (uncommitted / totalTvl) * 100;
+             const uncommittedPct = Math.min(100, Math.max(rawPct, UNCOMMITTED_MIN_PCT));
+             const activePct = 100 - uncommittedPct;
+             const active = totalTvl - uncommitted;
+
+             tvlCell.innerHTML = `
+                <div class="num">${showUsd(totalTvl)}</div>
+                <div class="segbar pool-tvl-bar">
+                   <div class="seg" style="width:${activePct.toFixed(2)}%;background:var(--teal);" title="In Pivots: ${showUsd(active)}"></div>
+                   <div class="seg" style="width:${uncommittedPct.toFixed(2)}%;background:var(--gold);" title="Uncommitted: ${showUsd(uncommitted)}"></div>
+                </div>`;
+          });
+       });
+    </script>
+    
 </body>
 </html>
