@@ -22,7 +22,7 @@ on:
         description: 'Dry run (leave checked to print to stdout only, no append, no commit)'
         required: true
         type: boolean
-        default: true
+        default: false
 
 env:
   DAPP: wyrd
