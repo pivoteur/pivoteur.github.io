@@ -2,8 +2,13 @@ name: hwaet
 
 on:
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (print to stdout only, no commit)'
+        type: boolean
+        default: false
   schedule:
-    # cron ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time 
+    # ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time 
     - cron: "45 05 * * *" 
 
 env: 
@@ -74,9 +79,17 @@ jobs:
           echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
 
       - name: Run hwaet
-        run: $DAPP $PROTOCOL_ALIAS $LE_DATE > libs/pool-health.js
+        run: |
+          $DAPP $PROTOCOL_ALIAS $LE_DATE > /tmp/hwaet_out.js
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "=== DRY RUN: pool-health.js would be ==="
+            cat /tmp/hwaet_out.js
+          else
+            mv /tmp/hwaet_out.js libs/pool-health.js
+          fi
 
       - name: Commit and push results
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         env:
           USER0_NAME: ${{ vars.USER0_NAME }}
           USER0_EMAIL: ${{ secrets.USER0_EMAIL }}

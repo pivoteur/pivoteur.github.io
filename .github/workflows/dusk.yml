@@ -2,8 +2,13 @@ name: dusk
 
 on:
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (print to stdout only, no commit)'
+        type: boolean
+        default: false
   schedule:
-    # cron ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time 
+    # ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time 
     - cron: "14 05 * * *" 
 
 env: 
@@ -74,9 +79,17 @@ jobs:
           echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
 
       - name: Run dusk and log output
-        run: $DAPP --min $PROTOCOL_ALIAS $LE_DATE > data/pivots/calls.csv
+        run: |
+          $DAPP --min $PROTOCOL_ALIAS $LE_DATE > /tmp/dusk_out.csv
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "=== DRY RUN: calls.csv would be ==="
+            cat /tmp/dusk_out.csv
+          else
+            mv /tmp/dusk_out.csv data/pivots/calls.csv
+          fi
 
       - name: Commit and push results
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         env:
           USER0_NAME: ${{ vars.USER0_NAME }}
           USER0_EMAIL: ${{ secrets.USER0_EMAIL }}
