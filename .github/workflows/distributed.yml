@@ -3,10 +3,11 @@ name: distributed
 on:
   workflow_dispatch:
     inputs:
-      tsv_path:
+      csv_path:
         description: 'Path to the shared investors TSV file'
         required: true
         type: string
+        default: 'protocol/data/investors-test.tsv'
       send:
         description: 'Let Robbie send the message? (uncheck to display only)'
         required: false
@@ -37,6 +38,9 @@ jobs:
       - name: Establish app path
         run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
 
+      - name: Establish git path
+        run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
+
       - name: Cache distributed binary
         id: binary-cache
         uses: actions/cache@v4
@@ -61,8 +65,8 @@ jobs:
 
       - name: Show input parameters
         run: |
-          echo "=== Running distributed ==="
-          echo "tsv_path: ${{ inputs.tsv_path }}"
+          echo "=== Running distributed with manual inputs ==="
+          echo "csv_path: ${{ inputs.csv_path }}"
           echo "send:     ${{ inputs.send }}"
 
       - name: Build distributed
@@ -78,5 +82,4 @@ jobs:
           REINVESTED_BOT:    ${{ secrets.PIVOT_PROTOCOL_ROBBIE }}
           INVESTOR_CHAT_IDS: ${{ secrets.INVESTOR_CHAT_IDS }}
         run: |
-          $DAPP "${{ inputs.tsv_path }}" "${{ inputs.send }}"
-          
+          $DAPP "${{ inputs.csv_path }}" "${{ inputs.send }}"

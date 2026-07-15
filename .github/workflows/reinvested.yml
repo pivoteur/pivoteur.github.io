@@ -3,10 +3,11 @@ name: reinvested
 on:
   workflow_dispatch:
     inputs:
-      tsv_path:
+      csv_path:
         description: 'Path to the shared investors TSV file'
         required: true
         type: string
+        default: 'protocol/data/investors-test.tsv'
       send:
         description: 'Let Robbie send the message? (uncheck to display only)'
         required: false
@@ -19,11 +20,12 @@ env:
 jobs:
   run-reinvested:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Checkout pivoteur.github.io
+      - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
         uses: actions/checkout@v4
 
-      - name: Checkout protocol
+      - name: Checkout protocol # needed by cache step to locate Cargo.toml
         uses: actions/checkout@v4
         with:
           repository: pivoteur/protocol
@@ -33,9 +35,12 @@ jobs:
         uses: doughepi/yaml-env-action@v1.0.0
         with:
           files: .github/config/protocol-env.yml
-
+          
       - name: Establish app path
         run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
+
+      - name: Establish git path
+        run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
 
       - name: Cache reinvested binary
         id: binary-cache
@@ -51,6 +56,8 @@ jobs:
       - name: Install Rust toolchain
         if: steps.binary-cache.outputs.cache-hit != 'true'
         uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
 
       - name: Checkout crypto-n-rust
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -61,8 +68,8 @@ jobs:
 
       - name: Show input parameters
         run: |
-          echo "=== Running reinvested ==="
-          echo "tsv_path: ${{ inputs.tsv_path }}"
+          echo "=== Running reinvested with manual inputs ==="
+          echo "csv_path: ${{ inputs.csv_path }}"
           echo "send:     ${{ inputs.send }}"
 
       - name: Build reinvested
@@ -78,4 +85,4 @@ jobs:
           REINVESTED_BOT:    ${{ secrets.PIVOT_PROTOCOL_ROBBIE }}
           INVESTOR_CHAT_IDS: ${{ secrets.INVESTOR_CHAT_IDS }}
         run: |
-          $DAPP "${{ inputs.tsv_path }}" "${{ inputs.send }}"
+          $DAPP "${{ inputs.csv_path }}" "${{ inputs.send }}"
