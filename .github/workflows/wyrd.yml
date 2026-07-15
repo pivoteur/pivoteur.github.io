@@ -19,7 +19,7 @@ on:
         type: string
         default: '8008'
       dry_run:
-        description: 'Dry run (leave checked to print to stdout only, no append, no commit)'
+        description: 'Dry run (check to print to stdout only, no append, no commit)'
         required: true
         type: boolean
         default: false
