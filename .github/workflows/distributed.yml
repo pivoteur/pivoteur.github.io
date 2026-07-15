@@ -7,7 +7,7 @@ on:
         description: 'Path to the shared investors TSV file'
         required: true
         type: string
-        default: 'protocol/data/investors-test.tsv'
+        default: 'protocol/quizzes/data/investors-test.tsv'
       send:
         description: 'Let Robbie send the message? (uncheck to display only)'
         required: false
