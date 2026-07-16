@@ -28,8 +28,8 @@
     {
       "name": "Hwaet",
       "repo": "pivoteur/pivoteur.github.io",
-      "status": "failure",
-      "ran_at": "2026-07-16T07:46:59Z"
+      "status": "success",
+      "ran_at": "2026-07-16T13:33:43Z"
     },
     {
       "name": "Daily",
@@ -40,8 +40,8 @@
     {
       "name": "R.A.T.",
       "repo": "pivoteur/protocol",
-      "status": "success",
-      "ran_at": "2026-07-16T04:34:31Z"
+      "status": "unknown",
+      "ran_at": "2026-07-16T13:30:55Z"
     }
   ],
   "closed_issues": [
