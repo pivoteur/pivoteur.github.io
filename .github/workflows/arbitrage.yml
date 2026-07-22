@@ -1,0 +1,125 @@
+name: arbitrage
+
+on:
+  workflow_dispatch:
+    inputs:
+      amount:
+        description: 'Amount of the source token to trade (BTC normally, ETH if flip is checked)'
+        required: true
+        type: string
+      min_floor:
+        description: 'Minimum acceptable amount of the destination token — trade refuses below this'
+        required: true
+        type: string
+      flip:
+        description: 'Reverse direction? (unchecked: BTC -> ETH, checked: ETH -> BTC)'
+        required: false
+        type: boolean
+        default: false
+      slippage_bps:
+        description: 'Slippage tolerance in basis points (50 = 0.50%)'
+        required: false
+        type: string
+        default: '50'
+      dry_run:
+        description: 'Dry run — checks balance/quote/floor only, never touches the keystore or sends a tx'
+        required: false
+        type: boolean
+        default: true
+
+env:
+  DAPP: arbitrage
+
+jobs:
+  run-arbitrage:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
+        uses: actions/checkout@v4
+
+      - name: Checkout protocol # needed by cache step to locate Cargo.toml
+        uses: actions/checkout@v4
+        with:
+          repository: pivoteur/protocol
+          path: protocol
+
+      - name: Load Shared Environment Variables
+        uses: doughepi/yaml-env-action@v1.0.0
+        with:
+          files: .github/config/protocol-env.yml
+
+      - name: Establish app path
+        run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
+
+      - name: Establish git path
+        run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
+
+      - name: Cache arbitrage binary
+        id: binary-cache
+        uses: actions/cache@v4
+        with:
+          path: protocol/quizzes/src/quiz11/arbitrage/target/release/arbitrage
+          key: >-
+            arbitrage-binary-
+            ${{ hashFiles(format('{0}/quiz11/arbitrage/**/*.rs', env.QUIZZES_SRC)) }}-
+            ${{ hashFiles(format('{0}/Cargo.toml', env.DAPP_DIR)) }}-
+            ${{ hashFiles(format('{0}/Cargo.lock', env.DAPP_DIR)) }}
+
+      - name: Install Rust toolchain
+        if: steps.binary-cache.outputs.cache-hit != 'true'
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Checkout crypto-n-rust
+        if: steps.binary-cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: logicalgraphs/crypto-n-rust
+          path: crypto-n-rust
+
+      - name: Show input parameters
+        run: |
+          echo "=== Running arbitrage with manual inputs ==="
+          echo "amount:       ${{ inputs.amount }}"
+          echo "min_floor:    ${{ inputs.min_floor }}"
+          echo "flip:         ${{ inputs.flip }}"
+          echo "slippage_bps: ${{ inputs.slippage_bps }}"
+          echo "dry_run:      ${{ inputs.dry_run }}"
+
+      - name: Build arbitrage
+        if: steps.binary-cache.outputs.cache-hit != 'true'
+        run: |
+          cargo build --manifest-path protocol/quizzes/src/quiz11/arbitrage/Cargo.toml --bin $DAPP --release
+
+      - name: Add arbitrage to PATH
+        run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
+
+      - name: Write keystore file
+        env:
+          KEYSTORE_B64: ${{ secrets.ARBITRAGE_KEYSTORE_B64 }}
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/keystore"
+          echo "$KEYSTORE_B64" | base64 -d > "$GITHUB_WORKSPACE/keystore/arbitrage-wallet"
+
+      - name: Run arbitrage
+        env:
+          WALLET_ADDRESS: ${{ vars.WALLET_ADDRESS }}
+          KEYSTORE_PATH: ${{ github.workspace }}/keystore/arbitrage-wallet
+          KEYSTORE_PASSWORD: ${{ secrets.ARBITRAGE_KEYSTORE_PASSWORD }}
+        run: |
+          FLIP_FLAG=""
+          if [ "${{ inputs.flip }}" = "true" ]; then FLIP_FLAG="--flip"; fi
+
+          DRY_RUN_FLAG=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then DRY_RUN_FLAG="--dry-run"; fi
+
+          $DAPP "${{ inputs.amount }}" "${{ inputs.min_floor }}" \
+                $FLIP_FLAG \
+                --slippage-bps "${{ inputs.slippage_bps }}" \
+                $DRY_RUN_FLAG
+
+      - name: Clean up keystore file
+        if: always()
+        run: rm -f "$GITHUB_WORKSPACE/keystore/arbitrage-wallet"
