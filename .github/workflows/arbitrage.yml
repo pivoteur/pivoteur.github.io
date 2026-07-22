@@ -3,19 +3,31 @@ name: arbitrage
 on:
   workflow_dispatch:
     inputs:
-      amount:
-        description: 'Amount of the source token to trade (BTC normally, ETH if flip is checked)'
+      mode:
+        description: 'Which mode to run'
         required: true
+        type: choice
+        options:
+          - trade
+          - calls
+        default: trade
+      amount:
+        description: '[trade mode] Amount of the source token to trade (BTC normally, ETH if flip is checked)'
+        required: false
         type: string
       min_floor:
-        description: 'Minimum acceptable amount of the destination token — trade refuses below this'
-        required: true
+        description: '[trade mode] Minimum acceptable amount of the destination token — trade refuses below this'
+        required: false
         type: string
       flip:
-        description: 'Reverse direction? (unchecked: BTC -> ETH, checked: ETH -> BTC)'
+        description: '[trade mode] Reverse direction? (unchecked: BTC -> ETH, checked: ETH -> BTC)'
         required: false
         type: boolean
         default: false
+      root_url:
+        description: '[calls mode] Root URL for calls.csv — leave blank to use the PIVOT_URL default'
+        required: false
+        type: string
       slippage_bps:
         description: 'Slippage tolerance in basis points (50 = 0.50%)'
         required: false
@@ -82,9 +94,11 @@ jobs:
       - name: Show input parameters
         run: |
           echo "=== Running arbitrage with manual inputs ==="
+          echo "mode:         ${{ inputs.mode }}"
           echo "amount:       ${{ inputs.amount }}"
           echo "min_floor:    ${{ inputs.min_floor }}"
           echo "flip:         ${{ inputs.flip }}"
+          echo "root_url:     ${{ inputs.root_url }}"
           echo "slippage_bps: ${{ inputs.slippage_bps }}"
           echo "dry_run:      ${{ inputs.dry_run }}"
 
@@ -108,17 +122,35 @@ jobs:
           WALLET_ADDRESS: ${{ vars.WALLET_ADDRESS }}
           KEYSTORE_PATH: ${{ github.workspace }}/keystore/arbitrage-wallet
           KEYSTORE_PASSWORD: ${{ secrets.ARBITRAGE_KEYSTORE_PASSWORD }}
+          PIVOT_URL: https://raw.githubusercontent.com/pivoteur/pivoteur.github.io
         run: |
-          FLIP_FLAG=""
-          if [ "${{ inputs.flip }}" = "true" ]; then FLIP_FLAG="--flip"; fi
-
           DRY_RUN_FLAG=""
           if [ "${{ inputs.dry_run }}" = "true" ]; then DRY_RUN_FLAG="--dry-run"; fi
 
-          $DAPP "${{ inputs.amount }}" "${{ inputs.min_floor }}" \
-                $FLIP_FLAG \
-                --slippage-bps "${{ inputs.slippage_bps }}" \
-                $DRY_RUN_FLAG
+          if [ "${{ inputs.mode }}" = "trade" ]; then
+            if [ -z "${{ inputs.amount }}" ] || [ -z "${{ inputs.min_floor }}" ]; then
+              echo "::error::mode=trade requires both 'amount' and 'min_floor' inputs"
+              exit 1
+            fi
+
+            FLIP_FLAG=""
+            if [ "${{ inputs.flip }}" = "true" ]; then FLIP_FLAG="--flip"; fi
+
+            $DAPP trade "${{ inputs.amount }}" "${{ inputs.min_floor }}" \
+                  $FLIP_FLAG \
+                  --slippage-bps "${{ inputs.slippage_bps }}" \
+                  $DRY_RUN_FLAG
+
+          else
+            ROOT_URL_FLAG=""
+            if [ -n "${{ inputs.root_url }}" ]; then
+              ROOT_URL_FLAG="--root-url ${{ inputs.root_url }}"
+            fi
+
+            $DAPP calls $ROOT_URL_FLAG \
+                  --slippage-bps "${{ inputs.slippage_bps }}" \
+                  $DRY_RUN_FLAG
+          fi
 
       - name: Clean up keystore file
         if: always()
