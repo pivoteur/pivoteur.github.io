@@ -59,7 +59,7 @@ jobs:
         id: binary-cache
         uses: actions/cache@v4
         with:
-          path: protocol/quizzes/src/quiz11/arbitrage/target/release/arbitrage
+          path: protocol/dapps/arbitrage/target/release/arbitrage
           key: >-
             arbitrage-binary-
             ${{ hashFiles(format('{0}/quiz11/arbitrage/**/*.rs', env.QUIZZES_SRC)) }}-
@@ -91,7 +91,7 @@ jobs:
       - name: Build arbitrage
         if: steps.binary-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path protocol/quizzes/src/quiz11/arbitrage/Cargo.toml --bin $DAPP --release
+          cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
 
       - name: Add arbitrage to PATH
         run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
