@@ -3,48 +3,16 @@ name: reinvested
 on:
   workflow_dispatch:
     inputs:
-      investor:
-        description: 'Investor name / Telegram chat'
-        required: true
-        type: choice
-        options:
-          - Pivot_Internal_Bot
-          - alpha
-          - phi
-          - psi
-          - pi
-          - tau
-      token_a:
-        description: 'Reinvested token, left side of pool (e.g. AVAX)'
+      csv_path:
+        description: 'Path to the shared investors TSV file'
         required: true
         type: string
-      token_b:
-        description: 'Paired token, right side of pool (e.g. BTC)'
-        required: true
-        type: string
-      pivot_count:
-        description: 'Number of pivots closed (e.g. 2)'
-        required: true
-        type: string
-        default: '1'
-      amount:
-        description: 'Amount reinvested (e.g. 0.59)'
-        required: true
-        type: string
-      url:
-        description: 'Tweet URL (e.g. x.com/pivocateur)'
-        required: true
-        type: string
+        default: 'protocol/quizzes/data/investors-test.tsv'
       send:
         description: 'Let Robbie send the message? (uncheck to display only)'
         required: false
         type: boolean
         default: true
-      flipped:
-        description: 'When you trade in the opposite direction (e.g. BTC/AVAX instead of AVAX/BTC)'
-        required: false
-        type: boolean
-        default: false
 
 env:
   DAPP: reinvested
@@ -78,7 +46,7 @@ jobs:
         id: binary-cache
         uses: actions/cache@v4
         with:
-          path: $DAPP_DIR/target/release/$DAPP
+          path: ${{ env.DAPP_DIR }}/target/release/${{ env.DAPP }}
           key: >-
             reinvested-binary-
             ${{ hashFiles(format('{0}/quiz11/a_reinvested/**/*.rs', env.QUIZZES_SRC)) }}-
@@ -101,14 +69,8 @@ jobs:
       - name: Show input parameters
         run: |
           echo "=== Running reinvested with manual inputs ==="
-          echo "investor:    ${{ inputs.investor }}"
-          echo "token_a:     ${{ inputs.token_a }}"
-          echo "token_b:     ${{ inputs.token_b }}"
-          echo "pivot_count: ${{ inputs.pivot_count }}"
-          echo "amount:      ${{ inputs.amount }}"
-          echo "url:         ${{ inputs.url }}"
-          echo "send:        ${{ inputs.send }}"
-          echo "flipped:     ${{ inputs.flipped }}"
+          echo "csv_path: ${{ inputs.csv_path }}"
+          echo "send:     ${{ inputs.send }}"
 
       - name: Build reinvested
         if: steps.binary-cache.outputs.cache-hit != 'true'
@@ -123,11 +85,4 @@ jobs:
           REINVESTED_BOT:    ${{ secrets.PIVOT_PROTOCOL_ROBBIE }}
           INVESTOR_CHAT_IDS: ${{ secrets.INVESTOR_CHAT_IDS }}
         run: |
-          $DAPP "${{ inputs.investor }}"    \
-                     "${{ inputs.token_a }}"     \
-                     "${{ inputs.token_b }}"     \
-                     "${{ inputs.pivot_count }}" \
-                     "${{ inputs.amount }}"      \
-                     "${{ inputs.url }}"         \
-                     "${{ inputs.send }}"        \
-                     "${{ inputs.flipped }}"
+          $DAPP "${{ inputs.csv_path }}" "${{ inputs.send }}"
