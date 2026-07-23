@@ -56,5 +56,5 @@ opened	open	close	tx_id	updated	from	from_blockchain	amount1	virtual	quote1	val1
 2026-06-30	55	0	https://snowtrace.io/tx/0x0d915d1fec83549acd0e85f26f1109d324bae4ad9cec7b5d56ec353ca699caa8	n/a	UNDEAD	Avalanche	500000	0	$0.000869	$434.50	550000	AVAX	Avalanche	62.99735	0	$6.57	$413.89
 2026-07-01	56	0	https://snowtrace.io/tx/0xb4a4b9398181a0ca80f3f947edf23167885f9b13ade3d42b26982f59dee00e97	n/a	UNDEAD	Avalanche	1000000	0	$0.000866	$866.00	1100000	AVAX	Avalanche	130.49237	0	$6.61	$862.55
 2026-07-16	57	0	https://snowtrace.io/tx/0x89727e52fc5bac50455b104da04cacc0eb4f4be24bbd68ec224b1fbcbd974aa0	n/a	AVAX	Avalanche	707.28	0	$6.72	$4752.92	778.00806	UNDEAD	Avalanche	5443628	0	$0.000813	$4425.67
-2026-07-16	58	0	virtual_swap	2026-07-21	AVAX	Avalanche	0	1255.6682	$6.63	$8325.08	1381.2351	UNDEAD	Avalanche	11500000	0	$0.000724	$8326.00
+2026-07-16	58	0	virtual_swap	2026-07-23	AVAX	Avalanche	0	1247.417	$6.56	$8183.06	1372.1587	UNDEAD	Avalanche	11500000	0	$0.000712	$8183.06
 2026-07-20	59	0	https://snowtrace.io/tx/0x33b956d8f5194d354be8b9437e2d10ba0ae3f8903db96f26982373d649837359	n/a	UNDEAD	Avalanche	1000000	0	$0.000836	$836.00	1100000	AVAX	Avalanche	134.40892	0	$6.48	$870.97
