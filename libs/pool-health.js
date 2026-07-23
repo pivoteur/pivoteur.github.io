@@ -1,7 +1,7 @@
 const poolHealth = {
    generated: '2026-07-23',
    pools: [
-      { pool: "UNDEAD+USDC", available: '$0.6252' },
+      { pool: "UNDEAD+USDC", available: '$0.6206' },
       { pool: "ETH+UNDEAD", available: '$3.19' },
       { pool: "BTC+UNDEAD", available: '$4.80' },
       { pool: "BTC+ETH", available: '$5.75' },
