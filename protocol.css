@@ -41,6 +41,7 @@
   --radius: 12px;
   --radius-med: 10px;
   --radius-sm: 6px;
+  --panel-pad: 20px;
 }
 
 /* Single sitewide reset */
@@ -83,6 +84,15 @@ canvas{ background: transparent; }
   letter-spacing: 0.06em;
 }
 
+/* ----- Shared panel body padding — replaces per-page inline padding; .centered adds the constrained max-width some charts need ----- */
+.panel-body{
+  padding: var(--panel-pad);
+}
+.panel-body.centered{
+  max-width: 700px;
+  margin: 0 auto;
+}
+
 /* ----- Shared table primitive ----- */
 table{ width: 100%; border-collapse: collapse; font-size: 13px; }
 thead th{
@@ -93,7 +103,7 @@ thead th{
 tbody td{ padding: 14px 20px; border-top: 1px solid var(--border); }
 .sub{ color: var(--text-dim); font-weight: 400; }
 
-main{ padding: 32px 24px; max-width: none; position: relative; z-index: 1; }
+main{ padding: 32px 24px; max-width: 1400px; margin: 0 auto; position: relative; z-index: 1; }
 .page-head{ display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 22px; }
 
 /* ----- Shared background watermark logo ----- */
@@ -549,16 +559,13 @@ a.brand:hover{ text-decoration: none; }
   gap: 20px;
 }
 
-/* Compact variant of .segbar for the Pool Name table's TVL column —
-   sits under the dollar figure inside a table cell, so it needs to be
-   slimmer than the default 10px used in the bigger Dashboard bars. */
+/* Compact .segbar variant for the Pool Name table's TVL column */
 .pool-tvl-bar{
   height: 5px;
   margin-top: 5px;
   margin-bottom: 0;
 }
-/* Venn diagram tooltip + pool table styling — shared by pools.html and
-   profile.html, both of which render the same #vennChart/#poolTable pattern. */
+/* Venn tooltip + pool table styling, shared by pools.html and profile.html */
 .venntooltip {
   position: absolute;
   text-align: center;
