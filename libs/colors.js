@@ -74,3 +74,27 @@ const colorOf = token => {
    if(token.startsWith("LP ")) { ans = randomCyan(); }
    return ans;
 };
+
+// Returns a readable, hue-matched text color for a label sitting directly on
+// top of `fill` — darkened toward black on light/mid fills, lightened toward
+// white on fills that are already dark (e.g. UNDEAD's #8B1E1E), since
+// darkening an already-dark color further would be unreadable. Tinting
+// toward the fill's own hue (rather than plain black/white) is what keeps
+// labeled segbars — the coverage bar, the distributions breakdown — reading
+// as intentional rather than a flat black stamp on every color.
+const textOnFill = (fill, factor = 0.55) => {
+   let r, g, b;
+   if (fill.startsWith('#')) {
+      let hex = fill.replace('#', '');
+      if (hex.length === 3) hex = hex.split('').map(c => c + c).join('');
+      const n = parseInt(hex, 16);
+      r = (n >> 16) & 255; g = (n >> 8) & 255; b = n & 255;
+   } else {
+      [r, g, b] = fill.match(/\d+/g).map(Number);
+   }
+   const luminance = (0.299 * r + 0.587 * g + 0.114 * b) / 255;
+   const mix = luminance > 0.5
+      ? c => Math.round(c * (1 - factor))
+      : c => Math.round(c + (255 - c) * factor);
+   return `rgb(${mix(r)}, ${mix(g)}, ${mix(b)})`;
+};

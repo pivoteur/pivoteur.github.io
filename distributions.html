@@ -4,8 +4,9 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol - Cumulative Distributions</title>
-    <link rel="stylesheet" href="protocol.css?version=5">
+    <link rel="stylesheet" href="protocol.css?version=8">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="libs/colors.js"></script>
 </head>
 <body>
 
@@ -24,6 +25,7 @@
       </div>
       <div class="panel-body">
         <div id="summary" class="sub" style="text-align:center; margin-bottom:16px; font-size:13px;">Loading…</div>
+        <div class="segbar" id="distSegbar" style="margin-bottom:16px;"></div>
         <div id="error" class="neg" style="text-align:center; padding:20px; display:none;">Failed to load distributions data.</div>
         <div id="chartContainer" style="position:relative; width:100%; height:420px;">
           <canvas id="distChart"></canvas>
@@ -90,6 +92,27 @@
         const total = TOKENS.reduce((s, t) => s + money(lastRow[t.col], `${t.col} on ${lastRow['date']}`), 0);
         document.getElementById('summary').textContent =
             `Latest date: ${lastRow['date']}  |  Total cumulative value: $${total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+
+        // ----- Breakdown segbar — always-visible per-token composition of the same total above ----------------------------------
+        const distEntries = TOKENS
+            .map(t => [t.label, money(lastRow[t.col], `${t.col} on ${lastRow['date']}`), t.color])
+            .filter(([, v]) => v > 0)
+            .sort((a, b) => b[1] - a[1]);
+        const SEG_MIN_PCT = 5;
+        const rawPcts = distEntries.map(([, v]) => total ? (v / total) * 100 : 0);
+        const floored = rawPcts.map(p => Math.max(p, SEG_MIN_PCT));
+        const flooredTotal = floored.reduce((a, b) => a + b, 0);
+        const displayPcts = floored.map(p => (p / flooredTotal) * 100);
+
+        const distSegbar = document.getElementById('distSegbar');
+        distSegbar.innerHTML = distEntries.map(([label, val, color], i) => {
+            const amtFull = val.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2});
+            const amtShort = val.toLocaleString('en-US', {maximumFractionDigits: 0});
+            const pct = total ? (val / total * 100).toFixed(0) : 0;
+            return `<div class="seg seg-labeled" style="width:${displayPcts[i].toFixed(2)}%;background:${color};" title="${label}: ${amtFull} (${pct}%)">
+                <span class="seg-label" style="color:${textOnFill(color)};">${label} ${amtShort}</span>
+            </div>`;
+        }).join('');
 
         const ctx = document.getElementById('distChart').getContext('2d');
         new Chart(ctx, {
@@ -164,6 +187,7 @@
         .catch(err => {
             console.error(err);
             document.getElementById('summary').style.display = 'none';
+            document.getElementById('distSegbar').style.display = 'none';
             const el = document.getElementById('error');
             el.textContent = `Error: ${err.message}`;
             el.style.display = 'block';
