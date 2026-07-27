@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol</title>
-    <link rel="stylesheet" href="protocol.css?version=8"> 
+    <link rel="stylesheet" href="protocol.css?version=9"> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -23,7 +23,7 @@
           <button class="range-btn active" data-days="0">MAX</button>
         </div>
       </div>
-      <div style="padding:0 20px 20px; position:relative; height:420px;">
+      <div class="panel-body" style="padding-top:0; position:relative; height:420px;">
         <canvas id="barChart" width="400" height="200"></canvas>
       </div>
       <div id="navSummary" class="sub" style="padding:0 20px 18px; font-size:12px;">Loading…</div>
@@ -31,12 +31,12 @@
       <div class="panel-divider"></div>
 
       <div class="panel-head" style="border-bottom:none;">Tokens <span id="tokensTotal" class="sub"></span></div>
-      <div style="padding:20px 20px 8px;">
+      <div class="panel-body" style="padding-bottom:8px;">
         <div class="section-label">Token Breakdown</div>
         <div class="segbar" id="tokensSegbar"></div>
         <div class="segbar-caption sub" id="tokensSegCaption">Loading…</div>
       </div>
-      <div class="header-dapps-bar" id="headerDappsBar" style="margin:0; padding:0 20px 20px;">
+      <div class="header-dapps-bar panel-body" id="headerDappsBar" style="padding-top:0; margin:0;">
         <div class="section-label">TVL</div>
         <div class="segbar" id="dappsSegbar"></div>
         <div class="segbar-caption sub" id="dappsSegCaption">Loading…</div>
