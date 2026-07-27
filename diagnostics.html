@@ -1,7 +1,7 @@
 <html>
  <head>
   <title>Protocol Health</title>
-  <link rel="stylesheet" href="protocol.css?version=7">
+  <link rel="stylesheet" href="protocol.css?version=8">
   <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap'>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
   <script src="libs/colors.js"></script>
@@ -295,7 +295,7 @@
                const copyVal = fmt.replace(/,/g, '');
                qHtml += `<div class="quote-row copyable" data-copy="${copyVal}" onclick="copyQuoteValue(this)" title="Click to copy value">
                  <span class="quote-token">${token}</span>
-                 <span class="quote-price">${fmt}</span>
+                 <span class="quote-price">$${fmt}</span>
                </div>`;
              });
            document.getElementById('graph-legend').insertAdjacentHTML('beforeend', qHtml);
@@ -314,5 +314,6 @@
   </script>
   <script src="libs/pool-assets.js"></script>
   <script src='libs/chrome.js'></script>
+  <script src="libs/quotes-live.js"></script>
  </body>
 </html>
