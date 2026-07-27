@@ -565,6 +565,11 @@ a.brand:hover{ text-decoration: none; }
   margin-top: 5px;
   margin-bottom: 0;
 }
+/* Uncommitted-balance alert — swapped in via JS in place of the default gold seg when a pool's uncommitted assets exceed $1,000 */
+.seg-alert{
+  background: var(--red);
+  box-shadow: 0 0 6px rgba(255,107,107,0.53);
+}
 /* Venn tooltip + pool table styling, shared by pools.html and profile.html */
 .venntooltip {
   position: absolute;

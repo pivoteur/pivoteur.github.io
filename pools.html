@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol Pools</title>
-    <link rel="stylesheet" href="protocol.css?version=9">
+    <link rel="stylesheet" href="protocol.css?version=10">
     <script src='https://d3js.org/d3.v4.min.js'></script>
 </head>
 
@@ -103,11 +103,19 @@ about amplified staking.
              const activePct = 100 - uncommittedPct;
              const active = totalTvl - uncommitted;
 
+             // Uncommitted balances over $1,000 glow red (same alert color as
+             // the rest of the site) instead of the default gold, to flag
+             // capital sitting idle in a pool rather than working.
+             const UNCOMMITTED_ALERT_THRESHOLD = 1000;
+             const isAlert = uncommitted > UNCOMMITTED_ALERT_THRESHOLD;
+             const uncommittedClass = 'seg' + (isAlert ? ' seg-alert' : '');
+             const uncommittedStyle = 'width:' + uncommittedPct.toFixed(2) + '%;' + (isAlert ? '' : 'background:var(--gold);');
+
              tvlCell.innerHTML = `
                 <div class="num">${showUsd(totalTvl)}</div>
                 <div class="segbar pool-tvl-bar">
                    <div class="seg" style="width:${activePct.toFixed(2)}%;background:var(--teal);" title="In Pivots: ${showUsd(active)}"></div>
-                   <div class="seg" style="width:${uncommittedPct.toFixed(2)}%;background:var(--gold);" title="Uncommitted: ${showUsd(uncommitted)}"></div>
+                   <div class="${uncommittedClass}" style="${uncommittedStyle}" title="Uncommitted: ${showUsd(uncommitted)}"></div>
                 </div>`;
           });
        });
