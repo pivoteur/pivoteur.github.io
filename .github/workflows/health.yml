@@ -2,8 +2,13 @@ name: health
 
 on:
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (print to stdout only, no commit)'
+        type: boolean
+        default: false
   schedule:
-    # cron ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time 
+    # ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time 
     - cron: "45 06 * * *" 
 
 permissions:
@@ -27,7 +32,12 @@ jobs:
 
       - name: Copy diagnostics to pivoteur.github.io
         run: |
-          cp protocol/data/diagnostics.txt pivoteur.github.io/data/diagnostics.txt
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "=== DRY RUN: diagnostics.txt would be copied from protocol ==="
+            diff protocol/data/diagnostics.txt pivoteur.github.io/data/diagnostics.txt || true
+          else
+            cp protocol/data/diagnostics.txt pivoteur.github.io/data/diagnostics.txt
+          fi
 
       - name: Fetch workflow run status and closed issues
         env:
@@ -84,12 +94,17 @@ jobs:
             --argjson workflows "$workflows" \
             --argjson closed_issues "$closed" \
             '{"date": $date, "workflows": $workflows, "closed_issues": $closed_issues}' \
-            > pivoteur.github.io/data/workflows.json
+            > /tmp/workflows_out.json
 
           echo "--- workflows.json ---"
-          cat pivoteur.github.io/data/workflows.json    
+          cat /tmp/workflows_out.json
+
+          if [ "${{ github.event.inputs.dry_run }}" != "true" ]; then
+            mv /tmp/workflows_out.json pivoteur.github.io/data/workflows.json
+          fi
 
       - name: Commit and push diagnostics
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         env:
           USER0_NAME: ${{ vars.USER0_NAME }}
           USER0_EMAIL: ${{ secrets.USER0_EMAIL }}
