@@ -19,7 +19,7 @@ on:
         description: 'Dry run (print to stdout only, no commit)'
         required: true
         type: boolean
-        default: true
+        default: false
 
 env:
   DAPP: convcls
