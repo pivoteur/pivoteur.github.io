@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol</title>
-    <link rel="stylesheet" href="protocol.css?version=11"> 
+    <link rel="stylesheet" href="protocol.css?version=12"> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -125,11 +125,10 @@
             .then(data => {
    let [wallets, idx] = table(data);
 
-   // --- Token breakdown, rendered as a segmented bar (not a donut). Computed once
-   // here and reused for both the header total and the bar, so the two numbers
-   // can never disagree the way the old donut-center-total vs. header-total did.
+   // Token breakdown, rendered as a segmented bar. Computed once
+   // here and reused for both the header total and the bar, so the two numbers can never disagree
    let tokenAmounts = [];
-   let tokenLabels = usdLabels(idx).map(([lab, ix]) => {
+   let tokenLabels = usdLabels(idx).filter(([lab]) => lab !== 'sAVAX').map(([lab, ix]) => {
       tokenAmounts.push(total(wallets.map(r => r[ix])));
       return lab;
    });
