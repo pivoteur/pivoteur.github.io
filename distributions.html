@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol - Cumulative Distributions</title>
-    <link rel="stylesheet" href="protocol.css?version=9">
+    <link rel="stylesheet" href="protocol.css?version=11">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="libs/colors.js"></script>
 </head>
@@ -37,9 +37,9 @@
     <script>
     // ----- Token config: label, TSV column prefix, bar color --------------------
     const TOKENS = [
-        { label: 'BTC',    col: 'BTC $ total',    color: '#DE9E1F' },
-        { label: 'ETH',    col: 'ETH $ total',    color: '#8B7FE8' },
-        { label: 'AVAX',   col: 'AVAX $ total',   color: '#FF6B6B' },
+        { label: 'BTC',    col: 'BTC $ total',    color: '#F7931A' },
+        { label: 'ETH',    col: 'ETH $ total',    color: '#627EEA' },
+        { label: 'AVAX',   col: 'AVAX $ total',   color: '#E84142' },
         { label: 'stable', col: 'stable $ total', color: '#4FD9BE' },
         { label: 'UNDEAD', col: 'UNDEAD $ total', color: '#8B1E1E' },
     ];
@@ -116,9 +116,10 @@
             const amtShort = val.toLocaleString('en-US', {maximumFractionDigits: 0});
             const pct = total ? (val / total * 100).toFixed(0) : 0;
             return `<div class="seg seg-labeled" style="width:${displayPcts[i].toFixed(2)}%;background:${color};" title="${label}: ${amtFull} (${pct}%)">
-                <span class="seg-label" style="color:${textOnFill(color)};">${label} $${amtShort}</span>
+                <span class="seg-label" data-short="${pct}%" style="color:${textOnFill(color)};">${label} $${amtShort}</span>
             </div>`;
         }).join('');
+        fitSegLabels(distSegbar);
 
         const ctx = document.getElementById('distChart').getContext('2d');
         new Chart(ctx, {

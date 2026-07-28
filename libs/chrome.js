@@ -7,7 +7,7 @@
    ========================================================================== */
 
 (function () {
-  const PROTOCOL_VERSION = 29; 
+  const PROTOCOL_VERSION = 31; 
 
   const NAV_LINKS = [
     { label: 'Dashboard',      href: 'index.html' },
