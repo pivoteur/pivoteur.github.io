@@ -603,6 +603,11 @@ a.brand:hover{ text-decoration: none; }
 }
 #poolTable td{ padding:14px 20px; border-top:1px solid var(--border); }
 #poolTable td[colspan='5']{ padding: 8px 20px; }
+/* INCEPT column — table-layout */
+#poolTable th:nth-child(2), #poolTable td:nth-child(2){
+  white-space: nowrap;
+  width: 110px;
+}
 #poolTable tr.divider-row td{ padding:0; border-top:none; }
 #poolTable tr.divider-row hr{ display:none; }
 #poolTable tr:hover td{ background: var(--surface-hover); }
