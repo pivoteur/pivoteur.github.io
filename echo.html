@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol Echo Pool</title>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <link rel="stylesheet" href="protocol.css?version=1">
+    <link rel="stylesheet" href="protocol.css?version=2">
 </head>
 <body>
 
@@ -19,7 +19,7 @@
 
     <div class="panel">
       <div class="panel-head">Stake Address</div>
-      <div style="padding:16px 20px; display:flex; align-items:center; gap:10px;">
+      <div class="panel-body" style="display:flex; align-items:center; gap:10px;">
         [STAKE] $UNDEAD into Echo pool —
         <span class="addy num" style="color:var(--text-bright);">0x0BA882a9E2695fCcAD7F52803CB6AE685a71AE44</span>
         <input type="image" id="clipboard"
@@ -30,21 +30,21 @@
 
     <div class="panel">
       <div class="panel-head">Radar</div>
-      <div style="padding:20px; max-width:700px; margin:0 auto;">
+      <div class="panel-body centered">
         <canvas id="radarChart" width="800" height="400"></canvas>
       </div>
     </div>
 
     <div class="panel">
       <div class="panel-head">Apportionment</div>
-      <div style="padding:20px; max-width:700px; margin:0 auto;">
+      <div class="panel-body centered">
         <canvas id="barChart" width="800" height="400"></canvas>
       </div>
     </div>
 
     <div class="panel">
       <div class="panel-head">Related</div>
-      <div style="padding:16px 20px; display:flex; gap:32px;">
+      <div class="panel-body" style="display:flex; gap:32px;">
         <div>See <a href="diy.html?t1=ETH&t2=UNDEAD">Echo Pool screens</a></div>
         <div>See <a href='detail.html?title=Echo&p1=ETH&p2=UNDEAD&addy=0x0BA882a9E2695fCcAD7F52803CB6AE685a71AE44&file=echo'>Echo Pool Details</a></div>
       </div>

@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol</title>
-    <link rel="stylesheet" href="protocol.css?version=8"> 
+    <link rel="stylesheet" href="protocol.css?version=12"> 
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
@@ -23,7 +23,7 @@
           <button class="range-btn active" data-days="0">MAX</button>
         </div>
       </div>
-      <div style="padding:0 20px 20px; position:relative; height:420px;">
+      <div class="panel-body" style="padding-top:0; position:relative; height:420px;">
         <canvas id="barChart" width="400" height="200"></canvas>
       </div>
       <div id="navSummary" class="sub" style="padding:0 20px 18px; font-size:12px;">Loading…</div>
@@ -31,15 +31,13 @@
       <div class="panel-divider"></div>
 
       <div class="panel-head" style="border-bottom:none;">Tokens <span id="tokensTotal" class="sub"></span></div>
-      <div style="padding:20px 20px 8px;">
+      <div class="panel-body" style="padding-bottom:8px;">
         <div class="section-label">Token Breakdown</div>
         <div class="segbar" id="tokensSegbar"></div>
-        <div class="segbar-caption sub" id="tokensSegCaption">Loading…</div>
       </div>
-      <div class="header-dapps-bar" id="headerDappsBar" style="margin:0; padding:0 20px 20px;">
+      <div class="header-dapps-bar panel-body" id="headerDappsBar" style="padding-top:0; margin:0;">
         <div class="section-label">TVL</div>
         <div class="segbar" id="dappsSegbar"></div>
-        <div class="segbar-caption sub" id="dappsSegCaption">Loading…</div>
       </div>
     </div>
 
@@ -127,11 +125,10 @@
             .then(data => {
    let [wallets, idx] = table(data);
 
-   // --- Token breakdown, rendered as a segmented bar (not a donut). Computed once
-   // here and reused for both the header total and the bar, so the two numbers
-   // can never disagree the way the old donut-center-total vs. header-total did.
+   // Token breakdown, rendered as a segmented bar. Computed once
+   // here and reused for both the header total and the bar, so the two numbers can never disagree
    let tokenAmounts = [];
-   let tokenLabels = usdLabels(idx).map(([lab, ix]) => {
+   let tokenLabels = usdLabels(idx).filter(([lab]) => lab !== 'sAVAX').map(([lab, ix]) => {
       tokenAmounts.push(total(wallets.map(r => r[ix])));
       return lab;
    });
@@ -153,11 +150,13 @@
 
    const tokensSegbar = document.getElementById('tokensSegbar');
    tokensSegbar.innerHTML = tokenEntries.map(([label, val], i) => {
-      return '<div class="seg" style="width:' + tokenDisplayPcts[i].toFixed(2) + '%;background:' + colorOf(label) + '" title="' + label + ': ' + showUsd(val) + '"></div>';
+      const color = colorOf(label);
+      const pct = tokenPosTotal ? (val / tokenPosTotal * 100).toFixed(0) : 0;
+      return '<div class="seg seg-labeled" style="width:' + tokenDisplayPcts[i].toFixed(2) + '%;background:' + color + '" title="' + label + ': ' + showUsd(val) + '">'
+           + '<span class="seg-label" data-short="' + pct + '%" style="color:' + textOnFill(color) + ';">' + label + ' ' + pct + '%</span>'
+           + '</div>';
    }).join('');
-
-   document.getElementById('tokensSegCaption').textContent =
-      tokenEntries.map(([label, val]) => label + ' ' + (tokenPosTotal ? (val / tokenPosTotal * 100).toFixed(0) : 0) + '%').join(' · ');
+   fitSegLabels(tokensSegbar);
 
    // ----- dapps breakdown --------------------------------------------------------------
    let dappTvl = {};
@@ -185,14 +184,15 @@
    const displayPcts = floored.map(p => (p / flooredTotal) * 100);
 
    const segbar = document.getElementById('dappsSegbar');
-   segbar.innerHTML = dappEntries.map(([label], i) => {
+   segbar.innerHTML = dappEntries.map(([label, val], i) => {
       const displayPct = displayPcts[i];
       const color = CATEGORY_COLOR[label] || colorOf(label);
-      return '<div class="seg" style="width:' + displayPct.toFixed(2) + '%;background:' + color + '" title="' + label + ': ' + showUsd(dappEntries[i][1]) + '"></div>';
+      const pct = dappTotal ? (val / dappTotal * 100).toFixed(0) : 0;
+      return '<div class="seg seg-labeled" style="width:' + displayPct.toFixed(2) + '%;background:' + color + '" title="' + label + ': ' + showUsd(val) + '">'
+           + '<span class="seg-label" data-short="' + pct + '%" style="color:' + textOnFill(color) + ';">' + label + ' ' + pct + '%</span>'
+           + '</div>';
    }).join('');
-
-   document.getElementById('dappsSegCaption').textContent =
-      dappEntries.map(([label, val]) => label + ' ' + (dappTotal ? (val / dappTotal * 100).toFixed(0) : 0) + '%').join(' · ');
+   fitSegLabels(segbar);
 });
     </script>
 </body>

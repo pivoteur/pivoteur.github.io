@@ -1,9 +1,10 @@
 <html>
  <head>
   <title>Protocol Health</title>
-  <link rel="stylesheet" href="protocol.css?version=6">
+  <link rel="stylesheet" href="protocol.css?version=10">
   <link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600;700&display=swap'>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+  <script src="libs/colors.js"></script>
   <script>
     const covColor = d3.scaleLinear()
       .domain([0, 40, 60, 75, 90, 100])
@@ -210,10 +211,6 @@
            lineData[e.crate].c += e.linesC;
            lineData[e.crate].t += e.linesT;
          } else if (!lineData[e.crate] && e.coverage !== null) {
-           // No real line counts for this crate — we only know a %.
-           // Flagged pctOnly and excluded from the weighted overall total
-           // below, since a fake denominator would silently skew the
-           // headline % once mixed with crates that DO have real line counts.
            lineData[e.crate] = { c: e.coverage, t: null, pctOnly: true };
          }
        });
@@ -244,14 +241,15 @@
 
          let segHtml = segs.map(s =>
           `<div class="seg seg-labeled" style="width:${s.share.toFixed(2)}%;background:${s.color};" title="${s.crate}: ${s.share.toFixed(1)}%/${overallPct.toFixed(1)}%">
-            <span class="seg-label">${s.crate} ${s.cratePct.toFixed(0)}%</span>
+            <span class="seg-label" data-short="${s.cratePct.toFixed(0)}%" style="color:${textOnFill(s.color)};">${s.crate} ${s.cratePct.toFixed(0)}%</span>
           </div>`
         ).join('');
         segHtml += `<div class="seg seg-uncovered" style="width:${uncoveredShare.toFixed(2)}%" title="uncovered: ${uncoveredShare.toFixed(1)}%/${overallPct.toFixed(1)}%"></div>`;
 
         covBarWrap.innerHTML = `
           <div class="num coverage-pct" style="color:${overallColor};">${overallPct.toFixed(1)}%</div>
-          <div class="segbar">${segHtml}</div>`;}
+          <div class="segbar">${segHtml}</div>`;
+        fitSegLabels(covBarWrap);}
 
        // ---- Legend ----------------------------------------------------------------------
        let legendHtml = '<div class="legend-heading">Line Coverage</div>';
