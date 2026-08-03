@@ -2,9 +2,14 @@ name: assets
 
 on:
   workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run — do not commit/push results'
+        type: boolean
+        default: false
   schedule:
-    # test the cron ("Min Hour Day Month DayofWeek" in UTC) at scheduled time 
-    - cron: "57 04 * * *" # this is 12:57 AM Eastern Standard Time
+    # ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time
+    - cron: "57 04 * * *" 
 
 env:
    DAPP: assets
@@ -72,9 +77,17 @@ jobs:
           echo "PIVOT_URL=$RAW_URL/${{ github.repository }}" >> $GITHUB_ENV
 
       - name: Run assets and log output
-        run: $DAPP $PROTOCOL_ALIAS $LE_DATE >> data/assets.csv
+        env:
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            $DAPP $PROTOCOL_ALIAS $LE_DATE
+          else
+            $DAPP $PROTOCOL_ALIAS $LE_DATE >> data/assets.csv
+          fi
 
       - name: Commit and push results
+        if: ${{ github.event.inputs.dry_run != 'true' }}
         env:
           USER0_NAME: ${{ vars.USER0_NAME }}
           USER0_EMAIL: ${{ secrets.USER0_EMAIL }}
