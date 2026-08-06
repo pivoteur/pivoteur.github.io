@@ -9,7 +9,7 @@ on:
         default: false
   schedule:
     # ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time 
-    - cron: "45 06 * * *" 
+    - cron: "45 07 * * *" 
 
 permissions:
   contents: write
@@ -70,6 +70,8 @@ jobs:
             fetch_status "pivoteur/pivoteur.github.io"  "hwaet.yml"   "Hwaet"
             echo ','
             fetch_status "pivoteur/pivoteur.github.io" "daily.yml"  "Daily"
+            echo ','
+            fetch_status "pivoteur/pivoteur.github.io" "pools.yml"  "Pools"
             echo ','
             fetch_status "pivoteur/protocol"           "rat.yml"     "R.A.T."
             echo ']'
