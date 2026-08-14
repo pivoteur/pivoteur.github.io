@@ -1,4 +1,4 @@
-name: hwaet
+name: pools
 
 on:
   workflow_dispatch:
@@ -8,87 +8,88 @@ on:
         type: boolean
         default: false
   schedule:
-    # ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time 
-    - cron: "45 06 * * *" 
+        # ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time
+    - cron: "45 05 * * *"
 
-env: 
-  DAPP: hwaet
+env:
+  DAPP: pools
 
 permissions:
   contents: write
 
 jobs:
-  run-hwaet:
+  run-pools:
     runs-on: ubuntu-latest
-    steps:
-      - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
-        uses: actions/checkout@v4
 
-      - name: Checkout protocol # needed by cache step to locate Cargo.toml
+    steps:
+      - name: Checkout pivoteur.github.io
         uses: actions/checkout@v4
-        with:
-          repository: pivoteur/protocol
-          path: protocol
 
       - name: Load Shared Environment Variables
         uses: doughepi/yaml-env-action@v1.0.0
         with:
           files: .github/config/protocol-env.yml
-          
+
       - name: Establish app path
         run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
 
       - name: Establish git path
         run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
 
-      - name: Cache hwaet binary
-        id: binary-cache
+      - name: Checkout protocol
+        uses: actions/checkout@v4
+        with:
+          repository: pivoteur/protocol
+          path: protocol
+
+      - name: Cache pools binary
+        id: pools-cache
         uses: actions/cache@v4
         with:
-          path: protocol/dapps/hwaet/target/release/hwaet
+          path: protocol/dapps/pools/target/release/pools
           key: >-
-            hwaet-binary-
-            ${{ hashFiles(format('{0}/quiz07/d_health/**/*.rs', env.QUIZZES_SRC)) }}-
+            pools-binary-
+            ${{ hashFiles(format('{0}/quiz10/c_local_pools/**/*.rs', env.QUIZZES_SRC)) }}-
             ${{ hashFiles(format('{0}/Cargo.toml', env.DAPP_DIR)) }}-
             ${{ hashFiles(format('{0}/Cargo.lock', env.DAPP_DIR)) }}
 
       - name: Install Rust toolchain
-        if: steps.binary-cache.outputs.cache-hit != 'true'
+        if: steps.pools-cache.outputs.cache-hit != 'true'
         uses: dtolnay/rust-toolchain@stable
         with:
           toolchain: stable
 
       - name: Checkout crypto-n-rust
-        if: steps.binary-cache.outputs.cache-hit != 'true'
+        if: steps.pools-cache.outputs.cache-hit != 'true'
         uses: actions/checkout@v4
         with:
           repository: logicalgraphs/crypto-n-rust
           path: crypto-n-rust
 
-      - name: Build hwaet
-        if: steps.binary-cache.outputs.cache-hit != 'true'
+      - name: Build pools
+        if: steps.pools-cache.outputs.cache-hit != 'true'
         run: |
           cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
 
-      - name: Add hwaet to PATH
-        run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
-
-      - name: Setting date and URL
+      - name: Add pools and date to PATH
         run: |
+          echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
-          echo "PIVOT_URL=https://raw.githubusercontent.com/pivoteur/pivoteur.github.io" >> $GITHUB_ENV
 
-      - name: Run hwaet
+      - name: Run pools
+        env:
+          PIVOT_DATA_DIR: data
         run: |
-          $DAPP $PROTOCOL_ALIAS $LE_DATE > /tmp/hwaet_out.js
+          $DAPP $PROTOCOL_ALIAS $LE_DATE > /tmp/pools_out.js
+
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
-            echo "=== DRY RUN: pool-health.js would be ==="
-            cat /tmp/hwaet_out.js
+            echo "=== DRY RUN: libs/pool-assets.js would be ==="
+            cat /tmp/pools_out.js
           else
-            mv /tmp/hwaet_out.js libs/pool-health.js
+            mv /tmp/pools_out.js libs/pool-assets.js
           fi
 
-      - name: Commit and push results
+      - name: Commit and push pool-assets.js
         if: ${{ github.event.inputs.dry_run != 'true' }}
         env:
           USER0_NAME: ${{ vars.USER0_NAME }}
@@ -96,12 +97,12 @@ jobs:
         run: |
           git config --local user.name "$USER0_NAME"
           git config --local user.email "$USER0_EMAIL"
-          git add libs/pool-health.js
+          git add libs/pool-assets.js
 
           if git diff --staged --quiet; then
             echo "Nothing to commit, skipping push"
             exit 0
           fi
 
-          git commit -m "hwaet $LE_DATE"
+          git commit -m "pools $LE_DATE"
           git push
