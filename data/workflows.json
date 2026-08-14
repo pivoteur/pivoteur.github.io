@@ -38,6 +38,12 @@
       "ran_at": "2026-08-14T06:02:55Z"
     },
     {
+      "name": "Pools",
+      "repo": "pivoteur/pivoteur.github.io",
+      "status": "success",
+      "ran_at": "2026-08-14T14:06:43Z"
+    },
+    {
       "name": "R.A.T.",
       "repo": "pivoteur/protocol",
       "status": "success",
@@ -47,11 +53,11 @@
   "closed_issues": [
     {
       "repo": "pivoteur/protocol",
-      "closed_today": 0
+      "closed_today": 2
     },
     {
       "repo": "pivoteur/pivoteur.github.io",
-      "closed_today": 0
+      "closed_today": 3
     },
     {
       "repo": "logicalgraphs/crypto-n-rust",
