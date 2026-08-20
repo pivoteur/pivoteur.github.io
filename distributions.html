@@ -4,36 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol - Cumulative Distributions</title>
-    <link rel="stylesheet" href="protocol.css?version=11">
+    <link rel="stylesheet" href="protocol.css?version=12">
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script src="libs/colors.js"></script>
 </head>
 <body>
-
   <div id="app-ticker"></div>
   <div id="app-nav"></div>
-
   <main>
     <div class="panel">
-      <div class="panel-head" style="display:flex; align-items:center; justify-content:space-between;">
-        <span>Cumulative Distributions</span>
-        <div style="display:flex; gap:4px;">
-          <button class="range-btn" data-days="30">1M</button>
-          <button class="range-btn" data-days="90">3M</button>
-          <button class="range-btn active" data-days="0">MAX</button>
+        <div class="panel-head" style="display:flex; align-items:center; justify-content:space-between;">
+            <span style="display:flex; align-items:baseline; gap:10px;">
+                Cumulative Distributions
+                <span id="summary" style="color:var(--text-bright); font-size:14px; text-transform:none; letter-spacing:normal;">Loading…</span>
+            </span>
+            <div style="display:flex; gap:4px;">
+            <button class="range-btn" data-days="30">1M</button>
+            <button class="range-btn" data-days="90">3M</button>
+            <button class="range-btn active" data-days="0">MAX</button>
         </div>
-      </div>
-      <div class="panel-body">
-        <div id="summary" class="sub" style="text-align:center; margin-bottom:16px; font-size:13px;">Loading…</div>
-        <div id="error" class="neg" style="text-align:center; padding:20px; display:none;">Failed to load distributions data.</div>
-        <div id="chartContainer" style="position:relative; width:100%; height:420px;">
-          <canvas id="distChart"></canvas>
-        </div>
-        <div class="segbar" id="distSegbar" style="margin-top:16px;"></div>
-      </div>
+    </div>
+<div class="panel-body">
+  <div id="error" class="neg" style="text-align:center; padding:20px; display:none;">Failed to load distributions data.</div>
+  <div id="chartContainer" style="position:relative; width:100%; height:420px;">
+    <canvas id="distChart"></canvas>
+  </div>
+  <div class="segbar" id="distSegbar" style="margin-top:16px;"></div>
+</div>
     </div>
   </main>
-
     <script>
     // ----- Token config: label, TSV column prefix, bar color --------------------
     const TOKENS = [
@@ -91,7 +90,7 @@
         const lastRow = rows[rows.length - 1];
         const total = TOKENS.reduce((s, t) => s + money(lastRow[t.col], `${t.col} on ${lastRow['date']}`), 0);
         document.getElementById('summary').textContent =
-            `Latest date: ${lastRow['date']}  |  Total cumulative value: $${total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
+            `$${total.toLocaleString('en-US', {minimumFractionDigits: 2, maximumFractionDigits: 2})}`;
 
         const distEntries = TOKENS
             .map(t => [t.label, money(lastRow[t.col], `${t.col} on ${lastRow['date']}`), colorOf(t.label)])
