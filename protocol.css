@@ -4,11 +4,31 @@
    tokens -> chrome -> diagnostics -> diy -> pools
    ========================================================================== */
 
+/* Smooth cross-page navigation. Same-origin <a href> navigations crossfade
+   the old page into the new one instead of hard-cutting -- a sudden
+   full-frame swap reads as "broken/reloading," a brief crossfade reads as
+   "still the same app, new content." Pure progressive enhancement: browsers
+   without support just navigate normally, no regression either way. */
+@view-transition {
+  navigation: auto;
+}
+
+/* 200-300ms is the well-established window where a transition reads as
+   responsive rather than sluggish; ease-out-quint settles gently instead
+   of stopping abruptly, which is what makes a crossfade feel "smooth"
+   rather than "flickery." */
+::view-transition-old(root),
+::view-transition-new(root){
+  animation-duration: 220ms;
+  animation-timing-function: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
 /* ----- tokens ------------------------------------------------------------- */
 
 :root{
   /* --- Background --- */
   --bg-grad: linear-gradient(45deg, #0A0E1A 0%, #0D1220 35%, #101830 65%, #14203A 100%);
+  --aura-navy: linear-gradient(135deg, #0A0E1A 0%, #101830 40%, #16233F 70%, #1C2B4A 100%);
   --bg-solid: #0A0E1A;
 
   /* --- Surfaces --- */
@@ -27,6 +47,7 @@
   --teal-dim: rgba(79,217,190,0.10);
   --teal-border: rgba(79,217,190,0.25);
   --chrome: #8FA6C4; /* secondary metallic accent, logo gradient endpoint */
+  --silver: #D6DEE8; 
   --gold: #DE9E1F;
 
   /* --- Semantic --- */
@@ -129,6 +150,9 @@ main{ padding: 32px 24px; max-width: 1400px; margin: 0 auto; position: relative;
   font-size: var(--radius); text-align: center; white-space: nowrap;
   overflow: hidden; text-overflow: ellipsis;
 }
+.segbar:has(.seg-labeled){
+  height: 26px;
+}
 
 /* --- Divider + sub-labels for merged multi-section panels (Tokens + NAV) --- */
 .panel-divider{ height: 1px; background: var(--border-strong); margin: 4px 20px 0; }
@@ -180,6 +204,19 @@ html{
 
 /* ----- chrome --------------------------------------------------------------- */
 
+#app-ticker{ min-height: 37px; }
+#app-nav{ min-height: 60px; }
+#app-nav{
+  view-transition-name: site-nav;
+  position: relative;
+  z-index: 1001;
+}
+#app-ticker{
+  view-transition-name: site-ticker;
+  position: relative;
+  z-index: 1000;
+}
+
 .ticker-wrap{
   background: var(--surface);
   border-bottom: 1px solid var(--border);
@@ -223,20 +260,46 @@ html{
 }
 .brand-name{ color: var(--text-bright); font-weight: 700; font-size: 15px; letter-spacing: -0.01em; }
 
-nav.links{ display: flex; gap: 26px; flex-wrap: wrap; }
+nav.links{ display: flex; gap: 26px; flex-wrap: wrap; position: relative; }
 nav.links a{
   color: var(--text-dim); text-decoration: none; font-size: var(--radius); font-weight: 500;
-  padding: 6px 0; border-bottom: 2px solid transparent;
+  padding: 6px 0; position: relative; z-index: 1;
 }
-nav.links a.active{ color: var(--text-bright); border-bottom-color: var(--teal); }
+nav.links a.active{ color: var(--text-bright); }
 nav.links a:hover{ color: var(--text-bright); text-decoration: none; }
+
+/* Nav-light: replaces the old static active-link underline. Two springs,
+   one per end of the line -- see initNavLight() in chrome.js. */
+.nav-light{
+  position: absolute;
+  inset: 0;
+  overflow: visible;
+  pointer-events: none;
+  z-index: 0;
+  --speed: 0;
+}
+.nav-light #navLightCore{
+  stroke-width: calc(2px + var(--speed) * 6px);
+  filter: drop-shadow(0 0 4px rgba(79,217,190,0.45));
+}
 
 .nav-right{ display: flex; align-items: center; gap: 14px; }
 .nav-cta{
-  background: var(--teal-dim); color: var(--teal); border: 1px solid var(--teal-border);
-  padding: 8px 16px; border-radius: var(--radius-sm); font-size: var(--radius); font-weight: 600; cursor: pointer;
+  display: inline-block;
+  background: rgba(15,20,34,0.55); /* --surface, translucent -- glassy over whatever's behind it */
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  color: var(--text-dim);
+  border: 1px solid var(--border-strong);
+  padding: 8px 16px; border-radius: var(--radius-sm);
+  font-weight: 600; font-size: var(--radius); cursor: pointer;
+  transition: color 0.15s ease, border-color 0.15s ease, background 0.15s ease;
 }
-.nav-cta:hover{ background: rgba(79,217,190,0.18); }
+.nav-cta:hover{
+  color: var(--silver);
+  border-color: rgba(214,222,232,0.4);
+  background: rgba(15,20,34,0.7);
+}
 
 @media (max-width: 860px){
   nav.links{ display: none; }
