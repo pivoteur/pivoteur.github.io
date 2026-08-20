@@ -616,3 +616,16 @@ a.brand:hover{ text-decoration: none; }
 #poolTable td a{ color: var(--text-bright); font-weight:600; text-decoration:none; }
 #poolTable td a:hover{ color: var(--teal); text-decoration:none; }
 #poolTable hr{ border:none; height:1px; background:var(--border-strong); margin:0; padding:0; }
+
+/* Clickable ROI/APR sort headers — greatest-to-least only, no default sort applied */
+#poolTable th.sortable{
+  cursor: pointer;
+  user-select: none;
+}
+#poolTable th.sortable:hover{
+  color: var(--text-bright);
+}
+#poolTable .sort-indicator{
+  color: var(--teal);
+  margin-left: 3px;
+}
