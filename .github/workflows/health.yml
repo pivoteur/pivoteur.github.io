@@ -30,13 +30,28 @@ jobs:
           repository: pivoteur/protocol
           path: protocol
 
+      - name: Checkout trading
+        uses: actions/checkout@v4
+        with:
+          repository: pivoteur/trading
+          path: trading    
+
       - name: Copy diagnostics to pivoteur.github.io
         run: |
           if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
             echo "=== DRY RUN: diagnostics.txt would be copied from protocol ==="
             diff protocol/data/diagnostics.txt pivoteur.github.io/data/diagnostics.txt || true
+            if [ -f trading/data/diagnostics.txt ]; then
+              echo "=== DRY RUN: trading/data/diagnostics.txt would be appended ==="
+              cat trading/data/diagnostics.txt
+            else
+              echo "=== trading/data/diagnostics.txt not found yet, skipping ==="
+            fi
           else
             cp protocol/data/diagnostics.txt pivoteur.github.io/data/diagnostics.txt
+            if [ -f trading/data/diagnostics.txt ]; then
+              cat trading/data/diagnostics.txt >> pivoteur.github.io/data/diagnostics.txt
+            fi
           fi
 
       - name: Fetch workflow run status and closed issues
@@ -55,7 +70,7 @@ jobs:
           }
 
           DATE=$(date -u +"%Y-%m-%d")
-          REPOS=("pivoteur/protocol" "pivoteur/pivoteur.github.io" "logicalgraphs/crypto-n-rust")
+          REPOS=("pivoteur/protocol" "pivoteur/pivoteur.github.io" "logicalgraphs/crypto-n-rust" "pivoteur/trading")
 
           workflows=$(jq -n --argjson entries "$(
             echo '['
@@ -73,7 +88,13 @@ jobs:
             echo ','
             fetch_status "pivoteur/pivoteur.github.io" "pools.yml"  "Pools"
             echo ','
+            fetch_status "pivoteur/pivoteur.github.io" "health.yml" "Health"
+            echo ','
             fetch_status "pivoteur/protocol"           "rat.yml"     "R.A.T."
+            echo ','
+            fetch_status "pivoteur/trading"            "tva.yml"     "Tvá"
+            echo ','
+            fetch_status "pivoteur/trading"            "maegen.yml"     "Maegen"
             echo ']'
           )" '$entries')
 

@@ -574,6 +574,55 @@ a.brand:hover{ text-decoration: none; }
   margin-bottom: 8px;
 }
 
+/* --- Automated Tasks: repo-grouped, self-sizing grid --- */
+.task-list-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 10px;
+}
+.task-group{
+  background: rgba(255,255,255,0.015);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 10px 10px 6px;
+}
+.task-group-head{
+  font-size: 9px;
+  color: rgba(200,216,232,0.35);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+  padding: 0 2px;
+}
+.task-group-body > .task-compact,
+.task-group-body > .task-row{ margin-bottom: 2px; }
+
+/* --- Code Coverage: repo-grouped, self-sizing grid --- */
+.cov-group{
+  background: rgba(255,255,255,0.015);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-sm);
+  padding: 14px 14px 12px;
+}
+.cov-grid{
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+}
+.cov-group-head{
+  font-size: 9px;
+  color: rgba(200,216,232,0.35);
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.cov-legend{
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  margin-top: 10px;
+}
+
 /* ----- diy -------------------------------------------------------------------- */
 .value-display{ color:var(--text-bright); font-family: var(--font-mono); font-size:13px; }
 
