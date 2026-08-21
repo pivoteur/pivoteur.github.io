@@ -623,6 +623,16 @@ a.brand:hover{ text-decoration: none; }
   margin-top: 10px;
 }
 
+.cov-pct-pending{
+  color: rgba(200,216,232,0.3);
+}
+.cov-segbar-pending{
+  background: repeating-linear-gradient(45deg, rgba(255,255,255,0.03), rgba(255,255,255,0.03) 6px, rgba(255,255,255,0.06) 6px, rgba(255,255,255,0.06) 12px);
+}
+.cov-pending-label{
+  color: rgba(200,216,232,0.4);
+}
+
 /* ----- diy -------------------------------------------------------------------- */
 .value-display{ color:var(--text-bright); font-family: var(--font-mono); font-size:13px; }
 
