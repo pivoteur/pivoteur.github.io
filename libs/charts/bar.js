@@ -34,7 +34,7 @@ const barChartTbl = (labels, assets) => {
        return {
           label: asset,
           data: amounts[asset],
-          backgroundColor: colorOf(asset)
+          backgroundColor: solidOf(colorOf(asset))
        };
     };
     let summer = list => { return list.reduce((acc, a) => acc + a, 0); };
