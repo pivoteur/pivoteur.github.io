@@ -44,11 +44,11 @@ const randomCyan = () => {
 const crypto = new Map([
    ["AAVE", "rgb(165, 55, 140)"],
    ["ALGO", "rgb(0, 0, 0)"],
-   ["AVAX", "#E84142"],
+   ["AVAX",  "linear-gradient(135deg, #d80c0c 0%, #de6d6d 100%)"],
    ["BAL",  "rgb(29, 40, 42)"],
    ["BAND", "rgb(81, 111, 250)"],
    ["BNB",  "rgb(240, 185, 11)"],
-   ["BTC",  "#F7931A"],
+   ["BTC",   "linear-gradient(135deg, #e78427 0%, #dfa872 100%)"],
    ["BCH",  "rgb(141, 195, 81)"],
    ["ADA",  "rgb(0, 51, 173)"],
    ["LINK", "rgb(6, 103, 208)"],
@@ -56,18 +56,19 @@ const crypto = new Map([
    ["CRV",  "rgb(93, 0, 250)"],
    ["DAI",  "rgb(255, 183, 77)"],
    ["DOGE", "orange"],
-   ["ETH",  "#627EEA"],
+   ["ETH",   "linear-gradient(135deg, #5b6be4 0%, #6c8de9 100%)"],
    ["ETC",  "rgb(89, 212, 175)"],
    ["LTC",  "rgb(166, 169, 170)"],
    ["MKR",  "rgb(26, 171, 155)"],
    ["QI",   "DodgerBlue"],
    ["SOL",  "Turquoise"],
    ["SUSHI","rgb(240, 85, 162)"],
-   ["UNDEAD","#8B1E1E"],
+   ["UNDEAD","linear-gradient(135deg, #4b0815 0%, #980523 100%)"],
    ["UNI",  "rgb(255, 0, 122)"],
    ["USDC", "#2775CA"],
-   ["sAVAX","#F2A9A8"],
-   ["stable","#4FD9BE"]
+   ["sAVAX","#6de7d3"],
+   ["stable","linear-gradient(135deg, #99957e 0%, #eddcb2 100%)"],
+   ["liquiditypools", "#f3c5f7"],
 ]);
 
 const baseName = token => token.replace(/[γ\s\$]/g,'');
@@ -76,20 +77,21 @@ const colorOf = token => {
    if(token.startsWith("LP ")) { ans = randomCyan(); }
    return ans;
 };
+const solidOf = fillOrGradient => {
+   const m = /linear-gradient\([^,]+,\s*([^\s]+)/.exec(fillOrGradient);
+   return m ? m[1] : fillOrGradient;
+};
 
 // Returns a readable hue-matched text color for a label sitting directly on
 // top of `fill`
-const textOnFill = (fill, factor = 0.78) => {
-   // Resolve any CSS color (named, hex, rgb(), var()) to real RGB via the browser.
+const textOnFill = fill => {
    const probe = document.createElement('div');
-   probe.style.color = fill;
+   probe.style.color = solidOf(fill);
    document.body.appendChild(probe);
    const resolved = getComputedStyle(probe).color;
    document.body.removeChild(probe);
    const [r, g, b] = resolved.match(/\d+/g).map(Number);
 
-   // WCAG relative luminance + contrast ratio, so we pick whichever of a
-   // darkened/lightened candidate actually contrasts best against the fill.
    const relLum = (cr, cg, cb) => {
       const [rs, gs, bs] = [cr, cg, cb].map(c => {
          c /= 255;
@@ -97,19 +99,9 @@ const textOnFill = (fill, factor = 0.78) => {
       });
       return 0.2126 * rs + 0.7152 * gs + 0.0722 * bs;
    };
-   const contrastRatio = (l1, l2) => {
-      const [hi, lo] = l1 > l2 ? [l1, l2] : [l2, l1];
-      return (hi + 0.05) / (lo + 0.05);
-   };
 
-   const fillLum = relLum(r, g, b);
-   const dark  = [r, g, b].map(c => Math.round(c * (1 - factor)));
-   const light = [r, g, b].map(c => Math.round(c + (255 - c) * factor));
-   const darkContrast  = contrastRatio(fillLum, relLum(...dark));
-   const lightContrast = contrastRatio(fillLum, relLum(...light));
-
-   const [wr, wg, wb] = darkContrast >= lightContrast ? dark : light;
-   return `rgb(${wr}, ${wg}, ${wb})`;
+   const DARK_THRESHOLD = 0.10; // below this, black text loses -- go light instead
+   return relLum(r, g, b) < DARK_THRESHOLD ? '#c2c6cb' : '#151515';
 };
 
 // Shrinks labels that don't fit (full -> data-short -> blank); title always has the full info.
