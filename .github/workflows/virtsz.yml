@@ -82,11 +82,6 @@ jobs:
         env:
           DRY_RUN: ${{ github.event.inputs.dry_run }}
         run: |
-          echo "Current directory contents:"
-          ls -l
-          echo "Looking for virtsz binary:"
-          find . -name virtsz -type f
-
           sh ./protocol/scripts/auto-virtsz.sh pivot data/pivots/open/raw
 
       - name: Commit and push results
