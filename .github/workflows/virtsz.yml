@@ -82,7 +82,7 @@ jobs:
         env:
           DRY_RUN: ${{ github.event.inputs.dry_run }}
         run: |
-          sh ./protocol/scripts/auto-virtsz.sh pivot data/pivots/open/raw
+          sh ./protocol/scripts/auto-virtsz.sh $PROTOCOL_ALIAS data/pivots/open/raw
 
       - name: Commit and push results
         if: ${{ github.event.inputs.dry_run != 'true' }}
