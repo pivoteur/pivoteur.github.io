@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Pivot Protocol Pools</title>
-    <link rel="stylesheet" href="protocol.css?version=13">
+    <link rel="stylesheet" href="protocol.css?version=14">
     <script src='https://d3js.org/d3.v4.min.js'></script>
 </head>
 
@@ -46,7 +46,9 @@ about amplified staking.
            <col style="width:18%;">
          </colgroup>
          <tr>
-          <th>Pool Name</th><th>incept</th><th>TVL</th><th>ROI</th><th>APR</th>
+          <th>Pool Name</th><th>incept</th><th>TVL</th>
+          <th class="sortable" onclick="sortPoolTable('roi')">ROI<span class="sort-indicator" data-for="roi"></span></th>
+          <th class="sortable" onclick="sortPoolTable('apr')">APR<span class="sort-indicator" data-for="apr"></span></th>
          </tr>
 
          <!-- data for pools inserted here via javascript -->
@@ -71,6 +73,23 @@ about amplified staking.
     <script src="libs/pool-health.js"></script>
     <script src='libs/chrome.js'></script>
     <script>
+       function sortPoolTable(key) {
+          const tableEl = document.getElementById('poolTable');
+          const rows = Array.from(tableEl.querySelectorAll('tr.pivot-pool-row'));
+          if (!rows.length) return; // rows aren't rendered yet — nothing to sort
+
+          const colIx = key === 'roi' ? 3 : 4; // ROI / APR are cells[3] / cells[4], per the header order
+          const val = tr => parseFloat(tr.cells[colIx].textContent) || 0;
+          rows.sort((a, b) => val(b) - val(a)); // greatest to least
+
+          const divider = tableEl.querySelector('tr.divider-row');
+          rows.forEach(tr => divider.parentNode.insertBefore(tr, divider));
+
+          tableEl.querySelectorAll('.sort-indicator').forEach(el => el.textContent = '');
+          const active = tableEl.querySelector(`.sort-indicator[data-for="${key}"]`);
+          if (active) active.textContent = ' ▾';
+        }
+
        indexPools('wallets', '', 1).then(() => {
           // pool-health.js may not have loaded correctly, or a given run may
           // simply have no data yet — bail quietly rather than error.
@@ -90,6 +109,7 @@ about amplified staking.
              if (!nameCell) return;
              const poolName = nameCell.textContent.trim();
              if (!(poolName in healthByPool)) return; // no health data for this row — leave plain TVL text as-is
+             tr.classList.add('pivot-pool-row');     //  marks this as a sortable pool row
 
              const tvlCell = tr.cells[2];
              if (!tvlCell) return;
