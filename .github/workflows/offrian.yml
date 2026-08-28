@@ -3,10 +3,6 @@ name: offrian
 on:
   workflow_dispatch:
     inputs:
-      protocol:
-        description: 'Protocol to counter-offer (e.g. PIVOT)'
-        required: true
-        type: string
       ix:
         description: 'Call index being countered (e.g. 1)'
         required: true
@@ -98,7 +94,6 @@ jobs:
       - name: Run offrian
         run: |
           $DAPP ${{ inputs.debug && '--debug' || '' }} \
-                  "${{ inputs.protocol }}" \
+                  $PROTOCOL_ALIAS \
                   "${{ inputs.ix }}" \
                   "${{ inputs.target }}"
-                  
