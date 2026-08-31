@@ -21,10 +21,10 @@ jobs:
   run-virtsz:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout pivoteur.github.io # This repo is the root dir for this workflow
+      - name: Checkout pivoteur.github.io
         uses: actions/checkout@v4
 
-      - name: Checkout protocol # needed by cache step to locate Cargo.toml
+      - name: Checkout protocol
         uses: actions/checkout@v4
         with:
           repository: pivoteur/protocol
@@ -45,7 +45,7 @@ jobs:
         id: binary-cache
         uses: actions/cache@v4
         with:
-          path: $DAPP_DIR/target/release/$DAPP
+          path: $DAPP_DIR/$EXE_SUBDIR/$DAPP
           key: >-
             virtsz-binary-
             ${{ hashFiles(format('{0}/quiz07/b_virtual/**/*.rs', env.QUIZZES_SRC)) }}-
