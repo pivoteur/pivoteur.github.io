@@ -76,6 +76,9 @@ jobs:
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
           echo "PIVOT_URL=$RAW_URL/${{ github.repository }}" >> $GITHUB_ENV
 
+      - name: salutation
+        run: $DAPP --help
+
       - name: Run assets and log output
         env:
           DRY_RUN: ${{ github.event.inputs.dry_run }}
