@@ -5,7 +5,7 @@ const barChart = data => {
 };
 
 const tvlChart = data => {
-   let [assets, idx] = sortedTable(data);
+   let [assets, idx] = sortedTable(data, ',');
    let labels = orderedIndices(idx).slice(1);
    barChartTbl(labels, assets);
 };
@@ -34,7 +34,7 @@ const barChartTbl = (labels, assets) => {
        return {
           label: asset,
           data: amounts[asset],
-          backgroundColor: colorOf(asset)
+          backgroundColor: solidOf(colorOf(asset))
        };
     };
     let summer = list => { return list.reduce((acc, a) => acc + a, 0); };
@@ -67,11 +67,15 @@ const barChartTbl = (labels, assets) => {
         },
         options: {
             responsive: true,
+            maintainAspectRatio: false,
             plugins: {
                legend: { labels: { color: 'white' } },
-               customCanvasBackgroundColor: { color: 'black' }
+               customCanvasBackgroundColor: { color: 'transparent' }
             },
-            scales: { x: { stacked: true }, y: { stacked: true } }
+            scales: {
+               x: { stacked: true, grid: { color: 'rgba(255,255,255,0.07)' } },
+               y: { stacked: true, grid: { color: 'rgba(255,255,255,0.07)' } }
+            }
         },
         plugins: [plugin]
     });
@@ -99,8 +103,11 @@ const simpleBar = (dates, bars, label, canvas = 'barChart') => {
          responsive: true,
          plugins: {
             legend: { labels: { color: 'white' } },
-            customCanvasBackgroundColor: { color: 'black' } },
-         scales: { y: { beginAtZero: false } }
+            customCanvasBackgroundColor: { color: 'transparent' } },
+         scales: {
+            y: { beginAtZero: false, grid: { color: 'rgba(255,255,255,0.07)' } },
+            x: { grid: { color: 'rgba(255,255,255,0.07)' } }
+         }
       },
       plugins: [plugin]
    });

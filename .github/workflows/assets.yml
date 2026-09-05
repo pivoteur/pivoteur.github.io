@@ -1,0 +1,108 @@
+name: assets
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run — do not commit/push results'
+        type: boolean
+        default: false
+  schedule:
+    # ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time
+    - cron: "57 04 * * *" 
+
+env:
+   DAPP: assets
+
+permissions:
+  contents: write
+
+jobs:
+  run-assets:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout protocol repository
+        uses: actions/checkout@v4
+
+      - name: Load Shared Environment Variables
+        uses: doughepi/yaml-env-action@v1.0.0
+        with:
+          files: .github/config/protocol-env.yml
+
+      - name: Establish app path
+        run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
+
+      - name: Checkout protocol
+        uses: actions/checkout@v4
+        with:
+          repository: pivoteur/protocol
+          path: protocol
+
+      - name: Cache assets binary
+        id: binary-cache
+        uses: actions/cache@v4
+        with:
+          path: protocol/dapps/assets/target/release/assets
+          key: >-
+            assets-binary-
+            ${{ hashFiles( format('{0}/quiz06/c_assets/**/*.rs',
+                                  env.QUIZZES_SRC)) }}-
+            ${{ hashFiles( format('{0}/Cargo.toml', env.DAPP_DIR)) }}-
+            ${{ hashFiles( format('{0}/Cargo.lock', env.DAPP_DIR)) }}
+
+      - name: Install Rust toolchain
+        if: steps.binary-cache.outputs.cache-hit != 'true'
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Checkout crypto-n-rust
+        if: steps.binary-cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: logicalgraphs/crypto-n-rust
+          path: crypto-n-rust
+
+      - name: Build assets
+        if: steps.binary-cache.outputs.cache-hit != 'true'
+        run: |
+          cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
+
+      - name: Add assets to PATH
+        run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
+
+      - name: Set date and pivot_url
+        run: |
+          echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "PIVOT_URL=$RAW_URL/${{ github.repository }}" >> $GITHUB_ENV
+
+      - name: salutation
+        run: $DAPP --help
+
+      - name: Run assets and log output
+        env:
+          DRY_RUN: ${{ github.event.inputs.dry_run }}
+        run: |
+          if [ "$DRY_RUN" = "true" ]; then
+            $DAPP $PROTOCOL_ALIAS $LE_DATE
+          else
+            $DAPP $PROTOCOL_ALIAS $LE_DATE >> data/assets.csv
+          fi
+
+      - name: Commit and push results
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        env:
+          USER0_NAME: ${{ vars.USER0_NAME }}
+          USER0_EMAIL: ${{ secrets.USER0_EMAIL }}
+        run: |
+          git config --local user.name "$USER0_NAME"
+          git config --local user.email "$USER0_EMAIL"
+          git add data/assets.csv
+
+          if git diff --staged --quiet; then
+            echo "Nothing to commit, skipping push"
+            exit 0
+          fi  
+
+          git commit -m "$DAPP $LE_DATE"
+          git push

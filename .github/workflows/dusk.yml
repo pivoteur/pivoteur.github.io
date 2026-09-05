@@ -1,0 +1,107 @@
+name: dusk
+
+on:
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'Dry run (print to stdout only, no commit)'
+        type: boolean
+        default: false
+  schedule:
+    # ("Min Hour Day Month DayofWeek" in UTC) at a scheduled time 
+    - cron: "14 05 * * *" 
+
+env: 
+  DAPP: dusk
+
+permissions:
+  contents: write
+
+jobs:
+  run-dusk:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout pivoteur.github.io
+        uses: actions/checkout@v4
+
+      - name: Checkout protocol
+        uses: actions/checkout@v4
+        with:
+          repository: pivoteur/protocol
+          path: protocol
+
+      - name: Load Shared Environment Variables
+        uses: doughepi/yaml-env-action@v1.0.0
+        with:
+          files: .github/config/protocol-env.yml
+          
+      - name: Establish app path
+        run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
+
+      - name: Establish git path
+        run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
+          
+      - name: Cache dusk binary
+        id: binary-cache
+        uses: actions/cache@v4
+        with:
+          path: protocol/dapps/dusk/target/release/dusk
+          key: >-
+            dusk-binary-
+            ${{ hashFiles(format('{0}/quiz05/b_dusk_min/**/*.rs', env.QUIZZES_SRC)) }}-
+            ${{ hashFiles(format('{0}/Cargo.toml', env.DAPP_DIR)) }}-
+            ${{ hashFiles(format('{0}/Cargo.lock', env.DAPP_DIR)) }}
+
+      - name: Install Rust toolchain
+        if: steps.binary-cache.outputs.cache-hit != 'true'
+        uses: dtolnay/rust-toolchain@stable
+        with:
+          toolchain: stable
+
+      - name: Checkout crypto-n-rust
+        if: steps.binary-cache.outputs.cache-hit != 'true'
+        uses: actions/checkout@v4
+        with:
+          repository: logicalgraphs/crypto-n-rust
+          path: crypto-n-rust
+
+      - name: Build dusk
+        if: steps.binary-cache.outputs.cache-hit != 'true'
+        run: |
+          cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
+
+      - name: Add dusk to PATH
+        run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
+
+      - name: Setting date and URL
+        run: |
+          echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "PIVOT_URL=$RAW_URL/${{ github.repository }}" >> $GITHUB_ENV
+
+      - name: Run dusk and log output
+        run: |
+          $DAPP --min $PROTOCOL_ALIAS $LE_DATE > /tmp/dusk_out.csv
+          if [ "${{ github.event.inputs.dry_run }}" = "true" ]; then
+            echo "=== DRY RUN: calls.csv would be ==="
+            cat /tmp/dusk_out.csv
+          else
+            mv /tmp/dusk_out.csv data/pivots/calls.csv
+          fi
+
+      - name: Commit and push results
+        if: ${{ github.event.inputs.dry_run != 'true' }}
+        env:
+          USER0_NAME: ${{ vars.USER0_NAME }}
+          USER0_EMAIL: ${{ secrets.USER0_EMAIL }}
+        run: |
+          git config --local user.name "$USER0_NAME"
+          git config --local user.email "$USER0_EMAIL"
+          git add data/pivots/calls.csv
+
+          if git diff --staged --quiet; then
+            echo "Nothing to commit, skipping push"
+            exit 0
+          fi
+
+          git commit -m "dusk --min $LE_DATE"
+          git push
