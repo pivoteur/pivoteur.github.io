@@ -76,6 +76,9 @@ jobs:
           echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
 
+      - name: salutation
+        run: $DAPP --help
+
       - name: Run pools
         env:
           PIVOT_DATA_DIR: data

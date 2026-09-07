@@ -78,6 +78,9 @@ jobs:
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
           echo "PIVOT_URL=$RAW_URL/${{ github.repository }}" >> $GITHUB_ENV
 
+      - name: salutation
+        run: $DAPP --help
+
       - name: Run dusk and log output
         run: |
           $DAPP --min $PROTOCOL_ALIAS $LE_DATE > /tmp/dusk_out.csv

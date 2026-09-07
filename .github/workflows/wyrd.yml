@@ -114,6 +114,9 @@ jobs:
         run: |
           cargo build --manifest-path $DAPPS_DIR/appender/Cargo.toml --bin appender --release
 
+      - name: salutation
+        run: $DAPP --help
+
       - name: Run wyrd and append to close pivot table
         run: |
           $DAPP $PROTOCOL_ALIAS data/pivots/close/raw "${{inputs.ix}}" \

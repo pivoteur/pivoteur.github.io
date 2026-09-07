@@ -110,6 +110,9 @@ jobs:
       - name: Add distributed to PATH
         run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
 
+      - name: salutation
+        run: $DAPP --help
+
       - name: Run distributed
         env:
           REINVESTED_BOT:    ${{ secrets.PIVOT_PROTOCOL_ROBBIE }}

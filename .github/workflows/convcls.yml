@@ -79,6 +79,9 @@ jobs:
       - name: Add convcls to PATH
         run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
 
+      - name: salutation
+        run: $DAPP --help
+
       - name: Run convcls
         run: |
           $DAPP $PIVOT_DIR/open/raw/${{ inputs.pool }}.tsv \
