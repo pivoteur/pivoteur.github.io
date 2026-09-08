@@ -107,15 +107,12 @@ jobs:
       - name: Build wyrd
         if: steps.wyrd-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
+          cargo build --manifest-path $DAPP_DIR/Cargo.toml --release
 
       - name: Build appender
         if: steps.appender-cache.outputs.cache-hit != 'true'
         run: |
-          cargo build --manifest-path $DAPPS_DIR/appender/Cargo.toml --bin appender --release
-
-      - name: salutation
-        run: $DAPP --help
+          cargo build --manifest-path $DAPPS_DIR/appender/Cargo.toml --release
 
       - name: Run wyrd and append to close pivot table
         run: |
