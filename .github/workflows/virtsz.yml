@@ -99,5 +99,5 @@ jobs:
             exit 0
           fi
 
-          git commit -m "virtsz $LE_DATE"
+          git commit -m "$DAPP $LE_DATE"
           git push
