@@ -117,6 +117,9 @@ jobs:
           echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
           echo "$DAPP1_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
 
+      - name: salutation
+        run: $DAPP --help
+
       - name: Run wyrd and append to close pivot table
         run: |
           $DAPP $PROTOCOL_ALIAS data/pivots/close/raw "${{inputs.ix}}" \
