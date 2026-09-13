@@ -50,7 +50,9 @@ jobs:
           files: .github/config/protocol-env.yml
           
       - name: Establish app path
-        run: echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
+        run: |
+           echo "DAPP_DIR=$DAPPS_DIR/$DAPP" >> $GITHUB_ENV
+           echo "DAPP1_DIR=$DAPPS_DIR/appender" >> $GITHUB_ENV
 
       - name: Establish git path
         run: echo "GIT_DAPP_DIR=$GITHUB_PATH/$DAPP_DIR" >> $GITHUB_ENV
@@ -86,6 +88,16 @@ jobs:
           repository: logicalgraphs/crypto-n-rust
           path: crypto-n-rust
 
+      - name: Build wyrd
+        if: steps.wyrd-cache.outputs.cache-hit != 'true'
+        run: |
+          cargo build --manifest-path $DAPP_DIR/Cargo.toml --release
+
+      - name: Build appender
+        if: steps.appender-cache.outputs.cache-hit != 'true'
+        run: |
+          cargo build --manifest-path $DAPPS_DIR/appender/Cargo.toml --release
+
       - name: Show input parameters
         run: |
           echo "=== Running wyrd with manual inputs ==="
@@ -94,25 +106,19 @@ jobs:
           echo "new_to_actual: ${{ inputs.new_to_actual }}"
           echo "dry_run: ${{ inputs.dry_run }}"
 
-      - name: Set today's date
+      - name: Set today's date and protocol URL and close pivot path
         run: |
           echo "LE_DATE=$(date +'%Y-%m-%d')" >> $GITHUB_ENV
+          echo "PIVOT_URL=$RAW_URL/${{ github.repository }}" >> $GITHUB_ENV
+          echo "CLOSE_PATH=data/pivots/close/raw" >> $GITHUB_ENV
 
-      - name: protocol URL and paths to dapps
+      - name: paths to dapps
         run: |
-          echo "PIVOT_URL=$RAW_URL/${{ github.event.repository.name }}" >> $GITHUB_ENV
-          echo "$DAPP_DIR/EXE_SUBDIR" >> $GITHUB_PATH
-          echo "$GITHUB_WORKSPACE/$DAPPS_DIR/appender/EXE_SUBDIR" >> $GITHUB_PATH
+          echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
+          echo "$DAPP1_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
 
-      - name: Build wyrd
-        if: steps.wyrd-cache.outputs.cache-hit != 'true'
-        run: |
-          cargo build --manifest-path $DAPP_DIR/Cargo.toml --bin $DAPP --release
-
-      - name: Build appender
-        if: steps.appender-cache.outputs.cache-hit != 'true'
-        run: |
-          cargo build --manifest-path $DAPPS_DIR/appender/Cargo.toml --bin appender --release
+      - name: salutation
+        run: $DAPP --help
 
       - name: Run wyrd and append to close pivot table
         run: |
@@ -120,7 +126,7 @@ jobs:
           "${{inputs.tx_id}}" "${{inputs.new_to_actual}}" > /tmp/wyrd_out.txt
 
           if [ "${{ inputs.dry_run }}" = "true" ]; then
-            echo "=== DRY RUN: would append the following to data/pivots/close/raw ==="
+            echo "=== DRY RUN: would append the following to $CLOSE_PATH ==="
             cat /tmp/wyrd_out.txt
           else
             cat /tmp/wyrd_out.txt | appender

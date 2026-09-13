@@ -118,6 +118,9 @@ jobs:
       - name: Add reinvested to PATH
         run: echo "$DAPP_DIR/$EXE_SUBDIR" >> $GITHUB_PATH
 
+      - name: salutation
+        run: $DAPP --help
+
       - name: Run reinvested
         env:
           REINVESTED_BOT:    ${{ secrets.PIVOT_PROTOCOL_ROBBIE }}
