@@ -26,4 +26,6 @@ function vid { vig data/$1.tsv }
 
 # -- REPORTAGE -------------------------------------------------------
 
-function gains { echo "* actual ROI: $1 / $2 APR projected" | despace }
+function gains {
+   echo "* actual ROI: $2 / $3 APR projected ($1 net gain)" | despace
+}
