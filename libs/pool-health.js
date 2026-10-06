@@ -1,5 +1,5 @@
 const poolHealth = {
-   generated: '2026-10-05',
+   generated: '2026-10-06',
    pools: [
       { pool: "ETH+UNDEAD", available: '$0.6515' },
       { pool: "UNDEAD+USDC", available: '$4.12' },
