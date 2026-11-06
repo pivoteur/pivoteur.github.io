@@ -64,21 +64,12 @@ about amplified staking.
 
 let [profile] = Object.values(params());
 
-async function digestMessage(message) {
-  const encoder = new TextEncoder();
-  const data = encoder.encode(message); 
-  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
-  const hashArray = Array.from(new Uint8Array(hashBuffer));
-  const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
-  return hexHash;
+try {
+   fetchInvestorStakes(profile).then(renderInvestorTable);
+} catch(err) {
+   console.error("Pipeline failure:", err);
 }
 
-// Example usage:
-digestMessage(profile).then(hash => {
-  //  console.log(hash); 
-});
-
-  indexPools(profile, "profiles");
 </script>
 
 </body>
