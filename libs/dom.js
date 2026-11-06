@@ -133,6 +133,17 @@ async function indexPools(wallets = 'wallets', subDir = '', startRowIx = 3) {
          let dappIx = idx['dapp'];
          let pivots = wallets.filter(row => row[dappIx] === 'pools'
                                      || row[dappIx] === 'echo');
+         console.log('pivots are', pivots);
          vennTbl(pivots, idx, 'vennChart');
       }).catch(error => alert('No such profile: ' + error));
 }
+
+async function digestLowercasedMessage(message) {
+  const encoder = new TextEncoder(); 
+  const data = encoder.encode(message.toLowerCase());
+  const hashBuffer = await crypto.subtle.digest("SHA-256", data);
+  const hashArray = Array.from(new Uint8Array(hashBuffer));
+  const hexHash = hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+  return hexHash;
+}
+
