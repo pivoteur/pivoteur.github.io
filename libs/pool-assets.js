@@ -4,15 +4,15 @@
 
  
 const poolAssets = {
-   generated: '2026-11-13',
+   generated: '2026-11-14',
    assets: [
-      [ 'BTC', 'AVAX' ],
-      [ 'BTC', 'ETH' ],
-      [ 'ETH', 'UNDEAD' ],
       [ 'AVAX', 'UNDEAD' ],
+      [ 'ETH', 'UNDEAD' ],
+      [ 'UNDEAD', 'USDC' ],
+      [ 'BTC', 'ETH' ],
       [ 'BTC', 'USDC' ],
       [ 'BTC', 'UNDEAD' ],
-      [ 'UNDEAD', 'USDC' ]
+      [ 'BTC', 'AVAX' ]
       ]
 };
 
